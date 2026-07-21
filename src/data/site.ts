@@ -535,8 +535,8 @@ export const siteData: SiteData = {
   team: [],
   comments: {
     provider: 'googleForms',
-    embedUrl: '',
-    publicUrl: '',
+    embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd8w3eNooySoeQjn7OEQEVFdbQmyPePeK_ij_RRTan5-Ootcw/viewform?embedded=true',
+    publicUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd8w3eNooySoeQjn7OEQEVFdbQmyPePeK_ij_RRTan5-Ootcw/viewform',
     lazyLoad: true,
     showApprovedComments: true
   },
