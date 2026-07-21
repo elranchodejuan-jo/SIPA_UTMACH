@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════
+   Animations — Reveal, hover, transitions
+   ═══════════════════════════════════════════════════════════ */
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children (optional) */
+.reveal:nth-child(2) { transition-delay: 0.08s; }
+.reveal:nth-child(3) { transition-delay: 0.16s; }
+.reveal:nth-child(4) { transition-delay: 0.24s; }
+
+/* Card hover lift */
+@media (hover: hover) {
+  .card:hover,
+  .process-card:hover,
+  .responsible-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* Accordion chevron rotation */
+[aria-expanded="true"] .ingredient-card__chevron {
+  transform: rotate(180deg);
+}
+
+/* Smooth hidden transition for panels */
+.ingredient-card__detail {
+  transition: padding var(--transition-base);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .card:hover,
+  .gallery-item:hover,
+  .process-card:hover {
+    transform: none;
+  }
+
+  .ingredient-card__chevron {
+    transition: none;
+  }
+}
