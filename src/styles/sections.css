@@ -547,7 +547,6 @@
 
 .team-card__role {
   align-self: center;
-  margin: 0;
 }
 
 .team-card__desc {
@@ -589,7 +588,6 @@
 .team-card__topic {
   font-size: var(--font-size-xs);
   align-self: center;
-  margin: 0;
 }
 
 .team-card__instagram {
