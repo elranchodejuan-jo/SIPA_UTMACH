@@ -334,7 +334,7 @@ function renderTeam(): void {
       img.src = member.photo;
       img.alt = member.altText;
       img.width = 320;
-      img.height = 400;
+      img.height = 320;
       img.className = 'team-card__image';
       img.loading = 'lazy';
       imgWrapper.appendChild(img);
