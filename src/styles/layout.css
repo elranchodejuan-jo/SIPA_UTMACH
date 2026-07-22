@@ -56,10 +56,23 @@
 
 .header__brand {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: center;
+  gap: var(--space-sm);
   text-decoration: none;
   flex-shrink: 0;
+}
+
+.header__logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.header__brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .header__university {
