@@ -93,6 +93,7 @@ export interface TeamMember {
   career: string;
   semester: string;
   topic: string;
+  role?: string;
   instagram?: string;
   altText: string;
   visible: boolean;
@@ -536,7 +537,44 @@ export const siteData: SiteData = {
     image: 'images/docente-placeholder.svg',
     visible: true
   },
-  team: [],
+  team: [
+    {
+      id: "carolina-cajamarca",
+      name: "Carolina Cajamarca",
+      photo: "images/carolina-cajamarca.png?v=2",
+      career: "Medicina Veterinaria",
+      semester: "Cuarto semestre",
+      topic: "Nutrición Animal",
+      role: "Exponente",
+      instagram: "https://www.instagram.com/carolina.skl",
+      altText: "Carolina Cajamarca - Integrante del equipo expositor",
+      visible: true
+    },
+    {
+      id: "juan-bajana",
+      name: "Juan José Bajaña",
+      photo: "images/juan-bajana.jpg?v=2",
+      career: "Medicina Veterinaria",
+      semester: "Cuarto semestre",
+      topic: "Nutrición Animal",
+      role: "Desarrollador Web",
+      instagram: "https://www.instagram.com/elranchodejuan_jo",
+      altText: "Juan José Bajaña - Integrante del equipo expositor",
+      visible: true
+    },
+    {
+      id: "robinson-macas",
+      name: "Robinson Macas",
+      photo: "images/robinson-macas.jpeg?v=2",
+      career: "Medicina Veterinaria",
+      semester: "Cuarto semestre",
+      topic: "Nutrición Animal",
+      role: "Master Solver",
+      instagram: "https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ==",
+      altText: "Robinson Macas - Integrante del equipo expositor",
+      visible: true
+    }
+  ],
   comments: {
     provider: 'googleForms',
     embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd8w3eNooySoeQjn7OEQEVFdbQmyPePeK_ij_RRTan5-Ootcw/viewform?embedded=true',
