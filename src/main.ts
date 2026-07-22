@@ -352,18 +352,18 @@ function renderTeam(): void {
       career.textContent = `${member.career} · ${member.semester}`;
       info.appendChild(career);
 
-      if (member.role) {
-        const role = document.createElement('span');
-        role.className = 'team-card__role badge badge--blue';
-        role.textContent = member.role;
-        info.appendChild(role);
-      }
-
       if (member.topic) {
         const topic = document.createElement('p');
         topic.className = 'team-card__topic badge';
         topic.textContent = member.topic;
         info.appendChild(topic);
+      }
+
+      if (member.role) {
+        const role = document.createElement('span');
+        role.className = 'team-card__role badge badge--blue';
+        role.textContent = member.role;
+        info.appendChild(role);
       }
 
       if (member.instagram) {
