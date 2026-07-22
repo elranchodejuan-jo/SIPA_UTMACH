@@ -4,8 +4,8 @@ const STATIC_ASSETS = [
   '/offline.html',
   '/favicon.svg',
   '/manifest.webmanifest',
-  '/images/logo-placeholder.svg',
-  '/images/hero-placeholder.svg',
+  '/images/logo-utmach.png',
+  '/images/hero-desktop.jpg',
 ];
 
 self.addEventListener('install', (event) => {

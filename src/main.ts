@@ -3,6 +3,15 @@
 // Universidad Técnica de Machala
 // ═══════════════════════════════════════════════════════════
 
+import './styles/reset.css';
+import './styles/tokens.css';
+import './styles/base.css';
+import './styles/layout.css';
+import './styles/components.css';
+import './styles/sections.css';
+import './styles/animations.css';
+import './styles/responsive.css';
+
 import { siteData } from './data/site';
 import { initNavigation } from './modules/navigation';
 import { initIngredients } from './modules/ingredients';
@@ -283,7 +292,7 @@ function renderTeam(): void {
       bioToggle.className = 'teacher-bio__toggle';
       bioToggle.type = 'button';
       bioToggle.setAttribute('aria-expanded', 'false');
-      bioToggle.innerHTML = '<svg class="teacher-bio__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg> Bibliografía del docente';
+      bioToggle.innerHTML = '<svg class="teacher-bio__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg> Biografía del docente';
 
       const bioContent = document.createElement('div');
       bioContent.className = 'teacher-bio__content';

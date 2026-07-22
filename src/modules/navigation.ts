@@ -1,5 +1,3 @@
-import { siteData } from '../data/site';
-
 export function initNavigation(): void {
   const toggleBtn = document.getElementById('nav-toggle') as HTMLButtonElement | null;
   const navList = document.getElementById('nav-list') as HTMLElement | null;
