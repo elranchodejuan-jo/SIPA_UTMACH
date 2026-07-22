@@ -102,7 +102,9 @@ export interface Teacher {
   name: string;
   professionalTitle: string;
   role: string;
+  subjects?: string[];
   description: string;
+  biography?: string;
   image: string;
   institutionalLink?: string;
   visible: boolean;
@@ -525,12 +527,14 @@ export const siteData: SiteData = {
     { id: 'expoferia', label: 'Expoferia' }
   ],
   teacher: {
-    name: '',
-    professionalTitle: '',
-    role: 'Docente de Nutrición Animal',
+    name: 'Angel Roberto Sánchez Quinche',
+    professionalTitle: 'Doctor en Medicina Veterinaria y Zootecnia · Máster Universitario en Producción Animal · Doctor en Ciencias Veterinarias',
+    role: 'Docente-Investigador de la UTMACH',
+    subjects: ['Nutrición Animal', 'Salud en la Producción Porcina'],
     description: '',
-    image: '/images/docente-placeholder.svg',
-    visible: false
+    biography: 'Angel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMach, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica, ha participado en proyectos académicos, conferencias nacionales e internacionales, es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
+    image: 'images/docente-placeholder.svg',
+    visible: true
   },
   team: [],
   comments: {

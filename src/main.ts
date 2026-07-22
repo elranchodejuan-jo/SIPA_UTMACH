@@ -234,6 +234,12 @@ function renderTeam(): void {
     const info = document.createElement('div');
     info.className = 'team-card__info';
 
+    // Academic icon
+    const iconLabel = document.createElement('div');
+    iconLabel.className = 'team-card__academic-icon';
+    iconLabel.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M22 10l-10-6L2 10l10 6 10-6z"/><path d="M6 12v5c0 2 3 4 6 4s6-2 6-4v-5"/><line x1="22" y1="10" x2="22" y2="16"/></svg> Docente';
+    info.appendChild(iconLabel);
+
     const name = document.createElement('h3');
     name.className = 'team-card__name';
     name.textContent = teacher.name;
@@ -251,11 +257,53 @@ function renderTeam(): void {
     role.textContent = teacher.role;
     info.appendChild(role);
 
-    if (teacher.description) {
-      const desc = document.createElement('p');
-      desc.className = 'team-card__desc';
-      desc.textContent = teacher.description;
-      info.appendChild(desc);
+    // Subjects
+    if (teacher.subjects && teacher.subjects.length > 0) {
+      const subjectsWrap = document.createElement('div');
+      subjectsWrap.className = 'team-card__subjects';
+      const subLabel = document.createElement('span');
+      subLabel.className = 'team-card__subjects-label';
+      subLabel.textContent = 'Asignaturas:';
+      subjectsWrap.appendChild(subLabel);
+      teacher.subjects.forEach((sub) => {
+        const badge = document.createElement('span');
+        badge.className = 'badge badge--green';
+        badge.textContent = sub;
+        subjectsWrap.appendChild(badge);
+      });
+      info.appendChild(subjectsWrap);
+    }
+
+    // Collapsible biography
+    if (teacher.biography) {
+      const bioWrapper = document.createElement('div');
+      bioWrapper.className = 'teacher-bio';
+
+      const bioToggle = document.createElement('button');
+      bioToggle.className = 'teacher-bio__toggle';
+      bioToggle.type = 'button';
+      bioToggle.setAttribute('aria-expanded', 'false');
+      bioToggle.innerHTML = '<svg class="teacher-bio__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg> Bibliografía del docente';
+
+      const bioContent = document.createElement('div');
+      bioContent.className = 'teacher-bio__content';
+      bioContent.hidden = true;
+
+      const bioText = document.createElement('p');
+      bioText.className = 'teacher-bio__text';
+      bioText.textContent = teacher.biography;
+      bioContent.appendChild(bioText);
+
+      bioToggle.addEventListener('click', () => {
+        const expanded = bioToggle.getAttribute('aria-expanded') === 'true';
+        bioToggle.setAttribute('aria-expanded', String(!expanded));
+        bioContent.hidden = expanded;
+        bioWrapper.classList.toggle('teacher-bio--open', !expanded);
+      });
+
+      bioWrapper.appendChild(bioToggle);
+      bioWrapper.appendChild(bioContent);
+      info.appendChild(bioWrapper);
     }
 
     card.appendChild(imgWrapper);

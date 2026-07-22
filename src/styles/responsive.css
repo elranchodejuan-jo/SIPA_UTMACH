@@ -139,6 +139,33 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
+  .team-card--teacher {
+    flex-direction: row;
+    text-align: left;
+    padding: var(--space-3xl);
+  }
+
+  .team-card--teacher .team-card__image-wrapper {
+    width: 200px;
+    height: 200px;
+    margin-right: var(--space-2xl);
+  }
+
+  .team-card--teacher .team-card__info {
+    flex: 1;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .team-card--teacher .team-card__academic-icon,
+  .team-card--teacher .team-card__role {
+    align-self: flex-start;
+  }
+
+  .team-card--teacher .team-card__subjects {
+    justify-content: flex-start;
+  }
+
   .fab {
     display: none;
   }
