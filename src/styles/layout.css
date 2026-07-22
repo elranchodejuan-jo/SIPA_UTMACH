@@ -72,7 +72,7 @@
 
 /* Navigation */
 .nav {
-  display: none;
+  display: block;
 }
 
 .nav__list {
