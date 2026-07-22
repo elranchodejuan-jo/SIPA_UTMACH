@@ -20,6 +20,10 @@
 }
 
 /* Header */
+/* El fondo difuminado vive en ::before (no en .header) para que .header
+   no establezca containing block para sus descendientes position:fixed
+   (como .nav__list): backdrop-filter en un ancestro recorta esos hijos
+   fixed contra la caja del ancestro en lugar del viewport. */
 .header {
   position: fixed;
   top: 0;
@@ -27,11 +31,19 @@
   right: 0;
   z-index: var(--z-sticky);
   height: var(--header-height);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow var(--transition-base);
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: rgba(255, 253, 247, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border);
-  transition: background var(--transition-base), box-shadow var(--transition-base);
+  transition: background var(--transition-base);
 }
 
 .header__container {
