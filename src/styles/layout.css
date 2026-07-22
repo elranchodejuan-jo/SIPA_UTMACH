@@ -40,7 +40,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgba(255, 253, 247, 0.92);
+  background: rgba(255, 253, 247, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: background var(--transition-base);
@@ -96,7 +96,9 @@
   right: 0;
   bottom: 0;
   width: min(320px, 85vw);
-  background: var(--color-white);
+  background: rgba(255, 253, 247, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: calc(var(--header-height) + var(--space-lg)) var(--space-xl) var(--space-xl);
   transform: translateX(100%);
   transition: transform var(--transition-base);
