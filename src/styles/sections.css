@@ -519,7 +519,8 @@
 .team-card--teacher .team-card__image-wrapper {
   width: 160px;
   height: 160px;
-  border-radius: var(--radius-full);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
   flex-shrink: 0;
 }
 
