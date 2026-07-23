@@ -41,6 +41,8 @@ export interface Ingredient {
 export interface FeedingPhase {
   id: string;
   name: string;
+  crudeProtein: string;
+  apparentMetabolizableEnergy: string;
   objective: string;
   description: string;
   maintained: string[];
@@ -389,28 +391,56 @@ export const siteData: SiteData = {
   ],
   feedingPhases: [
     {
-      id: 'inicial',
-      name: 'Inicial 1 e Inicial 2',
-      objective: 'Aportar una dieta completa y precisa para las primeras etapas de crecimiento.',
-      description: 'En las etapas iniciales se utiliza la base completa de ingredientes y una suplementación de precisión para responder a los mayores requerimientos del ave joven.',
+      id: 'inicial-i',
+      name: 'Inicial I',
+      crudeProtein: '21 %',
+      apparentMetabolizableEnergy: '2800 kcal EMa/kg',
+      objective: 'Aportar una dieta completa y precisa para la primera etapa de crecimiento del ave.',
+      description: 'Es la etapa con la mayor concentración de proteína bruta dentro del programa de alimentación, diseñada para responder a las altas exigencias nutricionales del ave joven.',
       maintained: ['Harina de soya', 'Maíz', 'Cono de arroz', 'Vitaminas', 'Minerales', 'Fitobióticos', 'Complejo enzimático', 'Fuente energética'],
       incorporated: ['Lisina sintética', 'Metionina sintética', 'Treonina sintética', 'Coccidiostato'],
       icon: 'chick'
     },
     {
-      id: 'crecimiento',
-      name: 'Crecimiento 1 y Crecimiento 2',
-      objective: 'Adaptar la densidad nutricional al aumento del peso y al desarrollo corporal.',
-      description: 'Se mantienen los mismos grupos principales de ingredientes, pero sus cantidades deben ajustarse según la edad, el consumo y el crecimiento del ave.',
+      id: 'inicial-ii',
+      name: 'Inicial II',
+      crudeProtein: '20,5 %',
+      apparentMetabolizableEnergy: '2800 kcal EMa/kg',
+      objective: 'Continuar el desarrollo inicial ajustando progresivamente la concentración de proteína.',
+      description: 'Se mantiene la base nutricional de la fase inicial, con una ligera reducción de proteína bruta y el mismo nivel de energía metabolizable aparente.',
+      maintained: ['Harina de soya', 'Maíz', 'Cono de arroz', 'Vitaminas', 'Minerales', 'Fitobióticos', 'Complejo enzimático', 'Fuente energética', 'Lisina sintética', 'Metionina sintética', 'Treonina sintética', 'Coccidiostato'],
+      adjusted: ['Cantidades según el avance del ave'],
+      icon: 'chick'
+    },
+    {
+      id: 'crecimiento-i',
+      name: 'Crecimiento I',
+      crudeProtein: '20 %',
+      apparentMetabolizableEnergy: '2900 kcal EMa/kg',
+      objective: 'Adaptar la dieta al aumento del peso corporal y a una mayor demanda energética.',
+      description: 'Durante esta etapa se conserva la base de ingredientes y se incrementa la energía metabolizable aparente para acompañar el crecimiento del ave.',
       maintained: ['Harina de soya', 'Maíz', 'Cono de arroz', 'Vitaminas', 'Minerales', 'Fitobióticos', 'Complejo enzimático', 'Fuente energética', 'Aminoácidos sintéticos', 'Coccidiostato'],
-      adjusted: ['Cantidades según edad y consumo'],
+      adjusted: ['Cantidades según edad, peso y consumo'],
       icon: 'growing-chicken'
     },
     {
-      id: 'engorde',
-      name: 'Engorde',
-      objective: 'Mantener el crecimiento y avanzar hacia una fase final sin coccidiostato añadido.',
-      description: 'En la etapa de engorde se mantiene la suplementación nutricional, mientras se retira el coccidiostato de acuerdo con la planificación del ensayo y las indicaciones aplicables al producto utilizado.',
+      id: 'crecimiento-ii',
+      name: 'Crecimiento II',
+      crudeProtein: '19,5 %',
+      apparentMetabolizableEnergy: '3000 kcal EMa/kg',
+      objective: 'Favorecer el crecimiento corporal con una mayor densidad energética y un ajuste gradual de la proteína.',
+      description: 'La energía metabolizable aparente continúa aumentando, mientras la concentración de proteína bruta se reduce de forma progresiva.',
+      maintained: ['Harina de soya', 'Maíz', 'Cono de arroz', 'Vitaminas', 'Minerales', 'Fitobióticos', 'Complejo enzimático', 'Fuente energética', 'Aminoácidos sintéticos', 'Coccidiostato'],
+      adjusted: ['Cantidades según edad, peso y consumo'],
+      icon: 'growing-chicken'
+    },
+    {
+      id: 'ceba',
+      name: 'Ceba',
+      crudeProtein: '18,5 %',
+      apparentMetabolizableEnergy: '3040 kcal EMa/kg',
+      objective: 'Mantener la ganancia de peso con una dieta de mayor densidad energética.',
+      description: 'En la etapa de ceba se mantiene la suplementación nutricional y se alcanza el nivel energético más alto del programa. El retiro del coccidiostato depende de la planificación del ensayo, el producto empleado y las indicaciones aplicables.',
       maintained: ['Base proteica', 'Fuentes de carbohidratos', 'Fuente energética', 'Suplementación de aminoácidos sintéticos', 'Vitaminas y minerales', 'Fitobióticos', 'Enzimas'],
       removed: ['Coccidiostato'],
       icon: 'chicken'
@@ -418,8 +448,10 @@ export const siteData: SiteData = {
     {
       id: 'finalizador',
       name: 'Finalizador',
+      crudeProtein: '17,5 %',
+      apparentMetabolizableEnergy: '3040 kcal EMa/kg',
       objective: 'Evaluar una formulación final con menor dependencia de insumos sintéticos.',
-      description: 'En la fase finalizadora se evalúa una formulación con menor dependencia de insumos sintéticos.',
+      description: 'En esta etapa se mantiene el nivel energético de la ceba y se reduce nuevamente la concentración de proteína bruta.',
       maintained: ['Harina de soya', 'Maíz', 'Cono de arroz', 'Fuente energética', 'Vitaminas', 'Minerales', 'Fitobióticos', 'Enzimas'],
       removed: ['Coccidiostato', 'Suplementación con lisina sintética', 'Suplementación con metionina sintética', 'Suplementación con treonina sintética'],
       clarification: 'La retirada de la suplementación sintética no significa que el alimento quede sin aminoácidos. El maíz y la harina de soya continúan aportando aminoácidos de forma natural.',

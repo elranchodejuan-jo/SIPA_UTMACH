@@ -21,7 +21,7 @@ export function initPhases(): void {
   const phases = siteData.feedingPhases;
 
   phases.forEach((phase, index) => {
-    const card = document.createElement('div');
+    const card = document.createElement('article');
     card.className = 'timeline__item reveal';
 
     const marker = document.createElement('div');
@@ -37,6 +37,34 @@ export function initPhases(): void {
     title.className = 'timeline__title';
     title.textContent = phase.name;
     content.appendChild(title);
+
+    const requirements = document.createElement('dl');
+    requirements.className = 'timeline__requirements';
+    requirements.setAttribute('aria-label', 'Requerimientos nutricionales');
+
+    const requirementItems = [
+      { value: `${phase.crudeProtein} PB`, label: 'Proteína bruta' },
+      { value: phase.apparentMetabolizableEnergy, label: 'Energía metabolizable aparente' },
+    ];
+
+    requirementItems.forEach((requirement) => {
+      const item = document.createElement('div');
+      item.className = 'timeline__requirement';
+
+      const value = document.createElement('dd');
+      value.className = 'timeline__requirement-value';
+      value.textContent = requirement.value;
+
+      const label = document.createElement('dt');
+      label.className = 'timeline__requirement-label';
+      label.textContent = requirement.label;
+
+      item.appendChild(value);
+      item.appendChild(label);
+      requirements.appendChild(item);
+    });
+
+    content.appendChild(requirements);
 
     const objective = document.createElement('p');
     objective.className = 'timeline__objective';

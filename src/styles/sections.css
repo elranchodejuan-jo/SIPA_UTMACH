@@ -244,6 +244,37 @@
   margin-bottom: var(--space-sm);
 }
 
+.timeline__requirements {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+  margin: 0 0 var(--space-md);
+}
+
+.timeline__requirement {
+  min-width: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-blue-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.timeline__requirement-value {
+  margin: 0;
+  color: var(--color-navy);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  overflow-wrap: anywhere;
+}
+
+.timeline__requirement-label {
+  margin-top: var(--space-xs);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-base);
+}
+
 .timeline__objective {
   font-size: var(--font-size-sm);
   color: var(--color-green-dark);
@@ -292,6 +323,12 @@
 }
 
 .timeline__clarification svg { flex-shrink: 0; margin-top: 2px; }
+
+@media (max-width: 480px) {
+  .timeline__requirements {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* ─── Treatments ───────────────────────────────────── */
 .treatments-grid {
