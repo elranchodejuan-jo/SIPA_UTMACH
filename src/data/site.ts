@@ -537,6 +537,13 @@ export const siteData: SiteData = {
   ],
   gallery: [
     { id: 'galeria-proceso-01', src: 'images/galeria/galeria-proceso-01.jpeg', thumbnail: '', alt: 'Grupo de estudiantes durante una actividad de campo de Nutrición Animal', caption: 'Actividad de campo del grupo de Nutrición Animal', category: 'equipo', visible: true },
+    { id: 'galeria-proceso-02', src: 'images/galeria/galeria-proceso-02.jpeg', thumbnail: '', alt: 'Manejo de aves en el galpón experimental', caption: 'Manejo de aves en el galpón experimental', category: 'manejo-aves', visible: true },
+    { id: 'galeria-proceso-03', src: 'images/galeria/galeria-proceso-03.jpeg', thumbnail: '', alt: 'Estudiantes preparando materiales durante la actividad de campo', caption: 'Preparación de materiales en la actividad de campo', category: 'equipo', visible: true },
+    { id: 'galeria-proceso-04', src: 'images/galeria/galeria-proceso-04.jpeg', thumbnail: '', alt: 'Revisión de comederos y aves en el galpón', caption: 'Revisión de comederos y aves', category: 'manejo-aves', visible: true },
+    { id: 'galeria-proceso-05', src: 'images/galeria/galeria-proceso-05.jpeg', thumbnail: '', alt: 'Registro de la visita al galpón avícola', caption: 'Visita al galpón avícola', category: 'manejo-aves', visible: true },
+    { id: 'galeria-proceso-06', src: 'images/galeria/galeria-proceso-06.jpeg', thumbnail: '', alt: 'Estudiante verificando la mezcla para la alimentación', caption: 'Verificación de la mezcla para la alimentación', category: 'mezclado', visible: true },
+    { id: 'galeria-proceso-07', src: 'images/galeria/galeria-proceso-07.jpeg', thumbnail: '', alt: 'Grupo de estudiantes durante la visita al galpón', caption: 'Grupo de estudiantes en la visita al galpón', category: 'equipo', visible: true },
+    { id: 'galeria-proceso-08', src: 'images/galeria/galeria-proceso-08.jpeg', thumbnail: '', alt: 'Equipo de estudiantes trabajando con las aves', caption: 'Trabajo colaborativo del equipo con las aves', category: 'equipo', visible: true },
     { id: 'ingredientes-01', src: '', thumbnail: '', alt: 'Ingredientes usados', caption: '', category: 'ingredientes', visible: false },
     { id: 'pesaje-01', src: '', thumbnail: '', alt: 'Pesaje de ingredientes', caption: '', category: 'pesaje', visible: false },
     { id: 'macro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de macro mezcla', caption: '', category: 'macro-mezcla', visible: false },
