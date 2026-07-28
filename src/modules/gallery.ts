@@ -4,101 +4,77 @@ import { openLightbox } from './lightbox';
 let visibleItems: typeof siteData.gallery = [];
 
 export function initGallery(): void {
-  const grid = document.getElementById('gallery-grid');
-  const filtersContainer = document.getElementById('gallery-filters');
-  if (!grid) return;
+  const carousel = document.getElementById('gallery-grid');
+  if (!carousel) return;
+
+  carousel.className = 'gallery-carousel reveal';
+  carousel.setAttribute('aria-label', 'Galería de actividades del proceso');
+  document.getElementById('gallery-filters')?.remove();
 
   visibleItems = siteData.gallery.filter((item) => item.visible);
 
   if (visibleItems.length === 0) {
-    const msg = document.createElement('div');
-    msg.className = 'gallery-empty';
+    const message = document.createElement('div');
+    message.className = 'gallery-empty';
     const text = document.createElement('p');
     text.textContent = 'Las fotografías estarán disponibles próximamente.';
-    const icon = document.createElement('div');
-    icon.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-soft)" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
-    msg.appendChild(icon);
-    msg.appendChild(text);
-    grid.appendChild(msg);
+    message.appendChild(text);
+    carousel.appendChild(message);
     return;
   }
 
-  // Render filter buttons
-  if (filtersContainer) {
-    siteData.galleryCategories.forEach((cat, index) => {
-      const btn = document.createElement('button');
-      btn.className = `gallery-filter${index === 0 ? ' gallery-filter--active' : ''}`;
-      btn.type = 'button';
-      btn.textContent = cat.label;
-      btn.setAttribute('data-category', cat.id);
-      btn.setAttribute('aria-pressed', index === 0 ? 'true' : 'false');
+  const viewport = document.createElement('div');
+  viewport.className = 'gallery-carousel__viewport';
+  const track = document.createElement('div');
+  track.className = 'gallery-carousel__track';
 
-      btn.addEventListener('click', () => {
-        filtersContainer.querySelectorAll('.gallery-filter').forEach((b) => {
-          b.classList.remove('gallery-filter--active');
-          b.setAttribute('aria-pressed', 'false');
+  // A duplicated group lets the ribbon loop without a visible jump.
+  [false, true].forEach((isDuplicate) => {
+    const group = document.createElement('div');
+    group.className = 'gallery-carousel__group';
+    if (isDuplicate) group.setAttribute('aria-hidden', 'true');
+
+    visibleItems.forEach((item, index) => {
+      const figure = document.createElement('figure');
+      figure.className = 'gallery-carousel__item';
+
+      const image = document.createElement('img');
+      image.src = item.thumbnail || item.src;
+      image.alt = isDuplicate ? '' : item.alt;
+      image.loading = 'lazy';
+      image.width = 1600;
+      image.height = 900;
+      image.className = 'gallery-carousel__image';
+
+      const caption = document.createElement('figcaption');
+      caption.className = 'gallery-carousel__caption';
+      caption.textContent = item.caption;
+
+      figure.appendChild(image);
+      figure.appendChild(caption);
+
+      if (!isDuplicate) {
+        figure.tabIndex = 0;
+        figure.setAttribute('role', 'button');
+        figure.setAttribute('aria-label', `Ver imagen: ${item.alt}`);
+        const openHandler = () => openLightbox(index);
+        figure.addEventListener('click', openHandler);
+        figure.addEventListener('keydown', (event: KeyboardEvent) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openHandler();
+          }
         });
-        btn.classList.add('gallery-filter--active');
-        btn.setAttribute('aria-pressed', 'true');
-        renderGrid(cat.id, grid);
-      });
-
-      filtersContainer.appendChild(btn);
-    });
-  }
-
-  renderGrid('todas', grid);
-}
-
-function renderGrid(categoryId: string, container: HTMLElement): void {
-  container.innerHTML = '';
-  const filtered = categoryId === 'todas' ? visibleItems : visibleItems.filter((item) => item.category === categoryId);
-
-  if (filtered.length === 0) {
-    const msg = document.createElement('p');
-    msg.className = 'gallery-empty__text';
-    msg.textContent = 'No hay fotografías en esta categoría todavía.';
-    container.appendChild(msg);
-    return;
-  }
-
-  filtered.forEach((item) => {
-    const figure = document.createElement('figure');
-    figure.className = 'gallery-item';
-    figure.tabIndex = 0;
-    figure.setAttribute('role', 'button');
-    figure.setAttribute('aria-label', `Ver imagen: ${item.alt}`);
-
-    const img = document.createElement('img');
-    img.src = item.thumbnail || item.src;
-    img.alt = item.alt;
-    img.loading = 'lazy';
-    img.width = 800;
-    img.height = 600;
-    img.className = 'gallery-item__image';
-
-    const caption = document.createElement('figcaption');
-    caption.className = 'gallery-item__caption';
-    caption.textContent = item.caption;
-
-    figure.appendChild(img);
-    figure.appendChild(caption);
-
-    const openHandler = () => {
-      const globalIndex = visibleItems.indexOf(item);
-      openLightbox(globalIndex);
-    };
-
-    figure.addEventListener('click', openHandler);
-    figure.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openHandler();
       }
+
+      group.appendChild(figure);
     });
 
-    container.appendChild(figure);
+    track.appendChild(group);
   });
+
+  viewport.appendChild(track);
+  carousel.appendChild(viewport);
 }
 
 export function getVisibleGalleryItems() {
