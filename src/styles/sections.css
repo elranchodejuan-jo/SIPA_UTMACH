@@ -524,6 +524,79 @@
 .gallery-empty svg { margin: 0 auto var(--space-md); opacity: 0.4; }
 .gallery-empty p { font-size: var(--font-size-md); }
 
+.gallery-carousel {
+  --gallery-carousel-height: clamp(16rem, 28vw, 26rem);
+}
+
+.gallery-carousel__viewport {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-navy);
+  box-shadow: var(--shadow-sm);
+}
+
+.gallery-carousel__track {
+  display: flex;
+  width: max-content;
+  animation: gallery-scroll 36s linear infinite;
+}
+
+.gallery-carousel__group {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+.gallery-carousel__item {
+  position: relative;
+  flex: 0 0 auto;
+  height: var(--gallery-carousel-height);
+  margin: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--color-navy);
+}
+
+.gallery-carousel__image {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.gallery-carousel__caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: var(--space-xl) var(--space-md) var(--space-md);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  background: linear-gradient(transparent, rgba(6, 25, 42, 0.82));
+}
+
+.gallery-carousel__viewport:hover .gallery-carousel__track,
+.gallery-carousel__viewport:focus-within .gallery-carousel__track {
+  animation-play-state: paused;
+}
+
+.gallery-carousel__item:focus-visible {
+  outline: 3px solid var(--color-yellow);
+  outline-offset: -3px;
+}
+
+@keyframes gallery-scroll {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-carousel__track { animation: none; }
+}
+
 /* ─── Team ─────────────────────────────────────────── */
 .team-container {
   display: flex;

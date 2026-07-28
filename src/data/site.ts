@@ -536,6 +536,7 @@ export const siteData: SiteData = {
     }
   ],
   gallery: [
+    { id: 'galeria-proceso-01', src: 'images/galeria/galeria-proceso-01.jpeg', thumbnail: '', alt: 'Grupo de estudiantes durante una actividad de campo de Nutrición Animal', caption: 'Actividad de campo del grupo de Nutrición Animal', category: 'equipo', visible: true },
     { id: 'ingredientes-01', src: '', thumbnail: '', alt: 'Ingredientes usados', caption: '', category: 'ingredientes', visible: false },
     { id: 'pesaje-01', src: '', thumbnail: '', alt: 'Pesaje de ingredientes', caption: '', category: 'pesaje', visible: false },
     { id: 'macro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de macro mezcla', caption: '', category: 'macro-mezcla', visible: false },
