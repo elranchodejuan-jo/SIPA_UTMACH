@@ -201,20 +201,20 @@ export const siteData: SiteData = {
     },
     {
       number: 3,
-      title: 'Preparación de la macro mezcla',
+      title: 'Preparación de la macromezcla',
       description: 'Se combinan los ingredientes de mayor volumen: maíz, harina de soya, cono de arroz y aminoácidos.',
       icon: 'M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z'
     },
     {
       number: 4,
-      title: 'Preparación de la micro mezcla',
+      title: 'Preparación de la micromezcla',
       description: 'Se mezclan vitaminas, minerales, aditivos y correctores en pequeñas cantidades.',
       icon: 'M7 19c-1.1 0-2 .9-2 2h14c0-1.1-.9-2-2-2h-2c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2H7zm5-18C6.48 1 2 5.48 2 11h2c0-4.42 3.58-8 8-8s8 3.58 8 8h2c0-5.52-4.48-10-10-10z'
     },
     {
       number: 5,
       title: 'Homogeneización del alimento',
-      description: 'La macro y micro mezcla se integran hasta obtener un alimento uniforme.',
+      description: 'La macromezcla y la micromezcla se integran hasta obtener un alimento uniforme.',
       icon: 'M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5z'
     },
     {
@@ -546,8 +546,8 @@ export const siteData: SiteData = {
     { id: 'galeria-proceso-08', src: 'images/galeria/galeria-proceso-08.jpeg', thumbnail: '', alt: 'Equipo de estudiantes trabajando con las aves', caption: 'Trabajo colaborativo del equipo con las aves', category: 'equipo', visible: true },
     { id: 'ingredientes-01', src: '', thumbnail: '', alt: 'Ingredientes usados', caption: '', category: 'ingredientes', visible: false },
     { id: 'pesaje-01', src: '', thumbnail: '', alt: 'Pesaje de ingredientes', caption: '', category: 'pesaje', visible: false },
-    { id: 'macro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de macro mezcla', caption: '', category: 'macro-mezcla', visible: false },
-    { id: 'micro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de micro mezcla', caption: '', category: 'micro-mezcla', visible: false },
+    { id: 'macro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de macromezcla', caption: '', category: 'macro-mezcla', visible: false },
+    { id: 'micro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de micromezcla', caption: '', category: 'micro-mezcla', visible: false },
     { id: 'mezclado-01', src: '', thumbnail: '', alt: 'Mezclado del alimento', caption: '', category: 'mezclado', visible: false },
     { id: 'aves-01', src: '', thumbnail: '', alt: 'Manejo de aves etapa 1', caption: '', category: 'manejo-aves', visible: false },
     { id: 'aves-02', src: '', thumbnail: '', alt: 'Manejo de aves etapa 2', caption: '', category: 'manejo-aves', visible: false },
@@ -559,8 +559,8 @@ export const siteData: SiteData = {
     { id: 'todas', label: 'Todas' },
     { id: 'ingredientes', label: 'Ingredientes' },
     { id: 'pesaje', label: 'Pesaje' },
-    { id: 'macro-mezcla', label: 'Macro mezcla' },
-    { id: 'micro-mezcla', label: 'Micro mezcla' },
+    { id: 'macro-mezcla', label: 'Macromezcla' },
+    { id: 'micro-mezcla', label: 'Micromezcla' },
     { id: 'mezclado', label: 'Mezclado' },
     { id: 'manejo-aves', label: 'Manejo de aves' },
     { id: 'evaluacion', label: 'Evaluación' },
@@ -568,12 +568,12 @@ export const siteData: SiteData = {
     { id: 'expoferia', label: 'Expoferia' }
   ],
   teacher: {
-    name: 'Angel Roberto Sánchez Quinche',
+    name: 'Ángel Roberto Sánchez Quinche',
     professionalTitle: 'Doctor en Medicina Veterinaria y Zootecnia · Máster Universitario en Producción Animal · Doctor en Ciencias Veterinarias',
     role: 'Docente-Investigador de la UTMACH',
     subjects: ['Nutrición Animal', 'Salud en la Producción Porcina'],
     description: '',
-    biography: 'Angel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMach, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica, ha participado en proyectos académicos, conferencias nacionales e internacionales, es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
+    biography: 'Ángel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMACH, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica. Ha participado en proyectos académicos y conferencias nacionales e internacionales; es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
     image: 'images/angel-sanchez.png',
     visible: true
   },
