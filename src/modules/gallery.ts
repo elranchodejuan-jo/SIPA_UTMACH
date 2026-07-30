@@ -10,6 +10,7 @@ interface CarouselOptions {
   showCaptions: boolean;
   enableLightbox: boolean;
   durationSeconds: number;
+  direction: 'left-to-right' | 'right-to-left';
 }
 
 function renderCarousel({
@@ -19,12 +20,16 @@ function renderCarousel({
   showCaptions,
   enableLightbox,
   durationSeconds,
+  direction,
 }: CarouselOptions): void {
   const carousel = document.getElementById(elementId);
   if (!carousel) return;
 
   carousel.className = 'gallery-carousel reveal';
   if (!showCaptions) carousel.classList.add('gallery-carousel--captionless');
+  if (direction === 'left-to-right') {
+    carousel.classList.add('gallery-carousel--left-to-right');
+  }
   carousel.setAttribute('aria-label', ariaLabel);
 
   const carouselItems = items.filter((item) => item.visible);
@@ -108,6 +113,7 @@ export function initGallery(): void {
     showCaptions: true,
     enableLightbox: true,
     durationSeconds: 36,
+    direction: 'right-to-left',
   });
 
   renderCarousel({
@@ -117,6 +123,7 @@ export function initGallery(): void {
     showCaptions: false,
     enableLightbox: false,
     durationSeconds: 58,
+    direction: 'left-to-right',
   });
 }
 

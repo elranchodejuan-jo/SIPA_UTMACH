@@ -552,6 +552,10 @@
   animation: gallery-scroll var(--gallery-scroll-duration, 36s) linear infinite;
 }
 
+.gallery-carousel--left-to-right .gallery-carousel__track {
+  animation-direction: reverse;
+}
+
 .gallery-carousel__group {
   display: flex;
   align-items: stretch;
