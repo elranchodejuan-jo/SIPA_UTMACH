@@ -150,6 +150,7 @@ export interface SiteData {
   evaluationParameters: EvaluationParameter[];
   responsiblePractices: ResponsiblePractice[];
   gallery: GalleryItem[];
+  openHouseGallery: GalleryItem[];
   galleryCategories: GalleryCategory[];
   teacher: Teacher;
   team: TeamMember[];
@@ -545,8 +546,7 @@ export const siteData: SiteData = {
     { id: 'galeria-proceso-07', src: 'images/galeria/galeria-proceso-07.jpeg', thumbnail: '', alt: 'Grupo de estudiantes durante la visita al galpón', caption: 'Grupo de estudiantes en la visita al galpón', category: 'equipo', visible: true },
     { id: 'galeria-proceso-08', src: 'images/galeria/galeria-proceso-08.jpeg', thumbnail: '', alt: 'Docente y estudiantes de Nutrición Animal durante una actividad de campo', caption: 'Docente y estudiantes en la actividad de campo', category: 'equipo', visible: true },
     { id: 'galeria-proceso-09', src: 'images/galeria/galeria-proceso-09.jpeg', thumbnail: '', alt: 'Grupo de estudiantes durante una visita al galpón avícola', caption: 'Grupo de estudiantes en el galpón avícola', category: 'manejo-aves', visible: true },
-    { id: 'galeria-proceso-10', src: 'images/galeria/galeria-proceso-10.jpeg', thumbnail: '', alt: 'Estudiante observando cerdos durante una visita de campo', caption: 'Observación de cerdos durante la visita de campo', category: 'evaluacion', visible: true },
-    { id: 'galeria-proceso-11', src: 'images/galeria/galeria-proceso-11.jpeg', thumbnail: '', alt: 'Estudiantes junto a sacos de materias primas para alimentación animal', caption: 'Equipo junto a las materias primas para alimentación animal', category: 'ingredientes', visible: true },
+    { id: 'galeria-proceso-10', src: 'images/galeria/galeria-proceso-10.jpeg?v=20260730', thumbnail: '', alt: 'Estudiantes junto a sacos de materias primas para alimentación animal', caption: 'Equipo junto a las materias primas para alimentación animal', category: 'ingredientes', visible: true },
     { id: 'ingredientes-01', src: '', thumbnail: '', alt: 'Ingredientes usados', caption: '', category: 'ingredientes', visible: false },
     { id: 'pesaje-01', src: '', thumbnail: '', alt: 'Pesaje de ingredientes', caption: '', category: 'pesaje', visible: false },
     { id: 'macro-mezcla-01', src: '', thumbnail: '', alt: 'Proceso de macro mezcla', caption: '', category: 'macro-mezcla', visible: false },
@@ -557,6 +557,24 @@ export const siteData: SiteData = {
     { id: 'evaluacion-01', src: '', thumbnail: '', alt: 'Evaluación productiva', caption: '', category: 'evaluacion', visible: false },
     { id: 'expoferia-01', src: '', thumbnail: '', alt: 'Participación en expoferia', caption: '', category: 'expoferia', visible: false },
     { id: 'equipo-01', src: '', thumbnail: '', alt: 'Equipo de trabajo', caption: '', category: 'equipo', visible: false }
+  ],
+  openHouseGallery: [
+    { id: 'casa-abierta-01', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 9.02.19 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 1', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-02', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 9.27.33 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 2', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-03', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 9.50.33 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 3', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-04', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 9.50.34 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 4', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-05', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 9.50.35 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 5', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-06', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.07.32 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 6', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-07', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.24.45 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 7', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-08', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.29.40 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 8', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-09', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.29.41 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 9', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-10', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.39.59 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 10', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-11', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.51.24 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 11', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-12', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.51.34 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 12', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-13', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 10.51.36 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 13', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-14', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 11.06.27 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 14', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-15', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 11.58.29 AM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 15', caption: '', category: 'casa-abierta', visible: true },
+    { id: 'casa-abierta-16', src: 'images/galeria-2/WhatsApp Image 2026-07-29 at 12.38.27 PM.jpeg', thumbnail: '', alt: 'Casa Abierta 2026, fotografía 16', caption: '', category: 'casa-abierta', visible: true }
   ],
   galleryCategories: [
     { id: 'todas', label: 'Todas' },
