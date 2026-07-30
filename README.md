@@ -7,6 +7,13 @@ Página web para expoferia universitaria sobre nutrición animal — Universidad
 - TypeScript
 - CSS propio (sin frameworks de UI)
 
+## Modo claro y oscuro
+
+NutriWeb incluye temas claro y oscuro. En la primera visita respeta la preferencia
+del sistema; una selección manual se conserva en `localStorage` con la clave
+`nutriweb-theme`. La lógica vive en `src/modules/theme.ts` y los colores de ambos
+temas se centralizan como tokens semánticos en `src/styles/tokens.css`.
+
 ## Instalación
 
 Para instalar las dependencias del proyecto:
