@@ -22,6 +22,9 @@ import { initComments } from './modules/comments';
 import { initSharing } from './modules/sharing';
 import { initReveal } from './modules/reveal';
 import { registerServiceWorker } from './modules/serviceWorker';
+import { initTheme } from './modules/theme';
+
+initTheme();
 
 // ─── Render dynamic content ────────────────────────────────
 

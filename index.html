@@ -6,6 +6,23 @@
   <title>Nutrición Animal Responsable | UTMACH</title>
   <meta name="description" content="Proyecto académico de la Carrera de Medicina Veterinaria de la Universidad Técnica de Machala sobre elaboración de alimentos balanceados por fases para pollos de engorde.">
   <meta name="theme-color" content="#143B63">
+  <script>
+    (() => {
+      const root = document.documentElement;
+      let theme = 'light';
+      try {
+        const saved = localStorage.getItem('nutriweb-theme');
+        theme = saved === 'light' || saved === 'dark'
+          ? saved
+          : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      root.dataset.theme = theme;
+      root.style.colorScheme = theme;
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#07141F' : '#143B63');
+    })();
+  </script>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="canonical" href="">
@@ -143,7 +160,7 @@
 
       <div class="wave-divider" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-white)"/>
+          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-background-alt)"/>
         </svg>
       </div>
     </section>
@@ -229,7 +246,7 @@
 
       <div class="wave-divider" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-white)"/>
+          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-background-alt)"/>
         </svg>
       </div>
     </section>
@@ -273,7 +290,7 @@
 
       <div class="wave-divider" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-white)"/>
+          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-background-alt)"/>
         </svg>
       </div>
     </section>
@@ -325,7 +342,7 @@
 
       <div class="wave-divider" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-white)"/>
+          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-background-alt)"/>
         </svg>
       </div>
     </section>
@@ -360,7 +377,7 @@
 
       <div class="wave-divider" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-white)"/>
+          <path d="M0,30 C480,80 960,0 1440,40 L1440,80 L0,80 Z" fill="var(--color-background-alt)"/>
         </svg>
       </div>
     </section>
@@ -408,6 +425,23 @@
             </svg>
             Volver arriba
           </a>
+          <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Activar modo oscuro" title="Activar modo oscuro">
+            <span class="theme-toggle__icon theme-toggle__icon--moon" id="theme-icon-moon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+            <span class="theme-toggle__icon theme-toggle__icon--sun" id="theme-icon-sun" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.41M17.66 6.34l1.41-1.41"/>
+              </svg>
+            </span>
+            <span class="theme-toggle__label" id="theme-toggle-label">Modo oscuro</span>
+            <span class="theme-toggle__track" aria-hidden="true">
+              <span class="theme-toggle__thumb"></span>
+            </span>
+          </button>
         </div>
       </div>
 

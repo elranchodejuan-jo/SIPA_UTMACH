@@ -1,11 +1,13 @@
-const CACHE_VERSION = 'nutricion-animal-v1';
+const CACHE_VERSION = 'nutricion-animal-v2-theme';
+const APP_URL = new URL('./', self.location.href).href;
+const OFFLINE_URL = new URL('./offline.html', self.location.href).href;
 const STATIC_ASSETS = [
-  '/',
-  '/offline.html',
-  '/favicon.svg',
-  '/manifest.webmanifest',
-  '/images/logo-utmach.png',
-  '/images/hero-desktop.jpg',
+  APP_URL,
+  OFFLINE_URL,
+  new URL('./favicon.svg', self.location.href).href,
+  new URL('./manifest.webmanifest', self.location.href).href,
+  new URL('./images/logo-utmach.png', self.location.href).href,
+  new URL('./images/hero-desktop.jpg', self.location.href).href,
 ];
 
 self.addEventListener('install', (event) => {
@@ -52,7 +54,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() =>
-          caches.match(request).then((cached) => cached || caches.match('/offline.html'))
+          caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL))
         )
     );
     return;
