@@ -3,17 +3,33 @@ import { openLightbox } from './lightbox';
 
 let visibleItems: typeof siteData.gallery = [];
 
-export function initGallery(): void {
-  const carousel = document.getElementById('gallery-grid');
+interface CarouselOptions {
+  elementId: string;
+  items: typeof siteData.gallery;
+  ariaLabel: string;
+  showCaptions: boolean;
+  enableLightbox: boolean;
+  durationSeconds: number;
+}
+
+function renderCarousel({
+  elementId,
+  items,
+  ariaLabel,
+  showCaptions,
+  enableLightbox,
+  durationSeconds,
+}: CarouselOptions): void {
+  const carousel = document.getElementById(elementId);
   if (!carousel) return;
 
   carousel.className = 'gallery-carousel reveal';
-  carousel.setAttribute('aria-label', 'Galería de actividades del proceso');
-  document.getElementById('gallery-filters')?.remove();
+  if (!showCaptions) carousel.classList.add('gallery-carousel--captionless');
+  carousel.setAttribute('aria-label', ariaLabel);
 
-  visibleItems = siteData.gallery.filter((item) => item.visible);
+  const carouselItems = items.filter((item) => item.visible);
 
-  if (visibleItems.length === 0) {
+  if (carouselItems.length === 0) {
     const message = document.createElement('div');
     message.className = 'gallery-empty';
     const text = document.createElement('p');
@@ -25,8 +41,10 @@ export function initGallery(): void {
 
   const viewport = document.createElement('div');
   viewport.className = 'gallery-carousel__viewport';
+  viewport.tabIndex = 0;
   const track = document.createElement('div');
   track.className = 'gallery-carousel__track';
+  track.style.setProperty('--gallery-scroll-duration', `${durationSeconds}s`);
 
   // A duplicated group lets the ribbon loop without a visible jump.
   [false, true].forEach((isDuplicate) => {
@@ -34,7 +52,7 @@ export function initGallery(): void {
     group.className = 'gallery-carousel__group';
     if (isDuplicate) group.setAttribute('aria-hidden', 'true');
 
-    visibleItems.forEach((item, index) => {
+    carouselItems.forEach((item, index) => {
       const figure = document.createElement('figure');
       figure.className = 'gallery-carousel__item';
 
@@ -46,14 +64,16 @@ export function initGallery(): void {
       image.height = 900;
       image.className = 'gallery-carousel__image';
 
-      const caption = document.createElement('figcaption');
-      caption.className = 'gallery-carousel__caption';
-      caption.textContent = item.caption;
-
       figure.appendChild(image);
-      figure.appendChild(caption);
 
-      if (!isDuplicate) {
+      if (showCaptions) {
+        const caption = document.createElement('figcaption');
+        caption.className = 'gallery-carousel__caption';
+        caption.textContent = item.caption;
+        figure.appendChild(caption);
+      }
+
+      if (!isDuplicate && enableLightbox) {
         figure.tabIndex = 0;
         figure.setAttribute('role', 'button');
         figure.setAttribute('aria-label', `Ver imagen: ${item.alt}`);
@@ -75,6 +95,29 @@ export function initGallery(): void {
 
   viewport.appendChild(track);
   carousel.appendChild(viewport);
+}
+
+export function initGallery(): void {
+  document.getElementById('gallery-filters')?.remove();
+  visibleItems = siteData.gallery.filter((item) => item.visible);
+
+  renderCarousel({
+    elementId: 'gallery-grid',
+    items: siteData.gallery,
+    ariaLabel: 'Galería de actividades del proceso',
+    showCaptions: true,
+    enableLightbox: true,
+    durationSeconds: 36,
+  });
+
+  renderCarousel({
+    elementId: 'open-house-gallery',
+    items: siteData.openHouseGallery,
+    ariaLabel: 'Galería de Casa Abierta 2026 de Medicina Veterinaria',
+    showCaptions: false,
+    enableLightbox: false,
+    durationSeconds: 58,
+  });
 }
 
 export function getVisibleGalleryItems() {

@@ -533,18 +533,23 @@
   --gallery-carousel-height: clamp(16rem, 28vw, 26rem);
 }
 
+.gallery-showcase {
+  margin-top: var(--space-4xl);
+}
+
 .gallery-carousel__viewport {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-navy);
   box-shadow: var(--shadow-sm);
+  touch-action: pan-y;
 }
 
 .gallery-carousel__track {
   display: flex;
   width: max-content;
-  animation: gallery-scroll 36s linear infinite;
+  animation: gallery-scroll var(--gallery-scroll-duration, 36s) linear infinite;
 }
 
 .gallery-carousel__group {
@@ -562,6 +567,10 @@
   overflow: hidden;
   cursor: pointer;
   background: var(--color-navy);
+}
+
+.gallery-carousel--captionless .gallery-carousel__item {
+  cursor: default;
 }
 
 .gallery-carousel__image {
@@ -600,6 +609,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .gallery-carousel__track { animation: none; }
+}
+
+@media (max-width: 767px) {
+  .gallery-showcase {
+    margin-top: var(--space-3xl);
+  }
 }
 
 /* ─── Team ─────────────────────────────────────────── */
