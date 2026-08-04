@@ -1,6 +1,12 @@
 (() => {
   'use strict';
 
+  const speciesTheme = document.createElement('link');
+  speciesTheme.rel = 'stylesheet';
+  speciesTheme.href = './assets/species-theme.css';
+  speciesTheme.dataset.sipaTheme = 'multiespecie';
+  document.head.append(speciesTheme);
+
   const root = document.documentElement;
   const body = document.body;
   const header = document.querySelector('.site-header');
