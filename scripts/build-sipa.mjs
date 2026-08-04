@@ -10,7 +10,7 @@ const expoDistDir = path.join(root, 'dist-expo');
 const eventDir = path.join(distDir, 'eventos', 'expoferia-nutricion-animal-2026');
 const buildDate = new Date().toISOString();
 const buildSha = (process.env.GITHUB_SHA || 'local').slice(0, 7);
-const version = '1.0.0';
+const version = '1.1.0';
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 const walk = async directory => {
