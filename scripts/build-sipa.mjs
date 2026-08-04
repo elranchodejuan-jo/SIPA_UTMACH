@@ -10,7 +10,7 @@ const expoDistDir = path.join(root, 'dist-expo');
 const eventDir = path.join(distDir, 'eventos', 'expoferia-nutricion-animal-2026');
 const buildDate = new Date().toISOString();
 const buildSha = (process.env.GITHUB_SHA || 'local').slice(0, 7);
-const version = '1.1.1';
+const version = '1.2.0';
 const cacheKey = `${version}-${buildSha}`;
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
@@ -48,13 +48,13 @@ await cp(portalDir, distDir, { recursive: true });
 await mkdir(path.dirname(eventDir), { recursive: true });
 await cp(expoDistDir, eventDir, { recursive: true });
 
-console.log('3/5 Asegurando la paleta multiespecie y rompiendo caché...');
+console.log('3/5 Aplicando el sistema visual heredado de NutriWeb...');
 const portalIndexPath = path.join(distDir, 'index.html');
 let portalIndex = await readFile(portalIndexPath, 'utf8');
 portalIndex = portalIndex
   .replace(
     '<link rel="stylesheet" href="./assets/styles.css">',
-    `<link rel="stylesheet" href="./assets/styles.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/species-theme.css?v=${cacheKey}">`
+    `<link rel="stylesheet" href="./assets/styles.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/species-theme.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/nutriweb-family.css?v=${cacheKey}">`
   )
   .replace(
     '<script src="./assets/app.js" defer></script>',
@@ -65,7 +65,7 @@ await writeFile(portalIndexPath, portalIndex, 'utf8');
 
 const eventIndexPath = path.join(eventDir, 'index.html');
 let eventIndex = await readFile(eventIndexPath, 'utf8');
-const returnBar = `\n<style id="sipa-return-style">.sipa-return{position:fixed;z-index:9999;left:16px;top:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:rgba(3,35,61,.9);color:#fff!important;font:700 13px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px);transition:transform .2s}.sipa-return:hover{transform:translateY(-2px)}@media(max-width:600px){.sipa-return{top:auto;bottom:14px;left:14px;padding:9px 12px;font-size:12px}}</style><a class="sipa-return" href="../../" aria-label="Volver al portal SIPA">← Volver a SIPA</a>\n`;
+const returnBar = `\n<style id="sipa-return-style">.sipa-return{position:fixed;z-index:9999;left:16px;top:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:rgba(20,59,99,.92);color:#fff!important;font:700 13px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px);transition:transform .2s}.sipa-return:hover{transform:translateY(-2px);background:#315E35}@media(max-width:600px){.sipa-return{top:auto;bottom:14px;left:14px;padding:9px 12px;font-size:12px}}</style><a class="sipa-return" href="../../" aria-label="Volver al portal SIPA">← Volver a SIPA</a>\n`;
 if (!eventIndex.includes('class="sipa-return"')) {
   eventIndex = eventIndex.replace(/<body([^>]*)>/i, `<body$1>${returnBar}`);
   await writeFile(eventIndexPath, eventIndex, 'utf8');
