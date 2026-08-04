@@ -1,12 +1,6 @@
 (() => {
   'use strict';
 
-  const speciesTheme = document.createElement('link');
-  speciesTheme.rel = 'stylesheet';
-  speciesTheme.href = './assets/species-theme.css';
-  speciesTheme.dataset.sipaTheme = 'multiespecie';
-  document.head.append(speciesTheme);
-
   const root = document.documentElement;
   const body = document.body;
   const header = document.querySelector('.site-header');
@@ -20,7 +14,7 @@
     root.style.colorScheme = theme;
     const isDark = theme === 'dark';
     themeToggle?.setAttribute('aria-label', isDark ? 'Activar modo claro' : 'Activar modo oscuro');
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#071c2c' : '#005b9f');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#07141F' : '#143B63');
     if (persist) {
       try { localStorage.setItem('sipa-theme', theme); } catch { /* almacenamiento no disponible */ }
     }
