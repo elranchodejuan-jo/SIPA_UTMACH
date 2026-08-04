@@ -1,12 +1,14 @@
 {
-  "name": "expo-nutricion-animal",
+  "name": "sipa-utmach",
   "private": true,
   "version": "1.0.0",
-  "description": "Página web para expoferia universitaria sobre nutrición animal y elaboración de alimentos balanceados para pollos de engorde — Universidad Técnica de Machala",
+  "description": "Portal institucional del Semillero de Investigación en Producción Animal de la Universidad Técnica de Machala.",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "vite portal",
+    "dev:expo": "vite",
+    "build": "node scripts/build-sipa.mjs",
+    "build:expo": "tsc && vite build --outDir dist-expo",
     "preview": "vite preview",
     "qr": "node scripts/generate-qr.mjs"
   },

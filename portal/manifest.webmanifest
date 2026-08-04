@@ -1,0 +1,12 @@
+{
+  "name": "SIPA UTMACH",
+  "short_name": "SIPA",
+  "description": "Portal del Semillero de Investigación en Producción Animal de la Universidad Técnica de Machala.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#005b9f",
+  "lang": "es-EC",
+  "icons": [{ "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
