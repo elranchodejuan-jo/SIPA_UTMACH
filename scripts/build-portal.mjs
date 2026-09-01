@@ -97,7 +97,7 @@ const writeOutput = async (distDir, relativePath, contents, generatedFiles) => {
 const copyPortalAssets = async (rootDir, distDir, generatedFiles) => {
   const portalDir = path.join(rootDir, 'portal');
   const directories = ['assets/css', 'assets/js', 'assets/icons', 'assets/images'];
-  const files = ['assets/logo-sipa.svg', 'favicon.svg'];
+  const files = ['assets/logo-sipa.svg'];
 
   for (const relativePath of directories) {
     const source = path.join(portalDir, ...relativePath.split('/'));
@@ -115,6 +115,16 @@ const copyPortalAssets = async (rootDir, distDir, generatedFiles) => {
     await cp(source, destination, { force: true });
     generatedFiles.push(relativePath);
   }
+
+  const faviconDir = path.join(rootDir, 'public', 'favicon');
+  if (!await exists(faviconDir)) throw new Error('Asset obligatorio inexistente: public/favicon/');
+  await cp(faviconDir, path.join(distDir, 'favicon'), { recursive: true, force: true });
+  generatedFiles.push('favicon/');
+
+  const faviconIco = path.join(rootDir, 'public', 'favicon.ico');
+  if (!await exists(faviconIco)) throw new Error('Asset obligatorio inexistente: public/favicon.ico');
+  await cp(faviconIco, path.join(distDir, 'favicon.ico'), { force: true });
+  generatedFiles.push('favicon.ico');
 };
 
 const renderSitemap = () => `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${getSitemapRoutes().map(route => `  <url>\n    <loc>${route.loc}</loc>\n    <changefreq>${route.changefreq}</changefreq>\n    <priority>${route.priority}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
@@ -159,7 +169,10 @@ export async function buildPortal(options = {}) {
     background_color: SITE_CONFIG.themeColors.light,
     theme_color: SITE_CONFIG.themeColors.primary,
     lang: SITE_CONFIG.locale,
-    icons: [{ src: './favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }]
+    icons: [
+      { src: './favicon/favicon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: './favicon/favicon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+    ]
   };
   await writeOutput(distDir, 'manifest.webmanifest', `${JSON.stringify(manifest, null, 2)}\n`, generatedFiles);
   await writeOutput(distDir, 'robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE_CONFIG.canonicalOrigin}/sitemap.xml\n`, generatedFiles);

@@ -19,6 +19,7 @@ const executableProtocols = /^(?:javascript|data|vbscript):/i;
 const externalProtocols = /^(?:https?:|mailto:|tel:)/i;
 const placeholderPattern = /__[A-Z][A-Z0-9_]+__/g;
 const mojibakePattern = /(?:�|Ã.|Â.|â(?:€|†|€”|€¦))/;
+const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 const fileExists = async file => {
   try {
@@ -27,6 +28,14 @@ const fileExists = async file => {
   } catch {
     return false;
   }
+};
+
+const readPngDimensions = async file => {
+  const contents = await readFile(file);
+  if (contents.length < 24 || !contents.subarray(0, 8).equals(pngSignature)) {
+    throw new Error('no es un PNG válido');
+  }
+  return { width: contents.readUInt32BE(16), height: contents.readUInt32BE(20) };
 };
 
 const walk = async directory => {
@@ -318,6 +327,31 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
   }
   if (!await fileExists(path.join(distDir, SITE_CONFIG.socialImage))) {
     errors.push(`Falta la imagen social configurada: ${SITE_CONFIG.socialImage}.`);
+  }
+
+  const faviconAssets = [
+    ['favicon/favicon-16x16.png', 16],
+    ['favicon/favicon-32x32.png', 32],
+    ['favicon/favicon-48x48.png', 48],
+    ['favicon/apple-touch-icon.png', 180],
+    ['favicon/favicon-192x192.png', 192],
+    ['favicon/favicon-512x512.png', 512],
+  ];
+  if (!await fileExists(path.join(distDir, 'favicon.ico'))) errors.push('Falta favicon.ico.');
+  for (const [relativePath, expectedSize] of faviconAssets) {
+    const file = path.join(distDir, relativePath);
+    if (!await fileExists(file)) {
+      errors.push(`Falta el favicon requerido: ${relativePath}.`);
+      continue;
+    }
+    try {
+      const dimensions = await readPngDimensions(file);
+      if (dimensions.width !== expectedSize || dimensions.height !== expectedSize) {
+        errors.push(`${relativePath} debe medir ${expectedSize} × ${expectedSize} px; mide ${dimensions.width} × ${dimensions.height} px.`);
+      }
+    } catch (error) {
+      errors.push(`${relativePath} ${error.message}.`);
+    }
   }
 
   const forbiddenDirectories = ['config', 'content', 'pages', 'templates'];

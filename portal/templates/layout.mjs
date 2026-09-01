@@ -86,8 +86,12 @@ export function renderLayout({ route, page, metadata }) {
   <meta name="twitter:image" content="${escapeAttribute(socialImage)}">
   <title>${escapeHtml(route.title)}</title>
   <link rel="canonical" href="${escapeAttribute(helpers.canonicalHref())}">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon.svg'))}" type="image/svg+xml">
-  <link rel="manifest" href="${escapeAttribute(helpers.assetHref('manifest.webmanifest'))}">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon.ico'))}?v=${escapeAttribute(metadata.cacheKey)}" sizes="any">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-48x48.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="48x48">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-32x32.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="32x32">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-16x16.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="${escapeAttribute(helpers.assetHref('favicon/apple-touch-icon.png'))}?v=${escapeAttribute(metadata.cacheKey)}" sizes="180x180">
+  <link rel="manifest" href="${escapeAttribute(helpers.assetHref('manifest.webmanifest'))}?v=${escapeAttribute(metadata.cacheKey)}">
   <script>(()=>{const d=document.documentElement;d.classList.add('js');try{const k='${escapeAttribute(SITE_CONFIG.storageKeys.theme)}';const s=localStorage.getItem(k);const t=s==='dark'||s==='light'?s:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.dataset.theme=t;d.style.colorScheme=t}catch{}})();</script>
   ${styles}
   ${renderJsonLd({ '@context': 'https://schema.org', '@graph': graph })}
