@@ -1,13 +1,16 @@
-const CACHE_VERSION = 'sipa-expoferia-2026-v2';
+const CACHE_VERSION = 'sipa-expoferia-2026-v3';
 const APP_URL = new URL('./', self.location.href).href;
 const OFFLINE_URL = new URL('./offline.html', self.location.href).href;
 const STATIC_ASSETS = [
   APP_URL,
   OFFLINE_URL,
   new URL('./favicon.ico', self.location.href).href,
+  new URL('./favicon/favicon-24x24.png', self.location.href).href,
   new URL('./favicon/favicon-32x32.png', self.location.href).href,
+  new URL('./favicon/favicon-64x64.png', self.location.href).href,
   new URL('./favicon/favicon-192x192.png', self.location.href).href,
   new URL('./favicon/favicon-512x512.png', self.location.href).href,
+  new URL('./favicon/favicon-1024x1024.png', self.location.href).href,
   new URL('./manifest.webmanifest', self.location.href).href,
   new URL('./images/logo-utmach.png', self.location.href).href,
   new URL('./images/hero-desktop.jpg', self.location.href).href,

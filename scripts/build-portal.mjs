@@ -172,6 +172,7 @@ export async function buildPortal(options = {}) {
     icons: [
       { src: './favicon/favicon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
       { src: './favicon/favicon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: './favicon/favicon-1024x1024.png', sizes: '1024x1024', type: 'image/png', purpose: 'any' },
     ]
   };
   await writeOutput(distDir, 'manifest.webmanifest', `${JSON.stringify(manifest, null, 2)}\n`, generatedFiles);
