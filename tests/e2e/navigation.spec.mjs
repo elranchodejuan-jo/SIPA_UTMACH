@@ -139,6 +139,12 @@ test('los dropdowns de escritorio son compactos, planos y controlados por clic',
 
 test('el logo regresa al inicio desde una página interna', async ({ page }) => {
   const runtime = await gotoPortal(page, '/investigacion/', watchRuntime(page));
+  const originalLogo = page.locator('header.site-header .brand__mark--original');
+  await expect(originalLogo).toHaveAttribute('src', /assets\/images\/logo-sipa-original\.png/);
+  await expect.poll(() => originalLogo.evaluate(image => ({
+    width: image.naturalWidth,
+    height: image.naturalHeight,
+  }))).toEqual({ width: 502, height: 282 });
   await page.locator('a.brand').first().click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('main h1')).toBeVisible();

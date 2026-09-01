@@ -24,7 +24,7 @@ export function renderHeader({ route, helpers, activeRouteId = route.id }) {
   <header class="site-header">
     <div class="container site-header__inner">
       <a class="brand" href="${escapeAttribute(helpers.routeHref('home'))}" aria-label="Ir al inicio de SIPA">
-        <img class="brand__mark" src="${escapeAttribute(helpers.assetHref('assets/logo-sipa.svg'))}" alt="" width="56" height="56">
+        <img class="brand__mark brand__mark--original" src="${escapeAttribute(helpers.assetHref('assets/images/logo-sipa-original.png'))}" alt="" width="502" height="282">
         <span class="brand__copy"><strong>${escapeHtml(SITE_CONFIG.name)}</strong><small>${escapeHtml(SITE_CONFIG.fullName)}</small><span class="brand__domain">${escapeHtml(SITE_CONFIG.visualDomain)}</span></span>
       </a>
       <nav class="primary-nav" aria-label="Navegación principal">
