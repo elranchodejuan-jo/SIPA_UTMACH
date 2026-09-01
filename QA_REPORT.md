@@ -1,5 +1,27 @@
 # Reporte QA — SIPA V2 multipágina
 
+## Actualización: identidad cromática verde SIPA — Fase 2
+
+- **Fecha:** 1 de septiembre de 2026
+- **Rama validada:** `feat/sipa-green-identity`
+- **Commits de implementación:** `65e41de` (interfaz y assets), `30cd329` (contratos y evidencia visual)
+- **Alcance:** migración cromática del portal SIPA; Expoferia, `index.html`, `src/**`, `public/**`, el logo PNG original y la barra histórica de retorno permanecen protegidos.
+
+| Control | Evidencia local | Resultado |
+| --- | --- | --- |
+| Sintaxis | `npm.cmd run check:js` | PASS: 54 archivos. |
+| Build y sitio | `npm.cmd run build` y `npm.cmd run check:site` | PASS: 9 rutas, 11 HTML, 599 referencias y 9 URLs en sitemap. |
+| Validación integral | `SIPA_BASE_URL=http://127.0.0.1:4174 npm.cmd run validate` | PASS: build integrado, sitio, 15 contratos unitarios y Playwright. |
+| Contratos cromáticos | `tests/unit/color-contracts.test.mjs` importado por el contrato unitario principal | PASS: escala clara/oscura exacta, 32 ratios WCAG, cero azul/cian institucional, sin `--color-warm-*`, hash del logo y OG 1200 × 630. |
+| E2E, Axe y responsive | Playwright contra preview aislado | PASS: 44 aprobadas, 36 omitidas intencionalmente por el proyecto, 0 fallidas; Axe A/AA, consola, recursos, navegación, tema, Expoferia y seis viewports cubiertos. |
+| Capturas humanas | `tmp/sipa-green-qa/` | PASS: 23 capturas revisadas (14 claras y 9 oscuras), incluidos dropdown, menú móvil, footer, 404 y Open Graph. |
+| Dependencias | `npm.cmd audit --json` | PASS: 0 vulnerabilidades; no se ejecutó `npm audit fix`. |
+| Integridad y whitespace | SHA-256 del logo + `git diff --check` | PASS local antes de publicación; logo original sin cambios. |
+
+Resultado visual: escala verde SIPA con claro blanco/menta y oscuro negro-verde; no se observan azul/cian institucional residual, sombras azuladas, verde neón, pérdida del logo, overflow ni jerarquía insuficiente. La imagen social fue recreada en verde/blanco con logo original, SIPA, UTMACH y `SIPAUTMACH.COM`.
+
+La evidencia remota, squash, publicación Pages y smoke de producción se registrarán solo después de que el pull request y el workflow `Validar y publicar SIPA` concluyan en verde.
+
 ## Estado del reporte
 
 - **Fecha:** 1 de septiembre de 2026

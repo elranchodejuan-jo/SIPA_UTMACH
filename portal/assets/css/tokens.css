@@ -2,43 +2,64 @@
   color-scheme: light;
 
   /* Identidad institucional */
-  --color-brand-950: #03233d;
-  --color-brand-900: #06385f;
-  --color-brand-800: #004f86;
-  --color-brand-700: #005b9f;
-  --color-brand-600: #087fba;
-  --color-brand-500: #2b9ed4;
-  --color-brand-200: #a9d8ed;
-  --color-brand-100: #dceff8;
-  --color-brand-50: #eff8fc;
-  --color-science-700: #006d77;
-  --color-science-600: #087f8c;
-  --color-science-100: #d8f1f0;
-  --color-warm-700: #a85d26;
-  --color-warm-100: #f8e7d8;
+  --color-brand-950: #07170d;
+  --color-brand-900: #0a2817;
+  --color-brand-800: #0d4827;
+  --color-brand-700: #116a38;
+  --color-brand-600: #158144;
+  --color-brand-500: #209653;
+  --color-brand-400: #4ead74;
+  --color-brand-300: #83c49a;
+  --color-brand-200: #b9dec5;
+  --color-brand-100: #dcefe2;
+  --color-brand-50: #f3faf5;
+
+  /* Ciencia secundaria: salvia y eucalipto, nunca cian. */
+  --color-science-700: #3b634a;
+  --color-science-600: #527963;
+  --color-science-500: #6f987b;
+  --color-science-300: #afc9b5;
+  --color-science-100: #e7f0e8;
 
   /* Las especies funcionan como acentos, no como paletas de página. */
-  --color-bovine: #8b5e3c;
-  --color-bovine-soft: #f2e7dd;
-  --color-swine: #8a3458;
-  --color-swine-soft: #f7e3eb;
-  --color-poultry: #7b5c00;
-  --color-poultry-soft: #f8edc9;
+  --color-bovine: #7a5622;
+  --color-bovine-soft: #f2e9dc;
+  --color-swine: #7a455e;
+  --color-swine-soft: #f3e5eb;
+  --color-poultry: #716316;
+  --color-poultry-soft: #f2efd8;
 
   /* Superficies y texto */
-  --color-ink: #172b3a;
-  --color-text: #324957;
-  --color-muted: #526875;
+  --color-ink: #142018;
+  --color-text: #4b554d;
+  --color-muted: #637067;
   --color-surface: #ffffff;
-  --color-surface-soft: #f4f7fa;
+  --color-surface-soft: #f6f8f5;
   --color-surface-raised: #ffffff;
-  --color-surface-strong: #e9f0f4;
-  --color-line: #d8e2e8;
-  --color-line-strong: #b9c9d2;
-  --color-success: #187451;
-  --color-danger: #a43737;
-  --color-focus: #005b9f;
+  --color-surface-strong: #e7f0e8;
+  --color-line: #cad2cb;
+  --color-line-strong: #aab6ac;
+
+  /* Roles de interacción: evita reutilizar una escala por accidente. */
+  --color-link: var(--color-brand-700);
+  --color-link-hover: var(--color-brand-800);
+  --color-action-primary: var(--color-brand-700);
+  --color-action-primary-hover: var(--color-brand-800);
+  --color-focus: var(--color-brand-600);
   --color-on-brand: #ffffff;
+  --color-on-strong: #f3f8f4;
+  --color-on-strong-muted: #c2cec5;
+  --color-on-strong-accent: #b9dec5;
+  --color-button-light: #ffffff;
+  --color-button-light-hover: #f3faf5;
+  --color-overlay: rgba(7, 23, 13, 0.58);
+  --color-overlay-strong: rgba(7, 23, 13, 0.9);
+
+  /* Estados semánticos: requieren siempre texto e iconografía. */
+  --color-success: #2b6b45;
+  --color-warning: #8a4b00;
+  --color-danger: #b42318;
+  --color-info: #426758;
 
   /* Tipografía local y de sistema */
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -77,9 +98,9 @@
   --radius-lg: 1.125rem;
   --radius-pill: 999px;
 
-  --shadow-xs: 0 1px 2px rgba(3, 35, 61, 0.08);
-  --shadow-sm: 0 8px 22px rgba(3, 35, 61, 0.08);
-  --shadow-md: 0 16px 42px rgba(3, 35, 61, 0.12);
+  --shadow-xs: 0 1px 2px rgba(7, 23, 13, 0.08);
+  --shadow-sm: 0 8px 22px rgba(7, 23, 13, 0.08);
+  --shadow-md: 0 16px 42px rgba(7, 23, 13, 0.12);
   --focus-ring: 0 0 0 3px var(--color-surface), 0 0 0 6px var(--color-focus);
 
   --duration-fast: 140ms;
@@ -94,36 +115,54 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --color-brand-700: #63bdea;
-  --color-brand-600: #79c9ee;
-  --color-brand-500: #8dd3f2;
-  --color-brand-200: #39718d;
-  --color-brand-100: #203e4e;
-  --color-brand-50: #142b36;
-  --color-science-700: #54c3c0;
-  --color-science-600: #6bd0cd;
-  --color-science-100: #173c3d;
-  --color-warm-700: #e2a573;
-  --color-warm-100: #472f21;
-  --color-bovine: #d4a17d;
-  --color-bovine-soft: #3b2c24;
-  --color-swine: #e59ab8;
-  --color-swine-soft: #402735;
-  --color-poultry: #e1c66b;
-  --color-poultry-soft: #3c351f;
-  --color-ink: #f2f7fa;
-  --color-text: #d4e0e6;
-  --color-muted: #bbc9d2;
-  --color-surface: #0d1b23;
-  --color-surface-soft: #12232b;
-  --color-surface-raised: #182830;
-  --color-surface-strong: #20333c;
-  --color-line: #31444d;
-  --color-line-strong: #4a626d;
-  --color-success: #63c99c;
-  --color-danger: #f19a9a;
-  --color-focus: #79c9ee;
-  --color-on-brand: #061923;
+  --color-brand-950: #061b0d;
+  --color-brand-900: #0a2f18;
+  --color-brand-800: #104421;
+  --color-brand-700: #65c889;
+  --color-brand-600: #82dba2;
+  --color-brand-500: #a1e7b8;
+  --color-brand-400: #b9efca;
+  --color-brand-300: #cdeed7;
+  --color-brand-200: #244b31;
+  --color-brand-100: #193b25;
+  --color-brand-50: #102b1a;
+  --color-science-700: #afc9b5;
+  --color-science-600: #c6dbc9;
+  --color-science-500: #d7e7da;
+  --color-science-300: #294634;
+  --color-science-100: #172d20;
+  --color-bovine: #d0aa81;
+  --color-bovine-soft: #30271d;
+  --color-swine: #d0a0b1;
+  --color-swine-soft: #34242d;
+  --color-poultry: #c7b968;
+  --color-poultry-soft: #343018;
+  --color-ink: #f3f8f4;
+  --color-text: #c2cec5;
+  --color-muted: #a9b8ad;
+  --color-surface: #09110c;
+  --color-surface-soft: #101c14;
+  --color-surface-raised: #17271b;
+  --color-surface-strong: #244b31;
+  --color-line: #2c3a30;
+  --color-line-strong: #647c6a;
+  --color-link: #83c49a;
+  --color-link-hover: #b9dec5;
+  --color-action-primary: #4ead74;
+  --color-action-primary-hover: #83c49a;
+  --color-focus: #83c49a;
+  --color-on-brand: #07170d;
+  --color-on-strong: #f3f8f4;
+  --color-on-strong-muted: #c2cec5;
+  --color-on-strong-accent: #b9efca;
+  --color-button-light: #f3f8f4;
+  --color-button-light-hover: #dcefe2;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-overlay-strong: rgba(0, 0, 0, 0.78);
+  --color-success: #79be90;
+  --color-warning: #e0ae65;
+  --color-danger: #f0a09a;
+  --color-info: #9fc5a8;
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
   --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.22);
   --shadow-md: 0 16px 42px rgba(0, 0, 0, 0.3);

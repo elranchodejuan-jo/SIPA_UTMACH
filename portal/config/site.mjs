@@ -29,9 +29,9 @@ export const SITE_CONFIG = deepFreeze({
     },
   },
   themeColors: {
-    light: '#ffffff',
-    dark: '#0b1b27',
-    primary: '#075d91',
+    light: '#F3FAF5',
+    dark: '#09110C',
+    primary: '#158144',
   },
   storageKeys: {
     theme: 'sipa-theme',
