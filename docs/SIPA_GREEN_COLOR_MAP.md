@@ -1,6 +1,6 @@
-# Mapa cromático SIPA — Fase cromática 1
+# Mapa cromático SIPA — Identidad verde implementada
 
-**Estado:** análisis y planificación; no aplica cambios visuales.
+**Estado:** Fase cromática 2 implementada y validada localmente el 1 de septiembre de 2026. La publicación queda sujeta al CI del pull request; Expoferia permanece excluida.
 
 **Baseline auditado:** `6767a1c` en `feat/sipa-green-identity`.
 
@@ -255,3 +255,41 @@ La prueba cromática existe únicamente en `tmp/sipa-green-audit/`, ruta ignorad
 - `audit-colors.mjs`, `color-inventory.json` y `color-inventory.md` para reproducir el inventario.
 
 Las vistas se inspeccionaron como muestras de paleta, no se copiaron a `dist/` ni modifican el portal.
+
+## 12. Implementación de Fase cromática 2
+
+La implementación aplica este mapa mediante roles, no con un reemplazo global. El commit de interfaz `65e41de` sustituye la escala azul institucional por la escala aprobada y el commit de contrato `30cd329` bloquea reintroducciones. `portal/assets/css/tokens.css` es la fuente de verdad; los consumidores usan `--color-link`, `--color-action-primary`, `--color-focus`, superficies, texto y overlays semánticos.
+
+### Valores finales y comportamiento por tema
+
+- **Verde original medido y base digital aplicada:** `#158144`; no se normalizó adicionalmente.
+- **Claro:** blanco/verde muy pálido (`#FFFFFF`/`#F3FAF5`), texto `#142018`, enlaces y acción `#116A38`, foco `#158144`, superficies suaves salvia/menta.
+- **Oscuro:** canvas `#09110C`, superficies `#101C14` y `#17271B`, texto `#F3F8F4`, enlaces/foco `#83C49A`, acción `#4EAD74` con texto `#07170D`.
+- **Ciencia y especies:** salvia/eucalipto en `--color-science-*`; bovino, porcino y ave solo se conservan como indicadores pequeños con texto o icono.
+- **Estados:** éxito, advertencia, error e información continúan con tokens distintos; el estado de contacto usa icono visible, texto descriptivo y `role="status"` para no depender solo del color.
+
+Se eliminaron todos los tokens `--color-warm-*`; el borde decorativo de eventos usa ahora `--color-science-700`. No se dejó un sistema paralelo de colores.
+
+### Migración efectuada
+
+| Área | Archivos implementados | Resultado |
+|---|---|---|
+| Tokens y componentes | `portal/assets/css/tokens.css`, `base.css`, `components.css`, `layout.css`, `pages.css` | Brand, ciencia, neutrales, sombras, foco, header, navegación, menú móvil, tarjetas, CTA y footer verdes/carbono. |
+| Assets SIPA | `portal/assets/images/hero-sipa.svg`, `portal/assets/logo-sipa.svg`, `portal/favicon.svg` | Gradientes, líneas, nodos y símbolo alterno sin azul; especies acotadas. |
+| Social | `portal/assets/images/og-sipa.png` | PNG 1200 × 630 verde/blanco, con el logo original, SIPA, UTMACH y `SIPAUTMACH.COM`. |
+| Metadatos y 404 | `portal/config/site.mjs`, `portal/assets/js/site.js`, `scripts/build-portal.mjs` | Manifest, `theme-color` estático/dinámico y página 404 en verde SIPA. |
+| Prevención | `tests/unit/color-contracts.test.mjs`, `tests/e2e/qa-screenshots.spec.mjs` | Escala exacta, contrastes, exclusiones, hash del logo, tamaño OG, ausencia de azul/cian y 23 capturas QA. |
+
+### Contraste y QA reales
+
+Los 32 pares programados de contenido, controles y estados superan WCAG AA cuando requieren 4,5:1 y 3:1 para foco. Se mantienen los rechazos del mapa: blanco sobre `#209653`, blanco sobre `#4EAD74`/`#83C49A` y `#116A38` sobre `#09110C` no se usan como texto normal.
+
+El contrato analiza `portal/**` y `scripts/build-portal.mjs`, sin incluir Expoferia. Rechaza los azules/cianes heredados, nombres CSS azul/cian, nuevos colores saturados por hexadecimal/RGB/HSL y cualquier `--color-warm-*`. También protege el SHA-256 del logo original y exige el formato 1200 × 630 de la imagen social.
+
+La evidencia temporal, ignorada por Git, está en `tmp/sipa-green-qa/`: 14 capturas claras y 9 oscuras —incluidos dropdown, menú móvil, footer, 404 y Open Graph— revisadas visualmente en 360 × 800, 390 × 844, 768 × 1024, 1024 × 768, 1366 × 768 y 1440 × 900. No se observaron azul residual, verde neón, logo perdido, overflow ni falta de jerarquía en footer/menú.
+
+### Protección confirmada
+
+- `portal/assets/images/logo-sipa-original.png` conserva el SHA-256 `72FB48B8CCA7DEDBD643469D43B5B4140C15E2DEAD65E0E2A56F983F6C7DBAE3`.
+- No se modifican `index.html`, `src/**`, `public/**`, `scripts/build-sipa.mjs` ni Expoferia; su identidad histórica queda fuera de la deuda y del contrato cromático.
+- Las futuras extensiones deben usar tokens funcionales de `tokens.css`; un nuevo azul/cian institucional o un hex de marca fuera de la escala debe tratarse como fallo de contrato, no como excepción decorativa.

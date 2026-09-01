@@ -6,6 +6,16 @@ SIPA V2 utiliza generación estática con Node.js, módulos ESM, HTML semántico
 
 Sitio institucional: [SIPAUTMACH.COM](https://sipautmach.com/)
 
+## Identidad cromática SIPA
+
+La identidad del portal se basa en el verde medido del logo institucional (`#158144`), con escala bosque, hoja, salvia y menta. `portal/assets/css/tokens.css` es la única fuente de verdad: los componentes deben consumir roles (`--color-link`, `--color-action-primary`, `--color-focus`, superficies y texto), no introducir hexadecimales de marca.
+
+El modo claro combina blanco verdoso, carbón y verde institucional; el oscuro usa negro verdoso, superficies verde-carbón y menta accesible para enlaces y foco. El contrato unitario rechaza la reintroducción de azules/cianes institucionales y de `--color-warm-*`, y comprueba contrastes esenciales. Los estados de error, advertencia e información conservan semántica propia y siempre requieren texto o icono además de color.
+
+Expoferia histórica conserva su identidad: `index.html`, `src/**`, `public/**` y su artefacto generado están explícitamente fuera de esta migración. El PNG `portal/assets/images/logo-sipa-original.png` no se recolorea ni modifica.
+
+Consulta [docs/SIPA_GREEN_COLOR_MAP.md](docs/SIPA_GREEN_COLOR_MAP.md) para la escala, contrastes, excepciones y reglas de futuras extensiones.
+
 ## Rutas públicas
 
 - `/`: inicio.
@@ -77,6 +87,7 @@ npm.cmd run test:unit
 npx.cmd playwright install chromium
 npm.cmd run test:e2e
 npm.cmd run validate
+npm.cmd audit --json
 ```
 
 `npm run validate` ejecuta comprobación de JavaScript, build integrado, auditoría estática, pruebas unitarias y pruebas E2E. El build ya valida el sitio antes de finalizar; `check:site` permanece disponible como gate independiente para CI y diagnóstico.
