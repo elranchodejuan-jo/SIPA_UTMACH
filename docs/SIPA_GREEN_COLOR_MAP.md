@@ -99,6 +99,22 @@ El script temporal `tmp/sipa-green-audit/audit-colors.mjs` genera `color-invento
 
 El modo oscuro no debe invertir literalmente la escala clara. Mantiene superficies verde-negras y crea roles explícitos para que los consumidores actuales de `brand-700` no fallen en contraste:
 
+La escala de referencia visual completa —la representada en `tmp/sipa-green-audit/palette-dark.html`— es la siguiente. No debe conectarse por reemplazo global a los consumidores actuales: los botones, links y foco usan los roles accesibles de la tabla posterior.
+
+| Nivel | Valor oscuro | Función visual |
+|---|---|---|
+| `brand-950` | `#061B0D` | footer y negro bosque |
+| `brand-900` | `#0A2F18` | bosque profundo |
+| `brand-800` | `#104421` | superficie bosque fuerte |
+| `brand-700` | `#65C889` | verde de acento luminoso |
+| `brand-600` | `#82DBA2` | menta de realce |
+| `brand-500` | `#A1E7B8` | menta clara |
+| `brand-400` | `#B9EFCA` | fondo/acento muy claro |
+| `brand-300` | `#CDEED7` | superficie menta clara |
+| `brand-200` | `#244B31` | panel verde profundo |
+| `brand-100` | `#193B25` | panel profundo secundario |
+| `brand-50` | `#102B1A` | fondo verde oscuro suave |
+
 | Token/rol futuro | Valor oscuro | Uso |
 |---|---|---|
 | `--color-surface` | `#09110C` | canvas negro verdoso |
