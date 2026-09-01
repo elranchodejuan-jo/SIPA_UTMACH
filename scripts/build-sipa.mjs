@@ -40,8 +40,8 @@ const injectBuildMetadata = async directory => {
 await rm(distDir, { recursive: true, force: true });
 await rm(expoDistDir, { recursive: true, force: true });
 
-console.log('1/5 Construyendo la experiencia histórica de la expoferia...');
-execFileSync(npmCommand, ['run', 'build:expo'], { cwd: root, stdio: 'inherit' });
+console.log('1/5 Construyendo la experiencia histÃ³rica de la expoferia...');
+execFileSync(npmCommand, ['run', 'build:expo'], { cwd: root, stdio: 'inherit', shell: process.platform === 'win32' });
 
 console.log('2/5 Preparando el portal institucional SIPA...');
 await cp(portalDir, distDir, { recursive: true });
@@ -65,20 +65,20 @@ await writeFile(portalIndexPath, portalIndex, 'utf8');
 
 const eventIndexPath = path.join(eventDir, 'index.html');
 let eventIndex = await readFile(eventIndexPath, 'utf8');
-const returnBar = `\n<style id="sipa-return-style">.sipa-return{position:fixed;z-index:9999;left:16px;top:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:rgba(20,59,99,.92);color:#fff!important;font:700 13px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px);transition:transform .2s}.sipa-return:hover{transform:translateY(-2px);background:#315E35}@media(max-width:600px){.sipa-return{top:auto;bottom:14px;left:14px;padding:9px 12px;font-size:12px}}</style><a class="sipa-return" href="../../" aria-label="Volver al portal SIPA">← Volver a SIPA</a>\n`;
+const returnBar = `\n<style id="sipa-return-style">.sipa-return{position:fixed;z-index:9999;left:16px;top:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:rgba(20,59,99,.92);color:#fff!important;font:700 13px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px);transition:transform .2s}.sipa-return:hover{transform:translateY(-2px);background:#315E35}@media(max-width:600px){.sipa-return{top:auto;bottom:14px;left:14px;padding:9px 12px;font-size:12px}}</style><a class="sipa-return" href="../../" aria-label="Volver al portal SIPA">â† Volver a SIPA</a>\n`;
 if (!eventIndex.includes('class="sipa-return"')) {
   eventIndex = eventIndex.replace(/<body([^>]*)>/i, `<body$1>${returnBar}`);
   await writeFile(eventIndexPath, eventIndex, 'utf8');
 }
 
-console.log('4/5 Inyectando fecha, versión y commit de despliegue...');
+console.log('4/5 Inyectando fecha, versiÃ³n y commit de despliegue...');
 await injectBuildMetadata(distDir);
 
-const notFound = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirigiendo a SIPA</title><meta http-equiv="refresh" content="0;url=./"><script>location.replace('/SIPA_UTMACH/');</script><body>Redirigiendo al portal SIPA…</body></html>`;
+const notFound = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirigiendo a SIPA</title><meta http-equiv="refresh" content="0;url=./"><script>location.replace('/SIPA_UTMACH/');</script><body>Redirigiendo al portal SIPAâ€¦</body></html>`;
 await writeFile(path.join(distDir, '404.html'), notFound, 'utf8');
 await writeFile(path.join(distDir, 'build-info.json'), JSON.stringify({ version, buildDate, buildSha }, null, 2), 'utf8');
 await writeFile(path.join(distDir, '.nojekyll'), '', 'utf8');
 
 console.log('5/5 Limpiando archivos temporales...');
 await rm(expoDistDir, { recursive: true, force: true });
-console.log(`SIPA v${version} listo en dist/ — ${buildDate} (${buildSha})`);
+console.log(`SIPA v${version} listo en dist/ â€” ${buildDate} (${buildSha})`);
