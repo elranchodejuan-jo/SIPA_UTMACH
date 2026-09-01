@@ -1,7 +1,7 @@
 {
-  "name": "Nutrición Animal Responsable",
-  "short_name": "Nutrición Animal",
-  "description": "Proyecto académico sobre elaboración de alimentos balanceados para pollos de engorde — UTMACH",
+  "name": "Expoferia de Nutrición Animal 2026 | SIPA",
+  "short_name": "Expoferia SIPA",
+  "description": "Experiencia educativa histórica de SIPA sobre elaboración de alimentos balanceados para pollos de engorde.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

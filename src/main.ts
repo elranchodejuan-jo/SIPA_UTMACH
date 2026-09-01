@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// Nutrición Animal Responsable — Main Entry Point
+// Expoferia de Nutrición Animal 2026 — Main Entry Point
 // Universidad Técnica de Machala
 // ═══════════════════════════════════════════════════════════
 

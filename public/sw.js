@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'nutricion-animal-v2-theme';
+const CACHE_VERSION = 'sipa-expoferia-2026-v1';
 const APP_URL = new URL('./', self.location.href).href;
 const OFFLINE_URL = new URL('./offline.html', self.location.href).href;
 const STATIC_ASSETS = [

@@ -1,6 +1,6 @@
 export type Theme = 'light' | 'dark';
 
-const STORAGE_KEY = 'nutriweb-theme';
+const STORAGE_KEY = 'sipa-expoferia-theme';
 const SYSTEM_DARK_QUERY = '(prefers-color-scheme: dark)';
 const THEME_COLORS: Record<Theme, string> = {
   light: '#143B63',
