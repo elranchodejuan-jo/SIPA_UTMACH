@@ -4,7 +4,7 @@
 
 - **Fecha:** 1 de septiembre de 2026
 - **Rama:** `feat/sipa-v2-portal-multipagina`
-- **SHA de cierre del pull request:** `7077b65`
+- **SHA técnico validado:** `7077b65`
 - **Estado local:** PASS
 - **Estado remoto:** PASS; pull request #14 abierto, sin fusionar, con validación de GitHub Actions verde
 - **Alcance:** portal institucional multipágina, preservación de Expoferia, generación estática, navegación, accesibilidad, responsive, seguridad de contenido y compatibilidad con GitHub Pages.
@@ -34,10 +34,11 @@ En Windows, la ejecución final de `validate` utilizó un preview local controla
 
 | Control remoto | Resultado |
 | --- | --- |
-| Pull request | [#14](https://github.com/elranchodejuan-jo/SIPA_UTMACH/pull/14) abierto hacia `main`, no fusionado, con head final `7077b65`. |
+| Pull request | [#14](https://github.com/elranchodejuan-jo/SIPA_UTMACH/pull/14) abierto hacia `main`, no fusionado; el cierre técnico corresponde a `7077b65`. |
 | Primera ejecución | [Run 33552572727](https://github.com/elranchodejuan-jo/SIPA_UTMACH/actions/runs/33552572727): `Validar portal` falló por overflow horizontal reproducible en Linux a 768 × 1024; `Publicar GitHub Pages` quedó omitido. |
 | Corrección | Commit `7077b65`: el layout denso cambia de 48 rem a 50 rem para conservar 768 px como tablet, sin ocultar overflow ni relajar la prueba. |
-| Ejecución definitiva | [Run 33553560712](https://github.com/elranchodejuan-jo/SIPA_UTMACH/actions/runs/33553560712): `Validar portal` SUCCESS; `Publicar GitHub Pages` SKIPPED, comportamiento esperado para un pull request. |
+| Ejecución del cierre técnico | [Run 33553560712](https://github.com/elranchodejuan-jo/SIPA_UTMACH/actions/runs/33553560712): `Validar portal` SUCCESS; `Publicar GitHub Pages` SKIPPED, comportamiento esperado para un pull request. |
+| Verificación documental | [Run 33554016392](https://github.com/elranchodejuan-jo/SIPA_UTMACH/actions/runs/33554016392): el registro documental `3ad80cc` volvió a obtener `Validar portal` SUCCESS y Pages SKIPPED. |
 | Producción | No hubo deploy, merge, cambio de DNS, HTTPS, certificados ni configuración externa de GitHub Pages. |
 
 ## Cobertura del validador estático
@@ -130,4 +131,4 @@ Directorio temporal no versionado: `tmp/sipa-v2-qa/`.
 
 ## Criterio de cierre
 
-**QA local y CI remoto: PASS.** Build, validación estática, unitarias, E2E, auditoría de dependencias, seis viewports, consola, enlaces, assets y revisión visual se ejecutaron sobre la implementación integrada. El run definitivo `33553560712` concluyó con `Validar portal` en SUCCESS y Pages omitido. No quedan defectos técnicos P0/P1 conocidos dentro del alcance; el pull request #14 permanece abierto, sin fusión automática y sin despliegue.
+**QA local y CI remoto: PASS.** Build, validación estática, unitarias, E2E, auditoría de dependencias, seis viewports, consola, enlaces, assets y revisión visual se ejecutaron sobre la implementación integrada. El cierre técnico `33553560712` y la verificación documental `33554016392` concluyeron con `Validar portal` en SUCCESS y Pages omitido. No quedan defectos técnicos P0/P1 conocidos dentro del alcance; el pull request #14 permanece abierto, sin fusión automática y sin despliegue.
