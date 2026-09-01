@@ -29,7 +29,7 @@
   padding: var(--space-5);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: var(--color-surface-raised);
 }
 
@@ -71,7 +71,7 @@
 }
 
 .home-hero h1 em {
-  color: var(--color-brand-700);
+  color: var(--color-link);
   font-style: normal;
 }
 
@@ -86,7 +86,7 @@
 .hero-domain {
   width: fit-content;
   margin-bottom: var(--space-3);
-  color: var(--color-brand-700);
+  color: var(--color-link);
   font-size: var(--font-size-xs);
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -136,7 +136,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: 4px;
-  background: var(--species-accent, var(--color-brand-700));
+  background: var(--species-accent, var(--color-link));
   content: '';
 }
 
@@ -162,7 +162,7 @@
 }
 
 .area-card {
-  --species-accent: var(--color-brand-700);
+  --species-accent: var(--color-link);
   --species-soft: var(--color-brand-50);
   position: relative;
   overflow: hidden;
@@ -228,7 +228,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-sm);
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: var(--color-brand-50);
   font-size: var(--font-size-xs);
   font-weight: 850;
@@ -284,7 +284,7 @@
   align-items: flex-start;
   padding: var(--space-5);
   overflow: hidden;
-  border-left: 4px solid var(--color-warm-700);
+  border-left: 4px solid var(--color-science-700);
 }
 
 .event-card__media,
@@ -343,7 +343,7 @@
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  color: #ffffff;
+  color: var(--color-on-strong);
   background: var(--color-brand-950);
 }
 
@@ -363,14 +363,15 @@
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.65);
   border-radius: 50%;
-  color: #ffffff;
-  background: rgba(3, 35, 61, 0.88);
+  color: var(--color-on-strong);
+  background: var(--color-overlay-strong);
   transform: translate(-50%, -50%);
 }
 
 .webinar-card__play:hover,
 .webinar-player__button:hover {
-  background: var(--color-brand-700);
+  color: var(--color-on-brand);
+  background: var(--color-action-primary);
 }
 
 .webinar-card__play svg,
@@ -391,8 +392,8 @@
   gap: var(--space-2);
   padding: 0.65rem 0.85rem;
   border-radius: var(--radius-pill);
-  color: #ffffff;
-  background: rgba(3, 35, 61, 0.92);
+  color: var(--color-on-strong);
+  background: var(--color-overlay-strong);
   font-size: var(--font-size-xs);
   font-weight: 750;
   transform: none;
@@ -481,7 +482,7 @@
 .avatar-initials {
   display: grid;
   place-items: center;
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: var(--color-brand-50);
   font-size: var(--font-size-xl);
   font-weight: 850;
@@ -556,7 +557,7 @@
 }
 
 .not-found__code {
-  color: var(--color-brand-700);
+  color: var(--color-link);
   font-size: clamp(3rem, 18vw, 7rem);
   font-weight: 850;
   letter-spacing: -0.06em;
@@ -634,7 +635,7 @@
   left: 0;
   width: 0.7rem;
   height: 0.7rem;
-  border: 2px solid #8ed8d5;
+  border: 2px solid var(--color-science-600);
   border-radius: 50%;
   content: '';
 }

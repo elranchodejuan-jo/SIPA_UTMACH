@@ -9,7 +9,7 @@
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--color-on-brand);
-  background: var(--color-brand-700);
+  background: var(--color-action-primary);
   font-size: var(--font-size-sm);
   font-weight: 780;
   line-height: 1.25;
@@ -25,30 +25,25 @@
 
 .button:hover {
   color: var(--color-on-brand);
-  background: var(--color-brand-800);
+  background: var(--color-action-primary-hover);
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
 
 .button--primary {
   color: var(--color-on-brand);
-  background: var(--color-brand-700);
-}
-
-:root[data-theme='dark'] .button:hover {
-  color: #061923;
-  background: var(--color-brand-500);
+  background: var(--color-action-primary);
 }
 
 .button--secondary {
-  color: var(--color-brand-700);
+  color: var(--color-link);
   border-color: var(--color-line-strong);
   background: var(--color-surface-raised);
 }
 
 .button--secondary:hover {
-  color: var(--color-brand-700);
-  border-color: var(--color-brand-700);
+  color: var(--color-link);
+  border-color: var(--color-link);
   background: var(--color-brand-50);
 }
 
@@ -62,12 +57,12 @@
   justify-content: flex-start;
   min-height: var(--target-size);
   padding-inline: 0;
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: transparent;
 }
 
 .button--text:hover {
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: transparent;
   box-shadow: none;
   text-decoration: underline;
@@ -75,7 +70,7 @@
 }
 
 .button--ghost:hover {
-  color: var(--color-brand-700);
+  color: var(--color-link);
   border-color: var(--color-line);
   background: var(--color-surface-soft);
   box-shadow: none;
@@ -83,12 +78,12 @@
 
 .button--light {
   color: var(--color-brand-950);
-  background: #ffffff;
+  background: var(--color-button-light);
 }
 
 .button--light:hover {
   color: var(--color-brand-950);
-  background: #eaf5fa;
+  background: var(--color-button-light-hover);
 }
 
 .button[disabled],
@@ -128,7 +123,7 @@
   align-items: center;
   gap: var(--space-2);
   width: fit-content;
-  color: var(--color-brand-700);
+  color: var(--color-link);
   font-size: var(--font-size-sm);
   font-weight: 780;
   text-decoration: none;
@@ -212,7 +207,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-md);
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: var(--color-brand-50);
 }
 
@@ -306,7 +301,7 @@ svg.contact-card__icon,
   height: 3rem;
   padding: 0.7rem;
   border-radius: var(--radius-md);
-  color: var(--color-brand-700);
+  color: var(--color-link);
   background: var(--color-brand-50);
   fill: none;
   stroke: currentColor;
@@ -330,18 +325,18 @@ svg.contact-card__icon,
   gap: var(--space-5);
   padding: clamp(1.5rem, 5vw, 3rem);
   border-radius: var(--radius-lg);
-  color: #dcecf4;
+  color: var(--color-on-strong-muted);
   background: var(--color-brand-950);
 }
 
 .cta-panel h2,
 .cta-panel h3,
 .cta-panel strong {
-  color: #ffffff;
+  color: var(--color-on-strong);
 }
 
 .cta-panel .eyebrow {
-  color: #8ed8d5;
+  color: var(--color-on-strong-accent);
 }
 
 .cta-panel > div > * + * {
@@ -377,8 +372,8 @@ svg.contact-card__icon,
 }
 
 .social-list a:hover {
-  border-color: var(--color-brand-700);
-  color: var(--color-brand-700);
+  border-color: var(--color-link);
+  color: var(--color-link);
   background: var(--color-brand-50);
 }
 

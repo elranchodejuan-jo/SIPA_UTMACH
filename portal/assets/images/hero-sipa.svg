@@ -3,62 +3,62 @@
   <desc id="desc">Composición científica con iconos lineales de bovino, porcino y ave conectados a un espacio central de investigación.</desc>
   <defs>
     <linearGradient id="panel" x1="96" y1="70" x2="688" y2="574" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F8FCFE"/>
-      <stop offset="1" stop-color="#E9F5F8"/>
+      <stop stop-color="#F6F8F5"/>
+      <stop offset="1" stop-color="#F3FAF5"/>
     </linearGradient>
     <linearGradient id="core" x1="306" y1="209" x2="505" y2="427" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#087FBA"/>
-      <stop offset="1" stop-color="#004F86"/>
+      <stop stop-color="#158144"/>
+      <stop offset="1" stop-color="#0D4827"/>
     </linearGradient>
     <filter id="shadow" x="50" y="40" width="700" height="570" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#03233D" flood-opacity=".12"/>
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#07170D" flood-opacity=".12"/>
     </filter>
   </defs>
 
-  <rect x="72" y="54" width="656" height="532" rx="28" fill="url(#panel)" stroke="#C5DCE7" stroke-width="2" filter="url(#shadow)"/>
-  <path d="M101 145h142M101 171h94M584 489h114M612 515h86" stroke="#A9D8ED" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="662" cy="125" r="36" fill="#D8F1F0"/>
-  <path d="M648 128c11-19 25-23 35-24-2 17-11 30-28 36-13 4-21-3-24-8 5 1 11 0 17-4z" fill="none" stroke="#006D77" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M650 139c8-10 17-18 28-27" stroke="#006D77" stroke-width="3" stroke-linecap="round"/>
+  <rect x="72" y="54" width="656" height="532" rx="28" fill="url(#panel)" stroke="#CAD2CB" stroke-width="2" filter="url(#shadow)"/>
+  <path d="M101 145h142M101 171h94M584 489h114M612 515h86" stroke="#B9DEC5" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="662" cy="125" r="36" fill="#E7F0E8"/>
+  <path d="M648 128c11-19 25-23 35-24-2 17-11 30-28 36-13 4-21-3-24-8 5 1 11 0 17-4z" fill="none" stroke="#3B634A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M650 139c8-10 17-18 28-27" stroke="#3B634A" stroke-width="3" stroke-linecap="round"/>
 
-  <g fill="none" stroke="#7B9BAA" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 8">
+  <g fill="none" stroke="#6F987B" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 8">
     <path d="M243 218c50 18 77 38 99 70"/>
     <path d="M558 225c-52 13-80 34-103 65"/>
     <path d="M550 455c-52-14-77-32-101-64"/>
   </g>
-  <g fill="#FFFFFF" stroke="#A9C7D5" stroke-width="2">
+  <g fill="#FFFFFF" stroke="#AFC9B5" stroke-width="2">
     <circle cx="337" cy="282" r="7"/>
     <circle cx="463" cy="282" r="7"/>
     <circle cx="456" cy="396" r="7"/>
   </g>
 
   <g transform="translate(112 166)">
-    <rect width="156" height="138" rx="20" fill="#FFFFFF" stroke="#D7C2B2" stroke-width="2"/>
-    <g transform="translate(34 23)" fill="none" stroke="#8B5E3C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="156" height="138" rx="20" fill="#FFFFFF" stroke="#D3C0A7" stroke-width="2"/>
+    <g transform="translate(34 23)" fill="none" stroke="#7A5622" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
       <path d="m21 19-17-9 3 20c1 6 5 9 11 9M67 19l17-9-3 20c-1 6-5 9-11 9"/>
       <path d="M21 20c12-12 34-12 46 0l2 30c1 18-9 29-25 29S18 68 19 50z"/>
       <path d="M31 42h.1M57 42h.1M29 60c8-7 22-7 30 0M34 59v8M54 59v8"/>
     </g>
-    <path d="M51 112h54" stroke="#8B5E3C" stroke-width="4" stroke-linecap="round"/>
+    <path d="M51 112h54" stroke="#7A5622" stroke-width="4" stroke-linecap="round"/>
   </g>
 
   <g transform="translate(532 157)">
-    <rect width="156" height="138" rx="20" fill="#FFFFFF" stroke="#D9B5C5" stroke-width="2"/>
-    <g transform="translate(32 25)" fill="none" stroke="#8A3458" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="156" height="138" rx="20" fill="#FFFFFF" stroke="#D6BBC7" stroke-width="2"/>
+    <g transform="translate(32 25)" fill="none" stroke="#7A455E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
       <path d="m20 18-15-11 2 22M72 18 87 7l-2 22"/>
       <path d="M6 46C6 20 24 5 46 5s40 15 40 41c0 23-18 36-40 36S6 69 6 46z"/>
       <path d="M27 40h.1M65 40h.1M27 63c0-9 9-15 19-15s19 6 19 15-9 15-19 15-19-6-19-15zM39 63h.1M53 63h.1"/>
     </g>
-    <path d="M51 112h54" stroke="#8A3458" stroke-width="4" stroke-linecap="round"/>
+    <path d="M51 112h54" stroke="#7A455E" stroke-width="4" stroke-linecap="round"/>
   </g>
 
   <g transform="translate(525 385)">
-    <rect width="163" height="142" rx="20" fill="#FFFFFF" stroke="#DCCB91" stroke-width="2"/>
-    <g transform="translate(29 19)" fill="none" stroke="#7B5C00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="163" height="142" rx="20" fill="#FFFFFF" stroke="#D8D0A5" stroke-width="2"/>
+    <g transform="translate(29 19)" fill="none" stroke="#716316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 66C13 42 31 18 57 18c23 0 40 16 40 38 0 24-18 40-44 40H27"/>
       <path d="M93 31c1-14 10-23 24-24-1 11-6 19-15 24l15 8-15 9M62 39h.1M42 96v15M72 96v15M12 50 1 39l2 19"/>
     </g>
-    <path d="M54 117h55" stroke="#7B5C00" stroke-width="4" stroke-linecap="round"/>
+    <path d="M54 117h55" stroke="#716316" stroke-width="4" stroke-linecap="round"/>
   </g>
 
   <g transform="translate(278 206)">
@@ -68,12 +68,12 @@
       <path d="M42 4h30M52 4v22L27 68c-13 22 3 49 28 49h24c25 0 41-27 28-49L62 26V4"/>
       <path d="M37 66h60M50 87h.1M78 96h.1"/>
     </g>
-    <path d="M58 172h128M78 191h88" stroke="#A8DFE0" stroke-width="4" stroke-linecap="round"/>
+    <path d="M58 172h128M78 191h88" stroke="#B9DEC5" stroke-width="4" stroke-linecap="round"/>
   </g>
 
   <g transform="translate(127 407)">
-    <rect width="205" height="104" rx="18" fill="#FFFFFF" stroke="#C5DCE7" stroke-width="2"/>
-    <path d="M31 29c22-5 42 0 60 16v40c-18-16-38-21-60-16zM174 29c-22-5-42 0-60 16v40c18-16 38-21 60-16zM91 45h23" fill="none" stroke="#005B9F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M144 25c2-12 10-19 23-20-2 10-8 18-18 22" fill="none" stroke="#006D77" stroke-width="3" stroke-linecap="round"/>
+    <rect width="205" height="104" rx="18" fill="#FFFFFF" stroke="#CAD2CB" stroke-width="2"/>
+    <path d="M31 29c22-5 42 0 60 16v40c-18-16-38-21-60-16zM174 29c-22-5-42 0-60 16v40c18-16 38-21 60-16zM91 45h23" fill="none" stroke="#116A38" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M144 25c2-12 10-19 23-20-2 10-8 18-18 22" fill="none" stroke="#3B634A" stroke-width="3" stroke-linecap="round"/>
   </g>
 </svg>

@@ -118,7 +118,7 @@
     themeToggle?.setAttribute('title', label);
     const labelNode = themeToggle?.querySelector('[data-theme-label]');
     if (labelNode) labelNode.textContent = label;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#0b1b27' : '#075d91');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#09110C' : '#158144');
     if (persist) {
       try { window.localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light'); } catch { /* El almacenamiento puede estar deshabilitado. */ }
     }
@@ -176,7 +176,10 @@
       const submit = form.querySelector('[data-contact-submit]');
       const status = form.querySelector('[data-contact-status]');
       if (submit) submit.disabled = true;
-      if (status) status.textContent = 'Enviando mensaje…';
+      if (status) {
+        delete status.dataset.state;
+        status.textContent = 'Enviando mensaje…';
+      }
       try {
         const response = await window.fetch(form.action, {
           method: form.method || 'POST',
@@ -185,9 +188,15 @@
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         form.reset();
-        if (status) status.textContent = 'Mensaje enviado correctamente.';
+        if (status) {
+          status.dataset.state = 'success';
+          status.textContent = '✓ Mensaje enviado correctamente.';
+        }
       } catch {
-        if (status) status.textContent = 'No fue posible enviar el mensaje. Inténtalo nuevamente o utiliza otro canal institucional.';
+        if (status) {
+          status.dataset.state = 'error';
+          status.textContent = '⚠ No fue posible enviar el mensaje. Inténtalo nuevamente o utiliza otro canal institucional.';
+        }
       } finally {
         if (submit) submit.disabled = false;
       }
