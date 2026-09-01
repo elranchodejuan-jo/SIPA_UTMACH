@@ -73,16 +73,17 @@ const getTags = (html, namePattern = '[A-Za-z][A-Za-z0-9:-]*') =>
 
 const getTagsByName = (html, name) => getTags(html, name);
 
-const getMetaContent = (html, name) => {
-  const meta = getTagsByName(html, 'meta').find(tag => tag.attributes.get('name')?.toLowerCase() === name.toLowerCase());
-  return meta?.attributes.get('content')?.trim() || null;
-};
+const getMetaContents = (html, name) => getTagsByName(html, 'meta')
+  .filter(tag => tag.attributes.get('name')?.toLowerCase() === name.toLowerCase())
+  .map(tag => tag.attributes.get('content')?.trim() || '');
 
-const getCanonical = html => {
-  const canonical = getTagsByName(html, 'link').find(tag =>
-    (tag.attributes.get('rel') || '').split(/\s+/).map(value => value.toLowerCase()).includes('canonical'));
-  return canonical?.attributes.get('href')?.trim() || null;
-};
+const getPropertyContents = (html, property) => getTagsByName(html, 'meta')
+  .filter(tag => tag.attributes.get('property')?.toLowerCase() === property.toLowerCase())
+  .map(tag => tag.attributes.get('content')?.trim() || '');
+
+const getCanonicals = html => getTagsByName(html, 'link')
+  .filter(tag => (tag.attributes.get('rel') || '').split(/\s+/).map(value => value.toLowerCase()).includes('canonical'))
+  .map(tag => tag.attributes.get('href')?.trim() || '');
 
 const idsFromHtml = html => getTags(html)
   .map(tag => tag.attributes.get('id'))
@@ -169,6 +170,128 @@ const validateContentCollections = errors => {
   }
 };
 
+const singleValue = ({ values, label, prefix, errors }) => {
+  if (values.length !== 1 || !values[0]) {
+    errors.push(`${prefix}: ${label} debe aparecer una sola vez y no estar vacío; encontrados ${values.length}.`);
+    return null;
+  }
+  return values[0];
+};
+
+const validateAbsoluteUrl = ({ value, label, prefix, errors, expectedOrigin = null }) => {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== 'https:') {
+      errors.push(`${prefix}: ${label} debe usar HTTPS.`);
+      return null;
+    }
+    if (expectedOrigin && url.origin !== expectedOrigin) {
+      errors.push(`${prefix}: ${label} debe usar ${expectedOrigin}.`);
+      return null;
+    }
+    return url;
+  } catch {
+    errors.push(`${prefix}: ${label} debe ser una URL absoluta válida.`);
+    return null;
+  }
+};
+
+const validateStructuredData = ({ html, prefix, errors }) => {
+  const pattern = /<script\b[^>]*\btype\s*=\s*(["'])application\/ld\+json\1[^>]*>([\s\S]*?)<\/script>/gi;
+  const matches = [...html.matchAll(pattern)];
+  if (!matches.length) {
+    errors.push(`${prefix}: falta JSON-LD.`);
+    return;
+  }
+
+  const validateUrls = value => {
+    if (Array.isArray(value)) {
+      value.forEach(validateUrls);
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+    for (const [key, child] of Object.entries(value)) {
+      if (['url', '@id', 'item'].includes(key) && typeof child === 'string' && /^https?:/i.test(child)) {
+        const url = validateAbsoluteUrl({ value: child, label: `JSON-LD ${key}`, prefix, errors });
+        if (url?.hostname === SITE_CONFIG.technicalDomain && url.origin !== SITE_CONFIG.canonicalOrigin) {
+          errors.push(`${prefix}: JSON-LD ${key} debe usar ${SITE_CONFIG.canonicalOrigin}.`);
+        }
+      }
+      validateUrls(child);
+    }
+  };
+
+  for (const match of matches) {
+    try {
+      const data = JSON.parse(match[2]);
+      if (data?.['@context'] !== 'https://schema.org') errors.push(`${prefix}: JSON-LD debe declarar @context https://schema.org.`);
+      validateUrls(data);
+    } catch (error) {
+      errors.push(`${prefix}: JSON-LD no es JSON válido: ${error.message}.`);
+    }
+  }
+};
+
+const assertUniqueMetadata = ({ value, label, prefix, values, errors }) => {
+  if (!value) return;
+  const firstLocation = values.get(value);
+  if (firstLocation) errors.push(`${prefix}: ${label} duplica el de ${firstLocation}.`);
+  else values.set(value, prefix);
+};
+
+const validateIndexableMetadata = async ({ html, route, relativeFile, distDir, errors, metadata }) => {
+  const prefix = `${route.path} (${relativeFile})`;
+  const expectedCanonical = new URL(route.path, `${SITE_CONFIG.canonicalOrigin}/`).href;
+  const title = html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim();
+  if (!title) errors.push(`${prefix}: falta title no vacío.`);
+  assertUniqueMetadata({ value: title, label: 'title', prefix, values: metadata.titles, errors });
+  const description = singleValue({ values: getMetaContents(html, 'description'), label: 'meta description', prefix, errors });
+  assertUniqueMetadata({ value: description, label: 'meta description', prefix, values: metadata.descriptions, errors });
+
+  const canonical = singleValue({ values: getCanonicals(html), label: 'canonical', prefix, errors });
+  if (canonical && canonical !== expectedCanonical) errors.push(`${prefix}: canonical ${canonical}; esperada ${expectedCanonical}.`);
+
+  const robots = singleValue({ values: getMetaContents(html, 'robots'), label: 'meta robots', prefix, errors });
+  if (robots?.toLowerCase() !== 'index,follow') errors.push(`${prefix}: meta robots debe ser index,follow.`);
+
+  const openGraph = {
+    'og:type': singleValue({ values: getPropertyContents(html, 'og:type'), label: 'og:type', prefix, errors }),
+    'og:site_name': singleValue({ values: getPropertyContents(html, 'og:site_name'), label: 'og:site_name', prefix, errors }),
+    'og:title': singleValue({ values: getPropertyContents(html, 'og:title'), label: 'og:title', prefix, errors }),
+    'og:description': singleValue({ values: getPropertyContents(html, 'og:description'), label: 'og:description', prefix, errors }),
+    'og:url': singleValue({ values: getPropertyContents(html, 'og:url'), label: 'og:url', prefix, errors }),
+    'og:image': singleValue({ values: getPropertyContents(html, 'og:image'), label: 'og:image', prefix, errors }),
+  };
+  if (openGraph['og:type'] && openGraph['og:type'] !== 'website') errors.push(`${prefix}: og:type debe ser website.`);
+  if (openGraph['og:url'] && openGraph['og:url'] !== expectedCanonical) errors.push(`${prefix}: og:url debe coincidir con la canonical.`);
+  if (openGraph['og:url']) validateAbsoluteUrl({ value: openGraph['og:url'], label: 'og:url', prefix, errors, expectedOrigin: SITE_CONFIG.canonicalOrigin });
+  if (openGraph['og:image']) {
+    const imageUrl = validateAbsoluteUrl({ value: openGraph['og:image'], label: 'og:image', prefix, errors, expectedOrigin: SITE_CONFIG.canonicalOrigin });
+    if (imageUrl) {
+      const imagePath = path.join(distDir, ...decodeURIComponent(imageUrl.pathname).split('/').filter(Boolean));
+      if (!await fileExists(imagePath)) errors.push(`${prefix}: og:image apunta a un archivo inexistente: ${imageUrl.href}.`);
+    }
+  }
+
+  const twitter = {
+    'twitter:card': singleValue({ values: getMetaContents(html, 'twitter:card'), label: 'twitter:card', prefix, errors }),
+    'twitter:title': singleValue({ values: getMetaContents(html, 'twitter:title'), label: 'twitter:title', prefix, errors }),
+    'twitter:description': singleValue({ values: getMetaContents(html, 'twitter:description'), label: 'twitter:description', prefix, errors }),
+    'twitter:image': singleValue({ values: getMetaContents(html, 'twitter:image'), label: 'twitter:image', prefix, errors }),
+  };
+  if (twitter['twitter:card'] && twitter['twitter:card'] !== 'summary_large_image') errors.push(`${prefix}: twitter:card debe ser summary_large_image.`);
+  if (twitter['twitter:image']) validateAbsoluteUrl({ value: twitter['twitter:image'], label: 'twitter:image', prefix, errors, expectedOrigin: SITE_CONFIG.canonicalOrigin });
+
+  validateStructuredData({ html, prefix, errors });
+};
+
+const validateNonIndexableDocument = ({ html, relativeFile, errors }) => {
+  const prefix = `/${relativeFile}`;
+  const robots = singleValue({ values: getMetaContents(html, 'robots'), label: 'meta robots', prefix, errors });
+  if (robots && !/(?:^|[\s,])noindex(?:[\s,]|$)/i.test(robots)) errors.push(`${prefix}: debe declarar noindex.`);
+  if (getCanonicals(html).length) errors.push(`${prefix}: no debe declarar canonical.`);
+};
+
 const validatePortalDocument = ({ html, route, relativeFile, errors }) => {
   const prefix = `${route.path} (${relativeFile})`;
   const htmlTag = getTagsByName(html, 'html')[0];
@@ -176,14 +299,6 @@ const validatePortalDocument = ({ html, route, relativeFile, errors }) => {
 
   const h1Count = (html.match(/<h1\b/gi) || []).length;
   if (h1Count !== 1) errors.push(`${prefix}: debe contener exactamente un h1; encontrados ${h1Count}.`);
-
-  const title = html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim();
-  if (!title) errors.push(`${prefix}: falta title no vacío.`);
-  if (!getMetaContent(html, 'description')) errors.push(`${prefix}: falta meta description no vacía.`);
-
-  const canonical = getCanonical(html);
-  const expectedCanonical = new URL(route.path, `${SITE_CONFIG.canonicalOrigin}/`).href;
-  if (canonical !== expectedCanonical) errors.push(`${prefix}: canonical ${canonical ?? '<ausente>'}; esperada ${expectedCanonical}.`);
 
   for (const landmark of ['header', 'nav', 'main', 'footer']) {
     if (!new RegExp(`<${landmark}\\b`, 'i').test(html)) errors.push(`${prefix}: falta landmark <${landmark}>.`);
@@ -311,12 +426,22 @@ const validateSitemap = async ({ distDir, errors, summary }) => {
   }
 
   const xml = await readFile(sitemapFile, 'utf8');
+  if (!/^<\?xml\s+version="1\.0"\s+encoding="UTF-8"\s*\?>\s*<urlset\s+xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9">[\s\S]*<\/urlset>\s*$/i.test(xml)) {
+    errors.push('sitemap.xml no tiene una estructura XML de sitemap válida.');
+  }
+  const openUrlTags = (xml.match(/<url>/gi) || []).length;
+  const closeUrlTags = (xml.match(/<\/url>/gi) || []).length;
+  if (openUrlTags !== closeUrlTags) errors.push('sitemap.xml tiene etiquetas <url> sin cierre.');
   const actual = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map(match => decodeHtmlAttribute(match[1]));
   const expected = getSitemapRoutes().map(route => route.loc);
   const duplicates = actual.filter((value, index) => actual.indexOf(value) !== index);
   if (duplicates.length) errors.push(`sitemap.xml contiene URLs duplicadas: ${[...new Set(duplicates)].join(', ')}.`);
   if (actual.length !== expected.length || actual.some(value => !expected.includes(value)) || expected.some(value => !actual.includes(value))) {
     errors.push(`sitemap.xml no coincide con el registro publicado. Esperado: ${expected.join(', ')}. Actual: ${actual.join(', ')}.`);
+  }
+  for (const loc of actual) {
+    const url = validateAbsoluteUrl({ value: loc, label: 'sitemap loc', prefix: 'sitemap.xml', errors, expectedOrigin: SITE_CONFIG.canonicalOrigin });
+    if (url && (url.search || url.hash)) errors.push(`sitemap.xml no debe incluir query ni fragment en ${loc}.`);
   }
   summary.sitemapRoutes = actual.length;
 };
@@ -368,7 +493,11 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
   if (await fileExists(robotsFile)) {
     const robots = await readFile(robotsFile, 'utf8');
     const expected = `Sitemap: ${SITE_CONFIG.canonicalOrigin}/sitemap.xml`;
+    const lines = robots.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    if (!lines.includes('User-agent: *')) errors.push('robots.txt debe declarar User-agent: *.');
+    if (!lines.includes('Allow: /')) errors.push('robots.txt debe permitir el rastreo con Allow: /.');
     if (!robots.includes(expected)) errors.push(`robots.txt no declara ${expected}.`);
+    if (lines.filter(line => line.toLowerCase().startsWith('sitemap:')).length !== 1) errors.push('robots.txt debe declarar un único sitemap.');
   }
 
   const buildInfoFile = path.join(distDir, 'build-info.json');
@@ -405,6 +534,7 @@ export const validateSite = async ({ distDir = path.join(rootDir, 'dist') } = {}
   const resolvedDist = path.resolve(distDir);
   const errors = [];
   const summary = { routes: 0, htmlFiles: 0, files: 0, references: 0, sitemapRoutes: 0 };
+  const metadata = { titles: new Map(), descriptions: new Map() };
 
   if (!await fileExists(resolvedDist)) throw new AggregateError([new Error(`No existe el directorio de build: ${resolvedDist}`)], 'Sitio inválido');
 
@@ -434,7 +564,13 @@ export const validateSite = async ({ distDir = path.join(rootDir, 'dist') } = {}
       if (mojibakePattern.test(html)) errors.push(`${relativeFile}: contiene posibles caracteres mojibake o de reemplazo.`);
 
       const route = routeByOutput.get(relativeFile);
+      if (route && route.sitemap?.include !== false) {
+        await validateIndexableMetadata({ html, route, relativeFile, distDir: resolvedDist, errors, metadata });
+      }
       if (route?.kind === 'page') validatePortalDocument({ html, route, relativeFile, errors });
+      if (relativeFile === '404.html' || relativeFile === 'eventos/expoferia-nutricion-animal-2026/offline.html') {
+        validateNonIndexableDocument({ html, relativeFile, errors });
+      }
       await validateReferences({
         html,
         route: route ?? { id: relativeFile, kind: 'system' },

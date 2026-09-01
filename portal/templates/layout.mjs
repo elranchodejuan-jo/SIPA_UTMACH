@@ -73,7 +73,9 @@ export function renderLayout({ route, page, metadata }) {
   <meta name="sipa-build-date" content="${escapeAttribute(metadata.buildDate)}">
   <meta name="sipa-build-sha" content="${escapeAttribute(metadata.buildSha)}">
   <meta name="sipa-version" content="${escapeAttribute(metadata.version)}">
+  <meta name="robots" content="index,follow">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="${escapeAttribute(SITE_CONFIG.name)} | ${escapeAttribute(SITE_CONFIG.organization.name)}">
   <meta property="og:title" content="${escapeAttribute(route.title)}">
   <meta property="og:description" content="${escapeAttribute(route.description)}">
   <meta property="og:url" content="${escapeAttribute(helpers.canonicalHref())}">
