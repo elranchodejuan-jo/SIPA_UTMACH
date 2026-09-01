@@ -92,12 +92,12 @@ test('los dropdowns de escritorio son compactos, planos y controlados por clic',
 
   const toggleStyle = await firstToggle.evaluate(element => {
     const style = getComputedStyle(element);
-    const iconBox = element.querySelector('svg')?.getBoundingClientRect();
+    const icon = element.querySelector('svg');
     return {
       backgroundColor: style.backgroundColor,
       borderTopWidth: style.borderTopWidth,
       boxShadow: style.boxShadow,
-      iconWidth: iconBox?.width ?? 0,
+      iconWidth: icon ? Number.parseFloat(getComputedStyle(icon).width) : 0,
     };
   });
   expect(toggleStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
