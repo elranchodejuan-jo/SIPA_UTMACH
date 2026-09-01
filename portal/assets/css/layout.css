@@ -386,13 +386,11 @@ body.menu-open .nav-backdrop {
   from {
     max-height: 0;
     opacity: 0;
-    transform: translateY(-0.25rem);
   }
 
   to {
     max-height: 24rem;
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
