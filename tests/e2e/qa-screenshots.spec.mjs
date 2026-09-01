@@ -27,6 +27,9 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/', { waitUntil: 'load' });
   await capture(page, 'inicio-escritorio');
+  await page.locator('[data-submenu-toggle][aria-controls="submenu-outreach"]').click();
+  await expect(page.locator('#submenu-outreach')).toBeVisible();
+  await capture(page, 'header-escritorio-dropdown', { fullPage: false });
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/', { waitUntil: 'load' });
@@ -34,6 +37,9 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
   await page.locator('[data-menu-toggle]').click();
   await expect(page.locator('[data-mobile-panel]')).toBeVisible();
   await capture(page, 'menu-movil-abierto', { fullPage: false });
+  await page.locator('[data-submenu-toggle][aria-controls="submenu-outreach"]').click();
+  await expect(page.locator('#submenu-outreach')).toBeVisible();
+  await capture(page, 'menu-movil-submenu-abierto', { fullPage: false });
 
   await page.setViewportSize({ width: 1366, height: 768 });
   for (const [name, route] of [
