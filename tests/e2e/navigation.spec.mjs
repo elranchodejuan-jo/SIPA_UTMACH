@@ -69,6 +69,74 @@ test('el submenú de Divulgación abre Webinars y mantiene Divulgación activa',
   expectRuntimeClean(runtime);
 });
 
+test('los dropdowns de escritorio son compactos, planos y controlados por clic', async ({ page }) => {
+  const runtime = await gotoPortal(page, '/', watchRuntime(page));
+  const navigation = await openPrimaryNavigation(page);
+  const toggles = navigation.locator('[data-submenu-toggle]');
+  const firstToggle = toggles.nth(0);
+  const secondToggle = toggles.nth(1);
+
+  await firstToggle.click();
+  const firstSubmenuId = await firstToggle.getAttribute('aria-controls');
+  const firstSubmenu = navigation.locator(`#${firstSubmenuId}`);
+  await expect(firstSubmenu).toBeVisible();
+
+  const [rowBox, submenuBox] = await Promise.all([
+    firstToggle.locator('xpath=parent::*').boundingBox(),
+    firstSubmenu.boundingBox(),
+  ]);
+  expect(submenuBox).not.toBeNull();
+  expect(submenuBox?.width ?? 0).toBeGreaterThanOrEqual(260);
+  expect(submenuBox?.width ?? 0).toBeLessThanOrEqual(320);
+  expect(submenuBox?.y ?? 0).toBeGreaterThanOrEqual((rowBox?.y ?? 0) + (rowBox?.height ?? 0));
+
+  const toggleStyle = await firstToggle.evaluate(element => {
+    const style = getComputedStyle(element);
+    const iconBox = element.querySelector('svg')?.getBoundingClientRect();
+    return {
+      backgroundColor: style.backgroundColor,
+      borderTopWidth: style.borderTopWidth,
+      boxShadow: style.boxShadow,
+      iconWidth: iconBox?.width ?? 0,
+    };
+  });
+  expect(toggleStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(toggleStyle.borderTopWidth).toBe('0px');
+  expect(toggleStyle.boxShadow).toBe('none');
+  expect(toggleStyle.iconWidth).toBeGreaterThanOrEqual(14);
+  expect(toggleStyle.iconWidth).toBeLessThanOrEqual(16);
+
+  await secondToggle.click();
+  await expect(firstToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(firstSubmenu).toBeHidden();
+  await expect(secondToggle).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Escape');
+  await expect(secondToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(secondToggle).toBeFocused();
+
+  await firstToggle.click();
+  await page.locator('main h1').click();
+  await expect(firstToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(firstSubmenu).toBeHidden();
+
+  const activeLink = navigation.getByRole('link', { name: 'Inicio', exact: true });
+  const activeStyle = await activeLink.evaluate(element => {
+    const style = getComputedStyle(element);
+    const indicator = getComputedStyle(element, '::after');
+    return {
+      backgroundColor: style.backgroundColor,
+      boxShadow: style.boxShadow,
+      color: style.color,
+      indicatorHeight: indicator.height,
+    };
+  });
+  expect(activeStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(activeStyle.boxShadow).toBe('none');
+  expect(activeStyle.indicatorHeight).toBe('2px');
+  expect(activeStyle.color).not.toBe('rgb(0, 0, 0)');
+  expectRuntimeClean(runtime);
+});
+
 test('el logo regresa al inicio desde una página interna', async ({ page }) => {
   const runtime = await gotoPortal(page, '/investigacion/', watchRuntime(page));
   await page.locator('a.brand').first().click();

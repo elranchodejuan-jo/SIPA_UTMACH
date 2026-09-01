@@ -10,11 +10,14 @@ export function renderHeader({ route, helpers, activeRouteId = route.id }) {
   const navigationItems = navigation.map(item => {
     const isActiveBranch = activeNavigationId === item.routeId;
     const submenuId = `submenu-${item.id}`;
-    const submenu = item.items.length
-      ? `<button class="submenu-toggle" type="button" aria-expanded="false" aria-controls="${escapeAttribute(submenuId)}" aria-label="Mostrar opciones de ${escapeAttribute(item.label)}" data-submenu-toggle>${renderIcon('chevron-down', helpers)}</button>
-         <ul class="submenu" id="${escapeAttribute(submenuId)}" data-submenu hidden>${item.items.map(child => `<li><a href="${escapeAttribute(child.href)}">${escapeHtml(child.label)}</a></li>`).join('')}</ul>`
+    const hasSubmenu = item.items.length > 0;
+    const submenuToggle = hasSubmenu
+      ? `<button class="submenu-toggle" type="button" aria-expanded="false" aria-controls="${escapeAttribute(submenuId)}" aria-label="Mostrar opciones de ${escapeAttribute(item.label)}" data-submenu-toggle>${renderIcon('chevron-down', helpers)}</button>`
       : '';
-    return `<li class="nav-item${isActiveBranch ? ' is-active' : ''}"><div class="nav-item__row"><a class="nav-link" href="${escapeAttribute(item.href)}"${isActiveBranch ? ' aria-current="page"' : ''}>${escapeHtml(item.label)}</a>${submenu}</div></li>`;
+    const submenu = hasSubmenu
+      ? `<ul class="submenu" id="${escapeAttribute(submenuId)}" data-submenu hidden>${item.items.map(child => `<li><a href="${escapeAttribute(child.href)}">${escapeHtml(child.label)}</a></li>`).join('')}</ul>`
+      : '';
+    return `<li class="nav-item${hasSubmenu ? ' nav-item--group' : ' nav-item--direct'}${isActiveBranch ? ' is-active' : ''}"><div class="nav-item__row"><a class="nav-link" href="${escapeAttribute(item.href)}"${isActiveBranch ? ' aria-current="page"' : ''}>${escapeHtml(item.label)}</a>${submenuToggle}</div>${submenu}</li>`;
   }).join('');
 
   return `<div class="institution-bar"><div class="container institution-bar__inner"><span>${escapeHtml(SITE_CONFIG.organization.name)} · ${escapeHtml(SITE_CONFIG.organization.career)}</span><a href="${escapeAttribute(SITE_CONFIG.organization.url)}" target="_blank" rel="noopener noreferrer">Portal UTMACH<span class="visually-hidden"> (se abre en una pestaña nueva)</span></a></div></div>
