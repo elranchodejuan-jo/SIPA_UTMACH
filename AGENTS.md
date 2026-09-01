@@ -89,7 +89,7 @@ Los agentes inspeccionan primero, comparten evidencia y trabajan en subtareas in
 
 - El desarrollo local se realiza en Windows con Node.js v24.x; el CI se ejecuta en Linux. Preservar ambas compatibilidades.
 - Usar `npm.cmd`/`npx.cmd` cuando PowerShell bloquee scripts `.ps1`.
-- No revertir la compatibilidad de `spawnSync` con `npm.cmd` ya resuelta en `scripts/build-sipa.mjs`.
+- No revertir la compatibilidad de ejecución del build en Windows ya resuelta en `scripts/build-sipa.mjs`: actualmente utiliza `execFileSync` con `cmd.exe`/`ComSpec` para ejecutar `npm run build:expo`, preservando compatibilidad Windows y CI/Linux sin `shell: true`.
 - Evitar `shell: true` innecesario al usar `child_process`.
 - Todos los archivos de texto deben conservar UTF-8. No introducir mojibake; preservar correctamente `histórica`, `versión`, `←`, `…` y `—`.
 
