@@ -20,6 +20,7 @@ const externalProtocols = /^(?:https?:|mailto:|tel:)/i;
 const placeholderPattern = /__[A-Z][A-Z0-9_]+__/g;
 const mojibakePattern = /(?:�|Ã.|Â.|â(?:€|†|€”|€¦))/;
 const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const pngIendChunk = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82]);
 
 const fileExists = async file => {
   try {
@@ -34,6 +35,9 @@ const readPngDimensions = async file => {
   const contents = await readFile(file);
   if (contents.length < 24 || !contents.subarray(0, 8).equals(pngSignature)) {
     throw new Error('no es un PNG válido');
+  }
+  if (!contents.subarray(-pngIendChunk.length).equals(pngIendChunk)) {
+    throw new Error('es un PNG incompleto o corrupto');
   }
   return { width: contents.readUInt32BE(16), height: contents.readUInt32BE(20) };
 };
