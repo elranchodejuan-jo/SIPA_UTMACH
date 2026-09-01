@@ -94,6 +94,13 @@ body.menu-open .site-header__actions {
   object-fit: contain;
 }
 
+.brand .brand__mark--original {
+  width: 4.75rem;
+  height: auto;
+  flex: 0 0 4.75rem;
+  aspect-ratio: 251 / 141;
+}
+
 .brand__copy {
   min-width: 0;
   display: flex;
