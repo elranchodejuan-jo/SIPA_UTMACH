@@ -151,6 +151,22 @@ test('el logo regresa al inicio desde una página interna', async ({ page }) => 
   expectRuntimeClean(runtime);
 });
 
+test('header y footer utilizan únicamente el logo ovalado oficial', async ({ page }) => {
+  const runtime = await gotoPortal(page, '/', watchRuntime(page));
+  const officialLogos = page.locator('header.site-header .brand__mark--original, footer.site-footer .brand--footer .brand__mark--original');
+
+  await expect(officialLogos).toHaveCount(2);
+  for (const officialLogo of await officialLogos.all()) {
+    await expect(officialLogo).toHaveAttribute('src', /assets\/images\/logo-sipa-original\.png/);
+    await expect.poll(() => officialLogo.evaluate(image => ({
+      width: image.naturalWidth,
+      height: image.naturalHeight,
+    }))).toEqual({ width: 502, height: 282 });
+  }
+  await expect(page.locator('img[src*="logo-sipa.svg"]')).toHaveCount(0);
+  expectRuntimeClean(runtime);
+});
+
 test('los breadcrumbs de páginas internas enlazan al inicio', async ({ page }) => {
   const runtime = await gotoPortal(page, '/divulgacion/webinars/', watchRuntime(page));
   const breadcrumb = page.getByRole('navigation', { name: /ruta de navegación|migas|breadcrumb/i });

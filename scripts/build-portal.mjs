@@ -97,7 +97,6 @@ const writeOutput = async (distDir, relativePath, contents, generatedFiles) => {
 const copyPortalAssets = async (rootDir, distDir, generatedFiles) => {
   const portalDir = path.join(rootDir, 'portal');
   const directories = ['assets/css', 'assets/js', 'assets/icons', 'assets/images'];
-  const files = ['assets/logo-sipa.svg'];
 
   for (const relativePath of directories) {
     const source = path.join(portalDir, ...relativePath.split('/'));
@@ -107,15 +106,6 @@ const copyPortalAssets = async (rootDir, distDir, generatedFiles) => {
     await cp(source, destination, { recursive: true, force: true });
     generatedFiles.push(`${relativePath}/`);
   }
-  for (const relativePath of files) {
-    const source = path.join(portalDir, ...relativePath.split('/'));
-    if (!await exists(source)) throw new Error(`Asset obligatorio inexistente: ${relativePath}`);
-    const destination = path.join(distDir, ...relativePath.split('/'));
-    await mkdir(path.dirname(destination), { recursive: true });
-    await cp(source, destination, { force: true });
-    generatedFiles.push(relativePath);
-  }
-
   const faviconDir = path.join(rootDir, 'public', 'favicon');
   if (!await exists(faviconDir)) throw new Error('Asset obligatorio inexistente: public/favicon/');
   await cp(faviconDir, path.join(distDir, 'favicon'), { recursive: true, force: true });
