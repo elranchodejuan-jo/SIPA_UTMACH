@@ -1,129 +1,155 @@
 # Producción de SIPA en SIPAUTMACH.COM
 
-## Estado y alcance
+## Estado comprobado
 
-Este documento prepara el portal institucional de SIPA para su URL canónica:
+Estado auditado el 1 de septiembre de 2026 mediante la API de GitHub Pages y una solicitud HTTPS de solo lectura:
 
-`https://sipautmach.com/`
+- repositorio: `elranchodejuan-jo/SIPA_UTMACH`;
+- publicación: GitHub Pages mediante GitHub Actions (`build_type: workflow`);
+- dominio personalizado: `sipautmach.com`;
+- URL pública: `https://sipautmach.com/`;
+- HTTPS forzado: activo;
+- estado reportado por Pages: `built`;
+- respuesta del dominio al auditarlo: HTTP 200.
 
-No configura DNS, certificados, proveedores externos ni producción. Esas acciones siguen requiriendo una persona con acceso administrativo al dominio y al repositorio.
+La configuración externa vigente no se modificó durante SIPA V2. El código utiliza `https://sipautmach.com/` para canonicales y `SIPAUTMACH.COM` como representación visual.
 
-## Arquitectura actual comprobada
+La última publicación de `main` observada antes de iniciar SIPA V2 correspondía al commit `22cfe31`. Por tanto, un build local o un pull request de SIPA V2 no demuestra que V2 esté en producción; solo un push posterior a `main`, un workflow remoto verde y una verificación pública pueden confirmarlo.
 
-El repositorio contiene dos productos estáticos que el build ensambla en un solo artefacto:
+## Arquitectura de publicación
 
-```text
-portal/                                  -> dist/ (portal SIPA)
-index.html + src/ + public/              -> dist-expo/ (Expoferia Vite)
-dist-expo/                               -> dist/eventos/expoferia-nutricion-animal-2026/
-```
-
-- `portal/` es la portada institucional estática de SIPA.
-- La raíz Vite/TypeScript es la Expoferia histórica de Nutrición Animal; no es la portada de SIPA.
-- `scripts/build-sipa.mjs` ejecuta TypeScript y Vite, copia la portada al raíz de `dist/`, y conserva la Expoferia en la ruta de evento.
-- El build usa `execFileSync` y, en Windows, `cmd.exe`/`ComSpec` para `npm run build:expo`. Esa compatibilidad se mantiene sin `shell: true`.
-
-El artefacto histórico es intencionalmente grande: su HTML contiene imágenes embebidas y queda alrededor de 1.45 MB sin comprimir. No se reescribió durante esta fase para preservar el contenido; es una optimización futura independiente.
-
-## Arquitectura objetivo
+El repositorio conserva dos productos estáticos:
 
 ```text
-https://sipautmach.com/
-├── Portal institucional SIPA
-├── /robots.txt
-├── /sitemap.xml
-├── /404.html
-└── /eventos/expoferia-nutricion-animal-2026/
-    └── Archivo histórico de Expoferia de Nutrición Animal
+portal/config + content + pages + templates + assets
+    └── scripts/build-portal.mjs
+        └── dist/                                  Portal SIPA multipágina
+
+index.html + src/ + public/ + vite.config.ts
+    └── npm run build:expo
+        └── dist-expo/                             Expoferia Vite
+            └── dist/eventos/expoferia-nutricion-animal-2026/
 ```
 
-La portada y el evento usan rutas relativas para sus recursos locales. Las canonicales y los metadatos sociales usan URLs absolutas de `https://sipautmach.com/`. El 404 generado no conserva el hardcode de `/SIPA_UTMACH/`: resuelve el retorno de forma compatible tanto con el dominio raíz como con la URL temporal de proyecto de GitHub Pages.
+`scripts/build-sipa.mjs` es el orquestador integrado:
 
-## SEO y assets
+1. elimina únicamente `dist/` y `dist-expo/`, que son directorios generados;
+2. construye la Expoferia con TypeScript y Vite;
+3. genera el portal multipágina directamente en `dist/`;
+4. copia la Expoferia a su ruta histórica;
+5. añade su enlace accesible de retorno a SIPA;
+6. valida rutas, enlaces, metadatos, contenido y assets;
+7. elimina `dist-expo/` incluso si el proceso falla.
 
-La portada entrega:
+El generador publica solamente HTML generado y assets necesarios. Plantillas, configuración, colecciones editoriales y scripts de generación permanecen fuera de `dist/`.
 
-- `lang="es-EC"`, title y descripción de SIPA;
-- canonical `https://sipautmach.com/`;
-- Open Graph, Twitter/X card y JSON-LD `WebSite`;
-- favicon y manifest existentes;
-- `robots.txt` con sitemap absoluto;
-- sitemap para portada y Expoferia histórica.
+## Compatibilidad Windows y Linux
 
-La Expoferia mantiene su propia canonical:
+El desarrollo local usa Node.js 24.x en Windows; GitHub Actions usa Node.js 24 en Linux.
 
-`https://sipautmach.com/eventos/expoferia-nutricion-animal-2026/`
+La construcción de la Expoferia conserva la solución compatible ya aprobada:
 
-La marca visible del dominio en el portal es `SIPAUTMACH.COM`. La URL técnica permanece en minúsculas.
+- Windows: `execFileSync` invoca `process.env.ComSpec || 'cmd.exe'` con `npm run build:expo`.
+- Linux: `execFileSync` invoca `npm` directamente.
+- No se utiliza `shell: true`.
 
-## Hosting, build y CI/CD
+Esta implementación evita depender de `npm.ps1`, conserva la salida del proceso hijo y no interpola secretos en comandos.
 
-GitHub Pages es adecuado para esta fase: el producto es estático, no necesita servidor, ya tiene una publicación por workflow y GitHub Pages ofrece dominio personalizado y HTTPS. No se identificó una limitación técnica que justifique migrar de proveedor.
+## URLs y GitHub Pages
 
-El único workflow de publicación es `.github/workflows/deploy.yml`:
+Las canonicales y metadatos sociales siempre usan URLs absolutas de `https://sipautmach.com/`. Los enlaces internos y assets usan rutas relativas calculadas por profundidad.
 
-1. En pull requests a `main`, instala dependencias, valida JavaScript y construye sin publicar.
-2. En `push` a `main` o ejecución manual, además configura Pages, sube `dist/` como artifact y publica con `actions/deploy-pages`.
+Este diseño permite servir el mismo `dist/` desde:
 
-Se retiró el workflow heredado que volvía a compilar y hacía force-push a `gh-pages`. GitHub Pages está configurado para publicar desde un workflow, por lo que el flujo oficial por artifact es el publicador efectivo y evita despliegues competidores.
+- `https://sipautmach.com/`;
+- `https://elranchodejuan-jo.github.io/SIPA_UTMACH/`;
+- `npm run preview`.
 
-El estado remoto auditado antes de esta preparación era:
+Cada ruta pública se genera como un directorio con `index.html`. La Expoferia conserva:
 
-- URL temporal: `https://elranchodejuan-jo.github.io/SIPA_UTMACH/`
-- publicación: workflow de GitHub Pages;
-- custom domain: no configurado;
-- HTTPS: forzado para la URL temporal.
+`/eventos/expoferia-nutricion-animal-2026/`
 
-## Dominio, www y HTTPS
+El build genera automáticamente `404.html`, `robots.txt`, `sitemap.xml`, `build-info.json` y `.nojekyll`. El sitemap deriva del registro central de rutas e incluye la Expoferia. La versión procede exclusivamente de `package.json`; la fecha y el SHA se calculan durante el build.
 
-El dominio principal deseado es `sipautmach.com`; `www.sipautmach.com` debe redirigir al apex. GitHub Pages realiza ese redireccionamiento cuando el apex se configura como custom domain y los registros de apex y `www` son correctos.
+## CI/CD
 
-No se añade un archivo `CNAME` al repositorio. GitHub documenta que, cuando Pages se publica desde un workflow personalizado de GitHub Actions, el archivo CNAME se ignora y no es necesario. La fuente de verdad del custom domain será Settings → Pages del repositorio.
+El único publicador es `.github/workflows/deploy.yml`.
 
-## Configuración DNS pendiente
+### Pull requests hacia `main`
 
-Primero, una persona administradora debe registrar `sipautmach.com` en **Settings → Pages → Custom domain**. Después debe configurar DNS en el proveedor del dominio. GitHub recomienda hacerlo en ese orden para reducir el riesgo de toma del subdominio.
+El job de validación:
 
-Registros DNS recomendados para GitHub Pages:
+1. usa checkout y Node.js 24;
+2. ejecuta `npm ci`;
+3. valida JavaScript;
+4. construye portal y Expoferia;
+5. audita el sitio generado;
+6. ejecuta pruebas unitarias;
+7. instala Chromium de Playwright;
+8. ejecuta pruebas E2E.
 
-| Tipo | Nombre | Valor |
-| --- | --- | --- |
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-| CNAME | `www` | `elranchodejuan-jo.github.io` |
+No configura Pages, no genera un artifact de publicación y no despliega.
 
-No debe añadirse `/SIPA_UTMACH/` al valor de `www`.
+### Ejecución manual
 
-IPv6 es opcional; si se habilita, añadir además:
+`workflow_dispatch` ejecuta las mismas validaciones, pero no publica. Esto permite diagnosticar CI sin convertir una ejecución manual en una liberación.
 
-| Tipo | Nombre | Valor |
-| --- | --- | --- |
-| AAAA | `@` | `2606:50c0:8000::153` |
-| AAAA | `@` | `2606:50c0:8001::153` |
-| AAAA | `@` | `2606:50c0:8002::153` |
-| AAAA | `@` | `2606:50c0:8003::153` |
+### Push a `main`
 
-Tras la propagación, verificar el dominio en Pages, esperar la emisión del certificado y mantener **Enforce HTTPS** activo. No crear registros wildcard para este fin. El registro TXT de verificación de dominio, si se usa, debe copiarse desde GitHub cuando se inicie esa verificación: no tiene un valor estático que pueda declararse aquí.
+Solo después de que las validaciones terminan correctamente:
 
-Fuente: [GitHub Docs: administrar un dominio personalizado de Pages](https://docs.github.com/es/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) y [HTTPS en GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https).
+1. el job de build conserva `dist/` como artifact temporal;
+2. el job de despliegue descarga exactamente ese artifact validado;
+3. configura Pages;
+4. lo empaqueta con `actions/upload-pages-artifact`;
+5. publica mediante `actions/deploy-pages`.
 
-## Pasos posteriores y validación externa
+Los permisos generales son `contents: read`. `pages: write` e `id-token: write` existen únicamente en el job de despliegue condicionado a un push a `main`. La concurrencia se separa por referencia, evitando que un pull request cancele una publicación de `main`.
 
-1. Fusionar esta rama mediante pull request.
-2. Configurar el custom domain y los registros DNS indicados, sin eliminar registros existentes hasta compararlos con la tabla.
-3. Esperar propagación y certificado de GitHub Pages.
-4. Confirmar `https://sipautmach.com/`, el redireccionamiento de `https://www.sipautmach.com/`, HTTPS, canonicales, `/robots.txt`, `/sitemap.xml`, favicon y la ruta de Expoferia.
-5. Actualizar, si se autoriza, la descripción pública del repositorio de GitHub, que aún presenta la Expoferia como identidad principal.
+No se usa force push, no se publica mediante una rama `gh-pages` y el pull request no se fusiona automáticamente.
+
+## Dominio, CNAME y HTTPS
+
+El dominio personalizado y HTTPS ya están activos en GitHub Pages. No forman parte del cambio de código de SIPA V2.
+
+No se añade un archivo `CNAME`: con publicación mediante un workflow personalizado, la fuente de verdad del dominio es la configuración de GitHub Pages. Tampoco se modifican desde el repositorio:
+
+- registros DNS;
+- certificados;
+- `Enforce HTTPS`;
+- redirects externos;
+- configuración del dominio en Settings → Pages.
+
+Cualquier ajuste futuro de esos elementos requiere autorización específica y una copia previa de la configuración vigente.
+
+## Validación de una liberación
+
+Mantener separadas estas evidencias:
+
+1. **Local:** `npm run validate`, `git diff --check` y árbol controlado.
+2. **CI:** todos los jobs del pull request concluyen en verde.
+3. **PR:** rama publicada, revisión disponible y PR sin fusionar automáticamente.
+4. **Producción:** workflow de push a `main` verde y comprobación posterior del sitio público.
+
+Después de una fusión autorizada, comprobar al menos:
+
+- portada y siete secciones principales;
+- Expoferia y su retorno a SIPA;
+- `404.html`, `robots.txt`, `sitemap.xml` y `build-info.json`;
+- canonicales y metadatos sociales;
+- assets sin 404;
+- HTTPS y redirección del host configurado por Pages;
+- versión y SHA de la publicación.
 
 ## Rollback
 
-El rollback de código consiste en revertir el commit de esta fase desde un pull request; no requiere borrar datos ni forzar historia. Antes de tocar DNS, registrar sus valores actuales. Si una configuración de dominio falla, retirar sólo los registros nuevos tras comprobar su propiedad y volver a la URL temporal de GitHub Pages.
+Un rollback de código debe hacerse mediante un commit de reversión en una rama y otro pull request. No requiere reescribir historia, forzar pushes ni borrar datos.
+
+Si el problema pertenece exclusivamente a SIPA V2, se revierte su commit y se deja que el workflow publique nuevamente desde `main` después de las validaciones. Los cambios de DNS, dominio o certificados quedan fuera de este procedimiento y nunca deben revertirse desde el repositorio.
 
 ## Riesgos y pendientes humanos
 
-- La propagación DNS y la emisión del certificado dependen de infraestructura externa y no se ejecutaron en esta fase.
-- La Expoferia preserva HTML con imágenes embebidas; su optimización requiere una iniciativa separada y revisión visual del archivo histórico.
-- Las imágenes sociales existentes son SVG; si se requiere compatibilidad ampliada de previews sociales, se necesita un asset raster institucional aprobado, no inventado.
-- La URL temporal de proyecto sigue incluyendo `/SIPA_UTMACH/`; no es la URL canónica y se mantendrá sólo hasta que el dominio externo esté configurado.
+- La publicación de SIPA V2 depende de revisión y fusión humana del pull request.
+- Los datos oficiales de integrantes, misión, visión, contactos, redes y webinars requieren confirmación institucional.
+- La Expoferia contiene un artefacto HTML pesado con imágenes embebidas; se preserva sin reestructurarlo.
+- La ausencia de protección remota de `main` observada durante la auditoría hace especialmente importante mantener el flujo operativo por pull request. Configurar protección de rama es una acción externa separada y no se realizó.
