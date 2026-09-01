@@ -1,63 +1,108 @@
 # SIPA UTMACH
 
-Portal institucional del **Semillero de Investigación en Producción Animal (SIPA)** de la Universidad Técnica de Machala.
+Portal institucional multipágina del **Semillero de Investigación en Producción Animal (SIPA)** de la Universidad Técnica de Machala.
 
-La Versión 1 establece una identidad visual relacionada con UTMACH y organiza el ecosistema digital del semillero en investigación, divulgación científica, eventos, equipo y contacto. El trabajo actual se presenta alrededor de bovinos, porcinos y aves.
+SIPA V2 utiliza generación estática con Node.js, módulos ESM, HTML semántico, CSS moderno y JavaScript progresivo. No es una SPA. El portal y la Expoferia histórica son productos distintos que se ensamblan en un único artefacto de GitHub Pages.
 
-## Estructura
+Sitio institucional: [SIPAUTMACH.COM](https://sipautmach.com/)
 
-- `portal/`: página pública principal de SIPA.
-- `src/` y `public/`: experiencia original de la Expoferia de Nutrición Animal.
-- `scripts/build-sipa.mjs`: compila el portal y preserva la expoferia dentro de `eventos/expoferia-nutricion-animal-2026/`.
-- `.github/workflows/deploy.yml`: validación en pull requests y publicación automática en GitHub Pages después de cada actualización de `main`.
+## Rutas públicas
 
-## Desarrollo
+- `/`: inicio.
+- `/sipa/`: identidad, propósito, objetivos e historia.
+- `/investigacion/`: áreas, metodología, proyectos y producción científica.
+- `/divulgacion/`: centro de divulgación.
+- `/divulgacion/webinars/`: biblioteca de webinars.
+- `/eventos/`: próximos eventos y archivo histórico.
+- `/eventos/expoferia-nutricion-animal-2026/`: experiencia histórica de la Expoferia.
+- `/equipo/`: integrantes publicados del semillero.
+- `/contacto/`: canales institucionales confirmados.
 
-```bash
-npm install
-npm run dev
+## Arquitectura
+
+```text
+portal/
+├── config/       # identidad, registro de rutas y navegación
+├── content/      # colecciones editoriales
+├── lib/          # helpers de HTML, URLs y validación de datos
+├── pages/        # composición de cada página
+├── templates/    # layout, header, footer y componentes compartidos
+└── assets/       # CSS, JavaScript, iconos e imágenes publicables
+
+scripts/
+├── build-portal.mjs   # genera el portal multipágina
+├── build-sipa.mjs     # ensambla portal + Expoferia
+├── check-js.mjs       # verifica JavaScript y módulos ESM
+└── validate-site.mjs  # audita el contenido estático generado
 ```
 
-Para abrir la experiencia histórica de la expoferia durante el desarrollo:
+La raíz Vite/TypeScript (`index.html`, `src/` y `public/`) pertenece a la Expoferia, no a la portada institucional. `scripts/build-sipa.mjs` preserva esa experiencia en `dist/eventos/expoferia-nutricion-animal-2026/`.
 
-```bash
-npm run dev:expo
+El registro central de rutas alimenta navegación, página activa, breadcrumbs, footer y sitemap. Los enlaces locales se generan de forma relativa para funcionar tanto en `https://sipautmach.com/` como en la URL temporal de proyecto de GitHub Pages.
+
+## Requisitos
+
+- Node.js 24.x.
+- npm 11 o posterior.
+- Chromium de Playwright para las pruebas E2E.
+
+En Windows/PowerShell usa `npm.cmd` cuando la política local bloquee `npm.ps1`.
+
+## Desarrollo y preview
+
+```powershell
+npm.cmd ci
+npm.cmd run dev
 ```
 
-## Compilación completa
+`npm run dev` realiza una compilación completa y abre el preview de Vite. La Expoferia también puede ejecutarse de manera aislada con:
 
-```bash
-npm run build
-npm run preview
+```powershell
+npm.cmd run dev:expo
 ```
 
-La compilación genera en `dist/`:
+Para construir y revisar el resultado manualmente:
 
-- El portal principal de SIPA.
-- La Expoferia de Nutrición Animal 2026 en su ruta de evento.
-- Información automática de versión, fecha de actualización y commit.
-- Una página `404.html` y la configuración necesaria para GitHub Pages.
+```powershell
+npm.cmd run build
+npm.cmd run preview
+```
 
-## Publicación
+## Validación
 
-Cada fusión a `main` ejecuta el flujo **Publicar SIPA en GitHub Pages**, valida JavaScript, compila el portal y publica el artefacto `dist/` mediante el mecanismo oficial de GitHub Pages.
+```powershell
+npm.cmd run check:js
+npm.cmd run check:site
+npm.cmd run test:unit
+npx.cmd playwright install chromium
+npm.cmd run test:e2e
+npm.cmd run validate
+```
 
-Sitio público:
+`npm run validate` ejecuta comprobación de JavaScript, build integrado, auditoría estática, pruebas unitarias y pruebas E2E. El build ya valida el sitio antes de finalizar; `check:site` permanece disponible como gate independiente para CI y diagnóstico.
 
-Mientras se configura el dominio, el sitio se publica en:
+El artefacto final se genera en `dist/` e incluye únicamente páginas HTML publicadas, assets necesarios, Expoferia, `404.html`, `robots.txt`, `sitemap.xml`, `build-info.json` y `.nojekyll`. La versión se obtiene exclusivamente de `package.json`.
 
-`https://elranchodejuan-jo.github.io/SIPA_UTMACH/`
+## Gestión de contenido
 
-La URL canónica objetivo es `https://sipautmach.com/`. Consulta [docs/SIPAUTMACH_PRODUCTION.md](docs/SIPAUTMACH_PRODUCTION.md) para el estado de configuración y los pasos externos pendientes.
+Las colecciones de webinars, integrantes, eventos, proyectos y redes se editan en `portal/content/`. Los elementos con `published: false` no se generan para producción. No deben añadirse personas, cargos, contactos, publicaciones ni enlaces sin confirmación institucional.
 
-## Principios de contenido
+Consulta [docs/CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md) para los procedimientos editoriales y [docs/PORTAL_ARCHITECTURE.md](docs/PORTAL_ARCHITECTURE.md) para el diseño técnico.
 
-- **Divulgación científica:** artículos explicados, infografías, fichas técnicas, resultados y recursos permanentes.
-- **Eventos:** páginas creadas para expoferias, casas abiertas, talleres y presentaciones.
-- **Investigación:** memoria de proyectos, metodologías, avances, resultados y publicaciones.
+## CI/CD y publicación
 
-## Estado
+El workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
 
-**SIPA v1.0.0 — Portal institucional inicial.**
+1. En pull requests hacia `main`, instala dependencias, valida, construye y ejecuta pruebas sin publicar.
+2. En ejecución manual, valida sin publicar.
+3. Únicamente después de un push a `main`, reutiliza el artefacto validado y publica mediante el mecanismo oficial de GitHub Pages.
 
-Los nombres oficiales de autoridades, integrantes, misión, visión, correo y redes se incorporarán cuando sean confirmados por la dirección del semillero.
+No se usa force push a `gh-pages`, no se versiona `dist/` y no se incluye un archivo `CNAME`; el dominio personalizado se administra desde GitHub Pages.
+
+El estado comprobado del dominio y los límites operativos se documentan en [docs/SIPAUTMACH_PRODUCTION.md](docs/SIPAUTMACH_PRODUCTION.md).
+
+## Estado editorial
+
+**SIPA v2.0.0 — portal institucional multipágina.**
+
+Los datos institucionales pendientes permanecen ocultos hasta ser confirmados por la dirección del semillero.

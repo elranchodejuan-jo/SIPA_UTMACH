@@ -1,0 +1,17 @@
+import { publications, researchAreas, researchEmptyMessages, researchProcess, researchProjects, scientificOutputs } from '../content/research.mjs';
+import { escapeHtml } from '../lib/html.mjs';
+import { renderProjectCard, renderResearchArea, renderButtonLink, renderResourceCard } from '../templates/components.mjs';
+import { renderEmptyState } from '../templates/partials/empty-state.mjs';
+import { renderPageHero } from '../templates/partials/page-hero.mjs';
+
+export function renderResearchPage({ helpers, route }) {
+  const areas = researchAreas.filter(area => area.published);
+  const projects = researchProjects.filter(project => project.published);
+  const html = `${renderPageHero({ eyebrow: 'Investigación SIPA', title: 'Investigación', description: route.description })}
+  <section class="section" id="lineas" aria-labelledby="areas-title"><div class="container"><div class="section-heading"><p class="eyebrow">Campos de interés</p><h2 id="areas-title">Áreas actuales de trabajo</h2><p>Estas áreas organizan el trabajo visible del portal; no se presentan como líneas oficiales aprobadas.</p></div><div class="card-grid card-grid--three">${areas.map(area => renderResearchArea(area, helpers)).join('')}</div></div></section>
+  <section class="section section--soft" id="proceso" aria-labelledby="process-title"><div class="container"><div class="section-heading"><p class="eyebrow">Metodología</p><h2 id="process-title">Proceso de investigación</h2></div><ol class="process-steps">${researchProcess.map(step => `<li><span>${escapeHtml(step.number)}</span><div><h3>${escapeHtml(step.title)}</h3><p>${escapeHtml(step.description)}</p></div></li>`).join('')}</ol></div></section>
+  <section class="section" id="proyectos" aria-labelledby="projects-title"><div class="container"><div class="section-heading"><p class="eyebrow">Registro</p><h2 id="projects-title">Proyectos</h2></div>${projects.length ? `<div class="card-grid">${projects.map(project => renderProjectCard(project, helpers)).join('')}</div>` : renderEmptyState({ title: 'Registro preparado', message: researchEmptyMessages.projects, icon: 'research' }, helpers)}</div></section>
+  <section class="section section--soft" id="publicaciones" aria-labelledby="publications-title"><div class="container"><div class="section-heading"><p class="eyebrow">Biblioteca</p><h2 id="publications-title">Publicaciones</h2></div>${publications.filter(item => item.published).length ? `<div class="card-grid">${publications.filter(item => item.published).map(item => renderResourceCard(item, helpers)).join('')}</div>` : renderEmptyState({ title: 'Biblioteca en actualización', message: researchEmptyMessages.publications, icon: 'article' }, helpers)}</div></section>
+  <section class="section" id="produccion-cientifica" aria-labelledby="outputs-title"><div class="container"><div class="section-heading"><p class="eyebrow">Resultados</p><h2 id="outputs-title">Producción científica</h2></div>${scientificOutputs.filter(item => item.published).length ? `<div class="card-grid">${scientificOutputs.filter(item => item.published).map(item => renderResourceCard(item, helpers)).join('')}</div>` : renderEmptyState({ title: 'Productos por incorporar', message: researchEmptyMessages.outputs, icon: 'resource' }, helpers)}<div class="section-action">${renderButtonLink({ href: helpers.routeHref('outreach'), label: 'Explorar divulgación', variant: 'secondary' })}</div></div></section>`;
+  return { html, structuredData: [] };
+}

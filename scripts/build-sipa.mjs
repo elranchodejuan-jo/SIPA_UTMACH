@@ -1,92 +1,98 @@
-import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
-const root = process.cwd();
-const portalDir = path.join(root, 'portal');
+import { buildPortal } from './build-portal.mjs';
+import { validateSite } from './validate-site.mjs';
+
+const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const distDir = path.join(root, 'dist');
 const expoDistDir = path.join(root, 'dist-expo');
 const eventDir = path.join(distDir, 'eventos', 'expoferia-nutricion-animal-2026');
+const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
+const version = packageJson.version;
 const buildDate = new Date().toISOString();
-const buildSha = (process.env.GITHUB_SHA || 'local').slice(0, 7);
-const version = '1.2.0';
-const cacheKey = `${version}-${buildSha}`;
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
-const walk = async directory => {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const files = [];
-  for (const entry of entries) {
-    const fullPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(fullPath));
-    else files.push(fullPath);
+if (typeof version !== 'string' || !/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(version)) {
+  throw new Error('package.json debe declarar una versión semántica válida.');
+}
+
+const resolveBuildSha = () => {
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7);
+
+  try {
+    return execFileSync('git', ['rev-parse', '--short=7', 'HEAD'], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return 'local';
   }
-  return files;
 };
 
-const injectBuildMetadata = async directory => {
-  const files = await walk(directory);
-  for (const file of files.filter(file => file.endsWith('.html'))) {
-    const source = await readFile(file, 'utf8');
-    const output = source
-      .replaceAll('__BUILD_DATE__', buildDate)
-      .replaceAll('__BUILD_SHA__', buildSha)
-      .replaceAll('__BUILD_VERSION__', version);
-    await writeFile(file, output, 'utf8');
+const buildSha = resolveBuildSha();
+
+const buildExpo = () => {
+  const command = process.platform === 'win32'
+    ? (process.env.ComSpec || 'cmd.exe')
+    : 'npm';
+  const args = process.platform === 'win32'
+    ? ['/d', '/s', '/c', 'npm run build:expo']
+    : ['run', 'build:expo'];
+
+  execFileSync(command, args, {
+    cwd: root,
+    stdio: 'inherit',
+  });
+};
+
+const addPortalReturn = async () => {
+  const eventIndexPath = path.join(eventDir, 'index.html');
+  const eventIndex = await readFile(eventIndexPath, 'utf8');
+
+  if (eventIndex.includes('data-sipa-return')) return;
+
+  const returnBar = `
+<style id="sipa-return-style">
+  .sipa-return{position:fixed;z-index:9999;left:16px;top:16px;display:inline-flex;min-height:44px;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:rgba(20,59,99,.94);color:#fff!important;font:700 13px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 12px 28px rgba(0,0,0,.24);backdrop-filter:blur(12px);transition:transform .2s,background-color .2s}
+  .sipa-return:hover{transform:translateY(-2px);background:#315e35}
+  .sipa-return:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  @media(max-width:600px){.sipa-return{top:auto;bottom:14px;left:14px;padding:9px 12px;font-size:12px}}
+  @media(prefers-reduced-motion:reduce){.sipa-return{transition:none}.sipa-return:hover{transform:none}}
+</style>
+<a class="sipa-return" data-sipa-return href="../../" aria-label="Volver al portal SIPA">← Volver a SIPA</a>
+`;
+  const output = eventIndex.replace(/<body([^>]*)>/i, `<body$1>${returnBar}`);
+
+  if (output === eventIndex) {
+    throw new Error('No se encontró <body> en la Expoferia construida.');
   }
+
+  await writeFile(eventIndexPath, output, 'utf8');
 };
 
 await rm(distDir, { recursive: true, force: true });
 await rm(expoDistDir, { recursive: true, force: true });
 
-console.log('1/5 Construyendo la experiencia histórica de la expoferia...');
-const buildCommand = process.platform === 'win32'
-  ? (process.env.ComSpec || 'cmd.exe')
-  : npmCommand;
+try {
+  console.log('1/5 Construyendo la experiencia histórica de la Expoferia…');
+  buildExpo();
 
-const buildArgs = process.platform === 'win32'
-  ? ['/d', '/s', '/c', 'npm run build:expo']
-  : ['run', 'build:expo'];
+  console.log('2/5 Generando el portal institucional multipágina…');
+  await buildPortal({ rootDir: root, distDir, version, buildDate, buildSha });
 
-execFileSync(buildCommand, buildArgs, { cwd: root, stdio: 'inherit' });
+  console.log('3/5 Integrando la Expoferia en su ruta histórica…');
+  await mkdir(path.dirname(eventDir), { recursive: true });
+  await cp(expoDistDir, eventDir, { recursive: true });
+  await addPortalReturn();
 
-console.log('2/5 Preparando el portal institucional SIPA...');
-await cp(portalDir, distDir, { recursive: true });
-await mkdir(path.dirname(eventDir), { recursive: true });
-await cp(expoDistDir, eventDir, { recursive: true });
+  console.log('4/5 Validando rutas, enlaces, contenido y assets…');
+  await validateSite({ distDir });
 
-console.log('3/5 Aplicando los estilos institucionales de SIPA...');
-const portalIndexPath = path.join(distDir, 'index.html');
-let portalIndex = await readFile(portalIndexPath, 'utf8');
-portalIndex = portalIndex
-  .replace(
-    '<link rel="stylesheet" href="./assets/styles.css">',
-    `<link rel="stylesheet" href="./assets/styles.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/species-theme.css?v=${cacheKey}">`
-  )
-  .replace(
-    '<script src="./assets/app.js" defer></script>',
-    `<script src="./assets/app.js?v=${cacheKey}" defer></script>`
-  )
-  .replaceAll('./assets/hero-produccion-animal.svg', `./assets/hero-produccion-animal.svg?v=${cacheKey}`);
-await writeFile(portalIndexPath, portalIndex, 'utf8');
-
-const eventIndexPath = path.join(eventDir, 'index.html');
-let eventIndex = await readFile(eventIndexPath, 'utf8');
-const returnBar = `\n<style id="sipa-return-style">.sipa-return{position:fixed;z-index:9999;left:16px;top:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:12px;background:rgba(20,59,99,.92);color:#fff!important;font:700 13px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px);transition:transform .2s}.sipa-return:hover{transform:translateY(-2px);background:#315E35}@media(max-width:600px){.sipa-return{top:auto;bottom:14px;left:14px;padding:9px 12px;font-size:12px}}</style><a class="sipa-return" href="../../" aria-label="Volver al portal SIPA">← Volver a SIPA</a>\n`;
-if (!eventIndex.includes('class="sipa-return"')) {
-  eventIndex = eventIndex.replace(/<body([^>]*)>/i, `<body$1>${returnBar}`);
-  await writeFile(eventIndexPath, eventIndex, 'utf8');
+  console.log(`5/5 SIPA v${version} listo en dist/ — ${buildDate} (${buildSha})`);
+} finally {
+  await rm(expoDistDir, { recursive: true, force: true });
 }
-
-console.log('4/5 Inyectando fecha, versión y commit de despliegue...');
-await injectBuildMetadata(distDir);
-
-const notFound = `<!doctype html><html lang="es-EC"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Página no encontrada | SIPA</title><body><main><h1>Página no encontrada</h1><p>Redirigiendo al portal SIPA…</p><p><a href="./">Ir al portal SIPA</a></p></main><script>(()=>{const marker='/eventos/';const path=window.location.pathname;const fallback=path.includes(marker)?(path.split(marker)[0]||'')+'/':'./';window.location.replace(fallback);})();</script></body></html>`;
-await writeFile(path.join(distDir, '404.html'), notFound, 'utf8');
-await writeFile(path.join(distDir, 'build-info.json'), JSON.stringify({ version, buildDate, buildSha }, null, 2), 'utf8');
-await writeFile(path.join(distDir, '.nojekyll'), '', 'utf8');
-
-console.log('5/5 Limpiando archivos temporales...');
-await rm(expoDistDir, { recursive: true, force: true });
-console.log(`SIPA v${version} listo en dist/ — ${buildDate} (${buildSha})`);
