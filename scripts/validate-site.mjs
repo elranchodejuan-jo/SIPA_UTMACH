@@ -331,11 +331,14 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
 
   const faviconAssets = [
     ['favicon/favicon-16x16.png', 16],
+    ['favicon/favicon-24x24.png', 24],
     ['favicon/favicon-32x32.png', 32],
     ['favicon/favicon-48x48.png', 48],
+    ['favicon/favicon-64x64.png', 64],
     ['favicon/apple-touch-icon.png', 180],
     ['favicon/favicon-192x192.png', 192],
     ['favicon/favicon-512x512.png', 512],
+    ['favicon/favicon-1024x1024.png', 1024],
   ];
   if (!await fileExists(path.join(distDir, 'favicon.ico'))) errors.push('Falta favicon.ico.');
   for (const [relativePath, expectedSize] of faviconAssets) {

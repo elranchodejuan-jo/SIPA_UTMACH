@@ -2,8 +2,10 @@ import { expect, test } from '@playwright/test';
 import { EXPO_ROUTE, expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
 
 const EXPECTED_ICONS = [
+  { rel: 'icon', sizes: '64x64', width: 64, height: 64 },
   { rel: 'icon', sizes: '48x48', width: 48, height: 48 },
   { rel: 'icon', sizes: '32x32', width: 32, height: 32 },
+  { rel: 'icon', sizes: '24x24', width: 24, height: 24 },
   { rel: 'icon', sizes: '16x16', width: 16, height: 16 },
   { rel: 'apple-touch-icon', sizes: '180x180', width: 180, height: 180 },
 ];
@@ -30,6 +32,7 @@ const expectFaviconSuite = async page => {
   expect(manifest.icons).toEqual(expect.arrayContaining([
     expect.objectContaining({ sizes: '192x192', type: 'image/png' }),
     expect.objectContaining({ sizes: '512x512', type: 'image/png' }),
+    expect.objectContaining({ sizes: '1024x1024', type: 'image/png' }),
   ]));
 };
 
