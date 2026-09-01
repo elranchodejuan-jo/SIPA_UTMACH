@@ -1,0 +1,26 @@
+# Configuración de proyecto para Codex CLI 0.151.0.
+# Los perfiles heredan el modelo y las políticas de la sesión principal.
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 5
+
+[agents.architect]
+config_file = "agents/architect.toml"
+description = "Arquitectura técnica, planificación y revisión de coherencia de SIPA."
+
+[agents.developer]
+config_file = "agents/developer.toml"
+description = "Implementación y validación técnica incremental de SIPA."
+
+[agents.ui-brand]
+config_file = "agents/ui-brand.toml"
+description = "UX, accesibilidad e identidad visual institucional de SIPA."
+
+[agents.qa-security]
+config_file = "agents/qa-security.toml"
+description = "Calidad, seguridad, regresiones y evidencia de validación."
+
+[agents.devops-release]
+config_file = "agents/devops-release.toml"
+description = "Git, CI/CD, despliegue y preparación segura para SIPAUTMACH.COM."
