@@ -4,12 +4,12 @@
 
 - **Fecha:** 1 de septiembre de 2026
 - **Rama:** `feat/sipa-v2-portal-multipagina`
-- **SHA base incluido en el build validado:** `22cfe31`
+- **SHA de cierre del pull request:** `7077b65`
 - **Estado local:** PASS
-- **Estado remoto:** pendiente de pull request y checks de GitHub Actions
+- **Estado remoto:** PASS; pull request #14 abierto, sin fusionar, con validación de GitHub Actions verde
 - **Alcance:** portal institucional multipágina, preservación de Expoferia, generación estática, navegación, accesibilidad, responsive, seguridad de contenido y compatibilidad con GitHub Pages.
 
-El PASS local corresponde al estado integrado posterior a las correcciones visuales y funcionales descritas en este reporte. No implica despliegue ni validación de producción.
+El PASS local y remoto corresponde al estado integrado posterior a las correcciones visuales y funcionales descritas en este reporte. El pull request continúa abierto y no se ejecutó ningún despliegue ni validación de producción.
 
 ## Evidencia final ejecutada
 
@@ -29,6 +29,16 @@ El PASS local corresponde al estado integrado posterior a las correcciones visua
 | Capturas | Playwright + inspección humana | PASS: 10/10 capturas requeridas revisadas; Contacto fue recapturada después de corregir su icono. |
 
 En Windows, la ejecución final de `validate` utilizó un preview local controlado y `SIPA_BASE_URL=http://127.0.0.1:4173` para evitar dejar un proceso hijo huérfano. El servidor fue detenido explícitamente al terminar. El workflow Linux conserva el servidor administrado por Playwright.
+
+## Evidencia remota de pull request y CI
+
+| Control remoto | Resultado |
+| --- | --- |
+| Pull request | [#14](https://github.com/elranchodejuan-jo/SIPA_UTMACH/pull/14) abierto hacia `main`, no fusionado, con head final `7077b65`. |
+| Primera ejecución | [Run 33552572727](https://github.com/elranchodejuan-jo/SIPA_UTMACH/actions/runs/33552572727): `Validar portal` falló por overflow horizontal reproducible en Linux a 768 × 1024; `Publicar GitHub Pages` quedó omitido. |
+| Corrección | Commit `7077b65`: el layout denso cambia de 48 rem a 50 rem para conservar 768 px como tablet, sin ocultar overflow ni relajar la prueba. |
+| Ejecución definitiva | [Run 33553560712](https://github.com/elranchodejuan-jo/SIPA_UTMACH/actions/runs/33553560712): `Validar portal` SUCCESS; `Publicar GitHub Pages` SKIPPED, comportamiento esperado para un pull request. |
+| Producción | No hubo deploy, merge, cambio de DNS, HTTPS, certificados ni configuración externa de GitHub Pages. |
 
 ## Cobertura del validador estático
 
@@ -107,6 +117,7 @@ Directorio temporal no versionado: `tmp/sipa-v2-qa/`.
 7. En escritorio, `.js .primary-nav` conservaba `height: 100dvh`, expandía el header a 769 px e interceptaba el CTA de Eventos. Se restablecieron ancho, alto y overflow en el breakpoint desktop; la focal posterior quedó verde.
 8. El icono externo de Contacto heredaba relleno negro porque el SVG portaba directamente `card__icon`. Se normalizó el selector de trazo, se regeneró `contacto.png` y la inspección focal confirmó el icono azul correcto.
 9. Los primeros E2E saturaron Chromium/Vite con seis workers y duplicaron escenarios pesados. La configuración final usa un worker en Windows y dos en CI, serializa pruebas pesadas y conserva la cobertura de ambos proyectos.
+10. El primer CI remoto detectó 4 px de overflow horizontal en Linux a 768 × 1024 al activar el layout denso justo en 48 rem. Se desplazó ese breakpoint a 50 rem, se repitió `npm run validate` con 41 pruebas aprobadas y el segundo run remoto quedó verde.
 
 ## Riesgos residuales y pendientes humanos
 
@@ -115,8 +126,8 @@ Directorio temporal no versionado: `tmp/sipa-v2-qa/`.
 - Correo, WhatsApp y redes sociales adicionales requieren URLs confirmadas.
 - La biblioteca de webinars espera sus primeros enlaces, ponentes y metadatos confirmados.
 - Los proyectos, publicaciones y producción científica deben incorporarse solo después de validación institucional.
-- Los checks del pull request y el despliegue de GitHub Pages se reportan por separado cuando exista el PR; no forman parte del PASS local.
+- La fusión del pull request #14 requiere revisión humana; el job de Pages permaneció omitido y no existe despliegue de SIPA V2 que validar en producción.
 
 ## Criterio de cierre
 
-**QA local: PASS.** Build, validación estática, unitarias, E2E, auditoría de dependencias, seis viewports, consola, enlaces, assets y revisión visual se ejecutaron sobre la implementación integrada. No quedan defectos técnicos P0/P1 conocidos dentro del alcance; el cierre remoto depende de los checks del pull request y no autoriza merge automático.
+**QA local y CI remoto: PASS.** Build, validación estática, unitarias, E2E, auditoría de dependencias, seis viewports, consola, enlaces, assets y revisión visual se ejecutaron sobre la implementación integrada. El run definitivo `33553560712` concluyó con `Validar portal` en SUCCESS y Pages omitido. No quedan defectos técnicos P0/P1 conocidos dentro del alcance; el pull request #14 permanece abierto, sin fusión automática y sin despliegue.
