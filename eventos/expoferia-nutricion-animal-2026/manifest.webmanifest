@@ -1,0 +1,19 @@
+{
+  "name": "Nutrición Animal Responsable",
+  "short_name": "Nutrición Animal",
+  "description": "Proyecto académico sobre elaboración de alimentos balanceados para pollos de engorde — UTMACH",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFDF7",
+  "theme_color": "#143B63",
+  "lang": "es-EC",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

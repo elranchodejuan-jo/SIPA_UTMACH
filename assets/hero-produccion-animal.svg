@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 640" role="img" aria-labelledby="title desc">
+  <title id="title">Producción animal e investigación</title>
+  <desc id="desc">Composición gráfica con un bovino en tonos café, un porcino en tonos rosados y un ave en tonos amarillos, conectados mediante elementos científicos.</desc>
+  <defs>
+    <linearGradient id="panel" x1="70" y1="40" x2="670" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8fcff"/><stop offset=".52" stop-color="#fff9ee"/><stop offset="1" stop-color="#f8e9ef"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="146" y1="140" x2="606" y2="535" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b8bd1"/><stop offset="1" stop-color="#034d80"/>
+    </linearGradient>
+    <linearGradient id="cow" x1="0" y1="0" x2="160" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffaf4"/><stop offset="1" stop-color="#ead0bb"/>
+    </linearGradient>
+    <linearGradient id="pig" x1="0" y1="0" x2="190" y2="155" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff7fa"/><stop offset="1" stop-color="#f3bdd1"/>
+    </linearGradient>
+    <linearGradient id="bird" x1="0" y1="0" x2="160" y2="175" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffdf2"/><stop offset="1" stop-color="#ffe08a"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="760" height="640" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#06385f" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <rect x="58" y="35" width="644" height="558" rx="58" fill="url(#panel)" filter="url(#shadow)"/>
+  <circle cx="180" cy="356" r="126" fill="#c69269" opacity=".13"/>
+  <circle cx="405" cy="394" r="142" fill="#ea91b0" opacity=".15"/>
+  <circle cx="600" cy="310" r="130" fill="#ffd56a" opacity=".22"/>
+  <path d="M58 423c104-88 185-72 258-17 79 59 161 60 386-54v183c0 32-26 58-58 58H116c-32 0-58-26-58-58V423z" fill="url(#blue)"/>
+
+  <g opacity=".3" stroke="#0879b7" fill="none">
+    <circle cx="594" cy="151" r="82"/><circle cx="594" cy="151" r="56"/><circle cx="594" cy="151" r="28"/>
+    <path d="M93 158h168M93 186h128M481 87v128M514 87v90"/>
+  </g>
+  <g stroke="#0879b7" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M337 90c-28 20-28 46 0 66s28 46 0 66M385 90c28 20 28 46 0 66s-28 46 0 66M343 105h36M334 132h58M334 160h58M343 189h36" opacity=".75"/>
+    <path d="M130 279c18-30 42-45 72-45" stroke="#9b633e" opacity=".58"/>
+    <path d="M545 260c23-25 49-34 78-28" stroke="#d19a08" opacity=".68"/>
+    <path d="M329 274c20-18 45-25 75-19" stroke="#d45f8a" opacity=".58"/>
+  </g>
+
+  <g transform="translate(111 235)" stroke="#724328" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M37 52 12 28l5 45c0 46 27 78 70 78s70-32 70-78l5-45-25 24" fill="url(#cow)"/>
+    <path d="M48 65c10-9 23-13 39-13s29 4 39 13" fill="none"/>
+    <path d="M54 104c15 14 51 14 66 0" fill="#e7cbb5"/>
+    <path d="M62 88h.1M112 88h.1"/>
+    <path d="M35 41C26 22 12 19 2 31M139 41c9-19 23-22 33-10" fill="none"/>
+    <path d="M22 72c18 7 30 3 39-7M113 65c12 10 25 12 39 6" stroke="#c69269" stroke-width="3" opacity=".8"/>
+  </g>
+
+  <g transform="translate(301 300)" stroke="#a33866" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 82c0-47 37-77 91-77 29 0 53 9 70 26l23-12v44l-17 12c-7 38-37 62-80 62H35L20 159 10 82z" fill="url(#pig)"/>
+    <path d="M62 61h.1"/>
+    <ellipse cx="144" cy="84" rx="34" ry="27" fill="#f6bfd2"/>
+    <path d="M133 84h.1M155 84h.1M38 137v24M91 137v24"/>
+    <path d="M101 7c9-15 23-18 39-9" fill="none"/>
+    <path d="M40 42c24-14 55-18 90-8" stroke="#ea91b0" stroke-width="3" opacity=".9"/>
+  </g>
+
+  <g transform="translate(512 249)" stroke="#9a7000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M37 140c-31-13-44-51-28-84 17-35 60-49 96-25 29 19 42 55 31 91" fill="url(#bird)"/>
+    <path d="M59 143c33 16 77 10 104-17" fill="none"/>
+    <path d="M118 34c2-19 16-31 35-29-3 16-12 27-27 35l27 10-24 18" fill="#fff8dc"/>
+    <path d="M89 56h.1M53 143v33M105 143v33"/>
+    <path d="M24 70 1 55l8 29" fill="#ffd56a"/>
+    <path d="M48 89c20-19 47-25 78-17" stroke="#efba27" stroke-width="4" opacity=".9"/>
+  </g>
+
+  <g fill="#fff" opacity=".95"><circle cx="132" cy="496" r="7"/><circle cx="176" cy="528" r="5"/><circle cx="620" cy="493" r="6"/><circle cx="661" cy="444" r="4"/></g>
+  <g stroke-width="2" fill="none" opacity=".95">
+    <path d="M146 496h95" stroke="#e7cbb5"/><path d="M546 493h68" stroke="#ffe39a"/><path d="M176 528h83" stroke="#f6bfd2"/><path d="M579 444h76" stroke="#9fe2ff"/>
+  </g>
+
+  <g transform="translate(78 82)">
+    <rect width="158" height="54" rx="16" fill="#fff" stroke="#a8dcf6"/>
+    <path d="M20 36V20h8v16" stroke="#9b633e" stroke-width="3" stroke-linecap="round"/>
+    <path d="M35 36V14h8v22" stroke="#d45f8a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M50 36V25h8v11" stroke="#d19a08" stroke-width="3" stroke-linecap="round"/>
+    <text x="73" y="24" fill="#06385f" font-family="Arial,sans-serif" font-size="11" font-weight="700">EVIDENCIA</text>
+    <text x="73" y="39" fill="#6a7e8e" font-family="Arial,sans-serif" font-size="9">Medir para mejorar</text>
+  </g>
+</svg>

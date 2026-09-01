@@ -1,0 +1,504 @@
+:root {
+  --bovine-900: #5b321e;
+  --bovine-800: #724328;
+  --bovine-600: #9b633e;
+  --bovine-400: #c69269;
+  --bovine-200: #e7cbb5;
+  --bovine-100: #f3e2d3;
+  --bovine-50: #fbf4ee;
+
+  --swine-900: #7d294c;
+  --swine-800: #a33866;
+  --swine-600: #d45f8a;
+  --swine-400: #ea91b0;
+  --swine-200: #f6bfd2;
+  --swine-100: #fbe0e9;
+  --swine-50: #fff5f8;
+
+  --poultry-900: #755300;
+  --poultry-800: #9a7000;
+  --poultry-600: #d19a08;
+  --poultry-500: #efba27;
+  --poultry-300: #ffd56a;
+  --poultry-200: #ffe39a;
+  --poultry-100: #fff0bf;
+  --poultry-50: #fffaf0;
+
+  --species-ribbon: linear-gradient(90deg, var(--bovine-600) 0 33.33%, var(--swine-600) 33.33% 66.66%, var(--poultry-500) 66.66% 100%);
+}
+
+:root[data-theme='dark'] {
+  --bovine-50: #241b17;
+  --bovine-100: #35241c;
+  --bovine-200: #60412f;
+  --swine-50: #261820;
+  --swine-100: #3a1d2a;
+  --swine-200: #693047;
+  --poultry-50: #282313;
+  --poultry-100: #3a3115;
+  --poultry-200: #665521;
+}
+
+/* Identidad institucional con una firma multiespecie */
+.institution-bar {
+  position: relative;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(255, 213, 106, .23), transparent 21%),
+    linear-gradient(90deg, var(--blue-900), var(--blue-800));
+}
+
+.institution-bar::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: var(--species-ribbon);
+}
+
+.status-dot {
+  background: var(--poultry-300);
+  box-shadow: 0 0 0 5px rgba(255, 213, 106, .16), 0 0 18px rgba(255, 213, 106, .5);
+}
+
+.main-nav a::after {
+  background: var(--species-ribbon);
+}
+
+.theme-toggle:hover,
+.menu-toggle:hover {
+  border-color: color-mix(in srgb, var(--poultry-500) 48%, var(--blue-300));
+  background: linear-gradient(145deg, var(--poultry-50), var(--swine-50));
+}
+
+/* Hero: azul UTMACH con energía cálida de las tres especies */
+.hero {
+  background:
+    radial-gradient(circle at 88% 13%, rgba(239, 186, 39, .29), transparent 23%),
+    radial-gradient(circle at 79% 76%, rgba(212, 95, 138, .20), transparent 25%),
+    radial-gradient(circle at 55% 35%, rgba(155, 99, 62, .14), transparent 25%),
+    linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--blue-50) 70%, var(--poultry-50)) 100%);
+}
+
+.hero::before {
+  background-image:
+    linear-gradient(rgba(0,104,173,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,104,173,.05) 1px, transparent 1px),
+    radial-gradient(circle at 84% 24%, rgba(239,186,39,.18) 0 3px, transparent 4px),
+    radial-gradient(circle at 70% 68%, rgba(212,95,138,.13) 0 3px, transparent 4px);
+  background-size: 52px 52px, 52px 52px, 34px 34px, 41px 41px;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 8% 80%, rgba(155,99,62,.15), transparent 15%),
+    radial-gradient(circle at 97% 56%, rgba(212,95,138,.14), transparent 16%);
+  mix-blend-mode: multiply;
+}
+
+:root[data-theme='dark'] .hero::after {
+  mix-blend-mode: screen;
+  opacity: .65;
+}
+
+.hero__glow--one {
+  background: linear-gradient(135deg, rgba(155,99,62,.20), rgba(212,95,138,.16));
+  box-shadow: 80px -60px 90px rgba(239,186,39,.12);
+}
+
+.hero__glow--two {
+  border-color: rgba(239,186,39,.20);
+  box-shadow: -44px 55px 0 -18px rgba(212,95,138,.13), -85px 5px 0 -30px rgba(155,99,62,.14);
+}
+
+.hero h1 em::after {
+  height: .14em;
+  background: linear-gradient(90deg, var(--blue-500) 0 24%, var(--bovine-400) 24% 49%, var(--swine-400) 49% 74%, var(--poultry-500) 74% 100%);
+  opacity: .72;
+}
+
+.hero__proof > div:nth-child(1) strong { color: var(--bovine-600); }
+.hero__proof > div:nth-child(2) strong { color: var(--swine-600); }
+.hero__proof > div:nth-child(3) strong { color: var(--poultry-800); }
+
+.hero__visual::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 8% 2% 6%;
+  border-radius: 46% 54% 52% 48% / 46% 45% 55% 54%;
+  background:
+    radial-gradient(circle at 24% 64%, rgba(155,99,62,.24), transparent 27%),
+    radial-gradient(circle at 54% 68%, rgba(212,95,138,.25), transparent 28%),
+    radial-gradient(circle at 78% 30%, rgba(239,186,39,.31), transparent 29%),
+    linear-gradient(145deg, rgba(33,161,230,.12), rgba(255,255,255,.02));
+  filter: blur(1px);
+  transform: rotate(-3deg);
+}
+
+.hero__visual::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 68%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--poultry-500) 55%, var(--blue-300));
+  opacity: .55;
+  animation: species-orbit 18s linear infinite;
+}
+
+.hero__visual > img {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 30px 55px rgba(91,50,30,.13)) drop-shadow(18px 12px 30px rgba(212,95,138,.10));
+}
+
+.visual-card--top {
+  border-color: color-mix(in srgb, var(--poultry-500) 58%, var(--line));
+  box-shadow: 0 15px 34px rgba(209,154,8,.17);
+}
+
+.visual-card--top .visual-card__icon {
+  background: linear-gradient(145deg, var(--poultry-100), var(--poultry-300));
+  color: var(--poultry-900);
+}
+
+.visual-card--bottom {
+  border-color: color-mix(in srgb, var(--swine-400) 58%, var(--line));
+  box-shadow: 0 15px 34px rgba(212,95,138,.16);
+}
+
+.pulse-icon {
+  background: linear-gradient(145deg, var(--swine-600), var(--poultry-500));
+  box-shadow: 0 0 0 0 rgba(212,95,138,.42);
+}
+
+/* Franja de especies */
+.species-strip article:not(.species-strip__statement) {
+  position: relative;
+  transition: transform .25s var(--ease), background .25s, box-shadow .25s;
+}
+
+.species-strip article:not(.species-strip__statement)::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+}
+
+.species-strip article:nth-child(1) {
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 88%, var(--bovine-100)), var(--surface-raised));
+}
+.species-strip article:nth-child(1)::before { background: linear-gradient(90deg, var(--bovine-800), var(--bovine-400)); }
+.species-strip article:nth-child(1) .species-icon { background: var(--bovine-100); border-color: var(--bovine-200); color: var(--bovine-800); }
+
+.species-strip article:nth-child(2) {
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 87%, var(--swine-100)), var(--surface-raised));
+}
+.species-strip article:nth-child(2)::before { background: linear-gradient(90deg, var(--swine-800), var(--swine-400)); }
+.species-strip article:nth-child(2) .species-icon { background: var(--swine-100); border-color: var(--swine-200); color: var(--swine-800); }
+
+.species-strip article:nth-child(3) {
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 86%, var(--poultry-100)), var(--surface-raised));
+}
+.species-strip article:nth-child(3)::before { background: linear-gradient(90deg, var(--poultry-800), var(--poultry-300)); }
+.species-strip article:nth-child(3) .species-icon { background: var(--poultry-100); border-color: var(--poultry-200); color: var(--poultry-900); }
+
+.species-strip article:not(.species-strip__statement):hover {
+  z-index: 2;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 28px rgba(3,56,95,.11);
+}
+
+.species-strip__statement {
+  position: relative;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(239,186,39,.28), transparent 28%),
+    radial-gradient(circle at 62% 100%, rgba(212,95,138,.18), transparent 35%),
+    linear-gradient(135deg, var(--blue-950), var(--blue-800));
+}
+
+.species-strip__statement::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--species-ribbon);
+}
+
+.signal {
+  border-color: rgba(255,213,106,.65);
+  box-shadow: inset 0 0 20px rgba(212,95,138,.12);
+}
+.signal::before { border-color: var(--swine-400); }
+.signal::after { background: var(--poultry-300); border-color: var(--poultry-300); }
+
+/* Secciones suaves más cálidas */
+.section--soft {
+  background:
+    radial-gradient(circle at 0 10%, rgba(155,99,62,.07), transparent 18%),
+    radial-gradient(circle at 100% 82%, rgba(212,95,138,.07), transparent 21%),
+    linear-gradient(180deg, var(--surface-soft), color-mix(in srgb, var(--surface-soft) 94%, var(--poultry-50)));
+}
+
+/* Principios con acentos variados */
+.principle-card:nth-child(1) {
+  border-color: color-mix(in srgb, var(--blue-300) 65%, var(--line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 90%, var(--blue-50)), var(--surface-raised));
+}
+.principle-card:nth-child(2) {
+  border-color: color-mix(in srgb, var(--bovine-400) 55%, var(--line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 88%, var(--bovine-100)), var(--surface-raised));
+}
+.principle-card:nth-child(2) > svg { stroke: var(--bovine-600); }
+.principle-card:nth-child(2) .card-number { color: var(--bovine-400); }
+.principle-card:nth-child(2)::after { background: var(--bovine-100); }
+
+.principle-card:nth-child(3) {
+  border-color: color-mix(in srgb, var(--swine-400) 55%, var(--line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 88%, var(--swine-100)), var(--surface-raised));
+}
+.principle-card:nth-child(3) > svg { stroke: var(--swine-600); }
+.principle-card:nth-child(3) .card-number { color: var(--swine-400); }
+.principle-card:nth-child(3)::after { background: var(--swine-100); }
+
+.principle-card--accent {
+  background:
+    radial-gradient(circle at 85% 10%, rgba(255,213,106,.30), transparent 28%),
+    linear-gradient(145deg, var(--blue-800), color-mix(in srgb, var(--blue-700) 72%, var(--poultry-800)));
+}
+.principle-card--accent > svg { stroke: var(--poultry-200); }
+
+/* Líneas de trabajo con color propio */
+.work-card {
+  --species-strong: var(--blue-700);
+  --species-mid: var(--blue-400, #4cb8ee);
+  --species-soft: var(--blue-100);
+  --species-pale: var(--blue-50);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--surface-raised) 88%, var(--species-pale)), var(--surface-raised) 65%);
+}
+
+.work-card--bovine {
+  --species-strong: var(--bovine-800);
+  --species-mid: var(--bovine-400);
+  --species-soft: var(--bovine-100);
+  --species-pale: var(--bovine-50);
+}
+.work-card--swine {
+  --species-strong: var(--swine-800);
+  --species-mid: var(--swine-400);
+  --species-soft: var(--swine-100);
+  --species-pale: var(--swine-50);
+}
+.work-card--poultry {
+  --species-strong: var(--poultry-800);
+  --species-mid: var(--poultry-300);
+  --species-soft: var(--poultry-100);
+  --species-pale: var(--poultry-50);
+}
+
+.work-card::before { background: linear-gradient(90deg, var(--species-strong), var(--species-mid)); }
+.work-card::after {
+  content: "";
+  position: absolute;
+  width: 155px;
+  height: 155px;
+  right: -70px;
+  bottom: -70px;
+  border-radius: 50%;
+  background: var(--species-soft);
+  opacity: .55;
+  pointer-events: none;
+}
+.work-card:hover { border-color: var(--species-mid); }
+.work-card__index { color: var(--species-mid); }
+.work-card__state { background: var(--species-soft); color: var(--species-strong); }
+.work-card__icon { background: linear-gradient(145deg, var(--species-pale), var(--species-soft)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--species-mid) 36%, transparent); }
+.work-card__icon svg { stroke: var(--species-strong); }
+.work-card h3 { color: color-mix(in srgb, var(--ink) 72%, var(--species-strong)); }
+.work-card .tag-row span { border-color: color-mix(in srgb, var(--species-mid) 40%, var(--line)); background: color-mix(in srgb, var(--surface-raised) 78%, var(--species-soft)); color: color-mix(in srgb, var(--text) 70%, var(--species-strong)); }
+.work-card > a { color: var(--species-strong); }
+
+/* Investigación: base científica azul con destellos de especies */
+.section--ink {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(239,186,39,.30), transparent 22%),
+    radial-gradient(circle at 72% 92%, rgba(212,95,138,.20), transparent 25%),
+    radial-gradient(circle at 8% 20%, rgba(155,99,62,.22), transparent 24%),
+    linear-gradient(135deg, var(--blue-950), #004d80 63%, #0067a8);
+}
+
+.research-steps > div:nth-child(1) span { color: var(--bovine-200); background: rgba(155,99,62,.22); }
+.research-steps > div:nth-child(2) span { color: var(--swine-200); background: rgba(212,95,138,.20); }
+.research-steps > div:nth-child(3) span { color: var(--poultry-200); background: rgba(239,186,39,.18); }
+
+.featured-project {
+  border-color: rgba(255,227,154,.34);
+  background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(239,186,39,.08));
+}
+
+.featured-project__visual {
+  background:
+    linear-gradient(180deg, rgba(47,37,5,.02), rgba(3,35,61,.88)),
+    radial-gradient(circle at 80% 17%, rgba(255,213,106,.95), transparent 25%),
+    radial-gradient(circle at 18% 80%, rgba(212,95,138,.30), transparent 32%),
+    linear-gradient(135deg, var(--poultry-600), var(--blue-800) 68%);
+}
+.featured-project__kicker { color: var(--poultry-200); }
+.featured-project__metrics span { border-color: rgba(255,227,154,.30); background: rgba(117,83,0,.20); }
+
+/* Divulgación: biblioteca viva, no una cuadrícula comercial */
+.outreach-feature {
+  background:
+    radial-gradient(circle at 86% 16%, rgba(239,186,39,.38), transparent 27%),
+    radial-gradient(circle at 76% 85%, rgba(212,95,138,.26), transparent 32%),
+    radial-gradient(circle at 12% 14%, rgba(155,99,62,.28), transparent 27%),
+    linear-gradient(145deg, var(--blue-950), var(--blue-700));
+}
+.outreach-feature__label { color: var(--poultry-100); border-color: rgba(255,227,154,.38); background: rgba(117,83,0,.18); }
+.outreach-feature li:nth-child(1)::before { border-color: var(--bovine-400); }
+.outreach-feature li:nth-child(2)::before { border-color: var(--swine-400); }
+.outreach-feature li:nth-child(3)::before { border-color: var(--poultry-300); }
+.outreach-feature li:nth-child(4)::before { border-color: var(--blue-300); }
+
+.category-card {
+  --category-strong: var(--blue-700);
+  --category-mid: var(--blue-300);
+  --category-soft: var(--blue-100);
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--category-mid) 50%, var(--line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--surface-raised) 88%, var(--category-soft)), var(--surface-raised));
+}
+.category-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--category-strong), var(--category-mid));
+}
+.category-card:nth-child(1) { --category-strong: var(--bovine-800); --category-mid: var(--bovine-400); --category-soft: var(--bovine-100); }
+.category-card:nth-child(2) { --category-strong: var(--swine-800); --category-mid: var(--swine-400); --category-soft: var(--swine-100); }
+.category-card:nth-child(3) { --category-strong: var(--poultry-800); --category-mid: var(--poultry-300); --category-soft: var(--poultry-100); }
+.category-card:hover { border-color: var(--category-mid); box-shadow: 0 16px 35px color-mix(in srgb, var(--category-mid) 18%, transparent); }
+.category-card__number, .category-card__status { background: var(--category-soft); color: var(--category-strong); }
+.category-card h3 { color: color-mix(in srgb, var(--ink) 72%, var(--category-strong)); }
+
+/* Eventos: la expoferia de aves recupera la calidez de NutriWeb */
+.event-showcase {
+  border-color: color-mix(in srgb, var(--poultry-300) 55%, var(--line));
+  box-shadow: 0 22px 58px rgba(117,83,0,.13), var(--shadow-soft);
+}
+.event-showcase__date {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,213,106,.65), transparent 30%),
+    linear-gradient(180deg, var(--poultry-50), var(--poultry-100));
+  border-color: color-mix(in srgb, var(--poultry-300) 45%, var(--line));
+}
+.event-showcase__date strong { color: var(--poultry-900); }
+.event-showcase__tags span { background: var(--poultry-100); color: var(--poultry-900); }
+.event-showcase__tags span:nth-child(1) { background: var(--blue-100); color: var(--blue-800); }
+.event-showcase__tags span:nth-child(2) { background: var(--bovine-100); color: var(--bovine-800); }
+.event-showcase__art {
+  position: relative;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(255,227,154,.82), transparent 28%),
+    radial-gradient(circle at 20% 82%, rgba(212,95,138,.30), transparent 32%),
+    linear-gradient(145deg, var(--poultry-600), var(--blue-800) 78%);
+}
+.event-showcase__art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(255,255,255,.22) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom left, black, transparent 78%);
+}
+.event-showcase__art svg { position: relative; z-index: 1; stroke: rgba(255,255,255,.78); }
+.events-next { border-color: color-mix(in srgb, var(--swine-400) 30%, var(--line)); background: linear-gradient(90deg, color-mix(in srgb, var(--surface-raised) 94%, var(--bovine-50)), color-mix(in srgb, var(--surface-raised) 94%, var(--poultry-50))); }
+.events-next__line { background: var(--species-ribbon); }
+.events-next__badge { background: var(--swine-100); color: var(--swine-800); }
+
+/* Comunidad y llamado final */
+.section--team {
+  background:
+    radial-gradient(circle at 12% 22%, rgba(155,99,62,.11), transparent 19%),
+    radial-gradient(circle at 89% 28%, rgba(212,95,138,.11), transparent 20%),
+    radial-gradient(circle at 68% 92%, rgba(239,186,39,.13), transparent 23%),
+    linear-gradient(180deg, var(--surface) 0%, var(--blue-50) 100%);
+}
+.orbit--one { border-color: var(--swine-400); }
+.orbit--two { border-color: var(--poultry-500); }
+.team-node--one { border-color: var(--bovine-200); }
+.team-node--one span { background: var(--bovine-100); color: var(--bovine-800); }
+.team-node--two { border-color: var(--swine-200); }
+.team-node--two span { background: var(--swine-100); color: var(--swine-800); }
+.team-node--three { border-color: var(--poultry-200); }
+.team-node--three span { background: var(--poultry-100); color: var(--poultry-900); }
+.team-node--center { box-shadow: 0 18px 42px rgba(0,104,173,.14), 0 0 0 7px rgba(239,186,39,.09); }
+
+.cta-section {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(155,99,62,.10), transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(212,95,138,.10), transparent 20%),
+    linear-gradient(180deg, var(--blue-50), var(--surface));
+}
+.cta-card {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(239,186,39,.34), transparent 26%),
+    radial-gradient(circle at 77% 96%, rgba(212,95,138,.22), transparent 32%),
+    radial-gradient(circle at 5% 8%, rgba(155,99,62,.24), transparent 25%),
+    linear-gradient(135deg, var(--blue-950), var(--blue-700));
+}
+.cta-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: var(--species-ribbon);
+}
+
+/* Footer profesional, ahora con identidad completa */
+.site-footer::before { background: var(--species-ribbon); }
+.site-footer {
+  background:
+    radial-gradient(circle at 12% 25%, rgba(155,99,62,.15), transparent 22%),
+    radial-gradient(circle at 85% 18%, rgba(212,95,138,.11), transparent 20%),
+    radial-gradient(circle at 70% 100%, rgba(239,186,39,.10), transparent 25%),
+    #03233d;
+}
+.footer-species span:nth-child(1) { color: var(--bovine-200); border-color: rgba(198,146,105,.38); background: rgba(155,99,62,.12); }
+.footer-species span:nth-child(2) { color: var(--swine-200); border-color: rgba(234,145,176,.38); background: rgba(212,95,138,.12); }
+.footer-species span:nth-child(3) { color: var(--poultry-200); border-color: rgba(255,213,106,.38); background: rgba(239,186,39,.12); }
+.footer-version { color: var(--poultry-300); }
+.footer-build { border-color: rgba(255,213,106,.18); }
+
+@keyframes species-orbit {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .hero__visual::after { width: 72%; }
+  .species-strip article:not(.species-strip__statement):hover { transform: none; }
+}
+
+@media (max-width: 650px) {
+  .hero {
+    background:
+      radial-gradient(circle at 92% 15%, rgba(239,186,39,.25), transparent 22%),
+      radial-gradient(circle at 10% 72%, rgba(212,95,138,.16), transparent 23%),
+      linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--blue-50) 72%, var(--poultry-50)) 100%);
+  }
+  .hero__visual::before { inset: 10% -8% 5%; }
+  .hero__visual::after { width: 86%; }
+  .species-strip article:not(.species-strip__statement)::before { inset: 0 auto 0 0; width: 4px; height: auto; }
+  .event-showcase__date { background: linear-gradient(90deg, var(--poultry-100), var(--poultry-50)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__visual::after { animation: none; }
+}
