@@ -76,6 +76,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--blue-500); outl
 .brand__copy strong { font-size: 1.35rem; letter-spacing: .06em; color: var(--blue-800); }
 :root[data-theme='dark'] .brand__copy strong { color: #71c6f4; }
 .brand__copy small { max-width: 250px; color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .015em; }
+.brand__domain { color: var(--blue-600); font-size: .6rem; font-weight: 900; letter-spacing: .13em; line-height: 1.15; }
+:root[data-theme='dark'] .brand__domain { color: #89d8ff; }
 .main-nav { margin-left: auto; display: flex; align-items: center; gap: .15rem; }
 .main-nav a { position: relative; padding: .65rem .7rem; border-radius: 9px; color: var(--text); font-size: .84rem; font-weight: 700; transition: color .2s, background .2s; }
 .main-nav a::after { content: ""; position: absolute; left: 50%; right: 50%; bottom: 3px; height: 2px; border-radius: 999px; background: var(--blue-600); transition: left .25s var(--ease), right .25s var(--ease); }
@@ -100,6 +102,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--blue-500); outl
 .eyebrow { margin: 0 0 1.1rem; display: flex; align-items: center; gap: .6rem; color: var(--blue-700); font-size: .75rem; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
 .eyebrow > span { width: 32px; height: 2px; border-radius: 999px; background: linear-gradient(90deg, var(--blue-600), var(--blue-300)); }
 .eyebrow--light { color: #86d6ff; }
+.hero__domain-badge { display: inline-flex; width: fit-content; margin: -.3rem 0 .15rem; padding: .46rem .75rem; border: 1px solid color-mix(in srgb, var(--blue-500) 32%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--surface-raised) 78%, transparent); box-shadow: 0 8px 18px rgba(3,56,95,.08); color: var(--blue-800); font-size: .68rem; font-weight: 900; letter-spacing: .12em; line-height: 1; }
+:root[data-theme='dark'] .hero__domain-badge { border-color: rgba(134,214,255,.38); background: rgba(9,40,65,.7); color: #a6e1ff; }
 .hero h1 { margin: 0; max-width: 720px; color: var(--ink); font-size: clamp(3rem, 5.4vw, 5.65rem); line-height: .99; letter-spacing: -.055em; }
 .hero h1 em { color: var(--blue-700); font-style: normal; position: relative; }
 .hero h1 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.03em; height: .12em; border-radius: 999px; background: linear-gradient(90deg, var(--blue-500), rgba(33,161,230,0)); opacity: .45; }
@@ -278,6 +282,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--blue-500); outl
 .cta-card__mark { position: absolute; right: 4%; bottom: -28%; color: rgba(255,255,255,.04); font-size: 15rem; font-weight: 950; letter-spacing: -.09em; }
 .cta-card h2 { max-width: 700px; margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; letter-spacing: -.045em; }
 .cta-card p:not(.eyebrow) { max-width: 720px; color: #cfe8f7; }
+.cta-card__domain { margin-top: 1.2rem; color: #d8f0fc !important; font-size: .78rem; font-weight: 700; }
+.cta-card__domain strong { color: white; font-size: .74rem; font-weight: 900; letter-spacing: .12em; }
 
 .site-footer { position: relative; padding: 78px 0 24px; background: #03233d; color: #c9deeb; overflow: hidden; }
 .site-footer__pattern { position: absolute; inset: 0; opacity: .08; background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px); background-size: 44px 44px; mask-image: linear-gradient(to bottom, black, transparent 85%); }
@@ -288,7 +294,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--blue-500); outl
 .brand--footer .brand__copy strong { color: white; }
 .brand--footer .brand__copy small { color: #a9cada; }
 .footer-brand > p { max-width: 360px; color: #9dbbc9; font-size: .82rem; }
-.footer-brand > .footer-domain { margin-top: 1rem; color: #bfe7fa; font-size: .7rem; font-weight: 900; letter-spacing: .12em; }
+.footer-brand > .footer-domain { display: flex; flex-direction: column; gap: .25rem; margin-top: 1rem; color: #bfe7fa; font-size: .7rem; font-weight: 900; letter-spacing: .12em; }
+.footer-domain span { color: #9dbbc9; font-size: .58rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .footer-species { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.15rem; }
 .footer-species span { padding: .33rem .55rem; border: 1px solid rgba(255,255,255,.15); border-radius: 999px; color: #bfe7fa; font-size: .62rem; font-weight: 800; }
 .footer-column { display: flex; flex-direction: column; gap: .65rem; }
