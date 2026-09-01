@@ -4,7 +4,7 @@
  * Generador de código QR para la expoferia.
  *
  * Uso:
- *   npm run qr -- https://tu-dominio.com
+ *   npm run qr -- https://sipautmach.com/eventos/expoferia-nutricion-animal-2026/
  *
  * Genera:
  *   public/qr-expo.svg
@@ -27,10 +27,10 @@ if (!url || !url.startsWith('http')) {
 ╠══════════════════════════════════════════════════════════════╣
 ║                                                              ║
 ║  Uso:                                                        ║
-║    npm run qr -- https://tu-dominio.com                      ║
+║    npm run qr -- <URL HTTPS del evento>                      ║
 ║                                                              ║
 ║  Ejemplo:                                                    ║
-║    npm run qr -- https://nutricion-animal.vercel.app         ║
+║    Usa la URL canónica de la Expoferia en SIPAUTMACH.COM.    ║
 ║                                                              ║
 ║  Se generarán:                                               ║
 ║    public/qr-expo.svg                                        ║

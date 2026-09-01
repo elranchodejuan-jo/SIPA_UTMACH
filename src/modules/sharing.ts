@@ -1,7 +1,7 @@
 export function initSharing(): void {
   const shareData = {
-    title: 'Nutrición Animal Responsable',
-    text: 'Conoce nuestro proyecto de elaboración de alimentos balanceados para pollos de engorde.',
+    title: 'Expoferia de Nutrición Animal 2026 | SIPA',
+    text: 'Conoce esta experiencia educativa histórica de SIPA sobre alimentos balanceados para pollos de engorde.',
     url: window.location.href,
   };
 

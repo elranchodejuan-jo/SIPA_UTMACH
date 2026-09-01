@@ -56,13 +56,13 @@ await cp(portalDir, distDir, { recursive: true });
 await mkdir(path.dirname(eventDir), { recursive: true });
 await cp(expoDistDir, eventDir, { recursive: true });
 
-console.log('3/5 Aplicando el sistema visual heredado de NutriWeb...');
+console.log('3/5 Aplicando los estilos institucionales de SIPA...');
 const portalIndexPath = path.join(distDir, 'index.html');
 let portalIndex = await readFile(portalIndexPath, 'utf8');
 portalIndex = portalIndex
   .replace(
     '<link rel="stylesheet" href="./assets/styles.css">',
-    `<link rel="stylesheet" href="./assets/styles.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/species-theme.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/nutriweb-family.css?v=${cacheKey}">`
+    `<link rel="stylesheet" href="./assets/styles.css?v=${cacheKey}">\n  <link rel="stylesheet" href="./assets/species-theme.css?v=${cacheKey}">`
   )
   .replace(
     '<script src="./assets/app.js" defer></script>',
@@ -82,7 +82,7 @@ if (!eventIndex.includes('class="sipa-return"')) {
 console.log('4/5 Inyectando fecha, versión y commit de despliegue...');
 await injectBuildMetadata(distDir);
 
-const notFound = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirigiendo a SIPA</title><meta http-equiv="refresh" content="0;url=./"><script>location.replace('/SIPA_UTMACH/');</script><body>Redirigiendo al portal SIPA…</body></html>`;
+const notFound = `<!doctype html><html lang="es-EC"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Página no encontrada | SIPA</title><body><main><h1>Página no encontrada</h1><p>Redirigiendo al portal SIPA…</p><p><a href="./">Ir al portal SIPA</a></p></main><script>(()=>{const marker='/eventos/';const path=window.location.pathname;const fallback=path.includes(marker)?(path.split(marker)[0]||'')+'/':'./';window.location.replace(fallback);})();</script></body></html>`;
 await writeFile(path.join(distDir, '404.html'), notFound, 'utf8');
 await writeFile(path.join(distDir, 'build-info.json'), JSON.stringify({ version, buildDate, buildSha }, null, 2), 'utf8');
 await writeFile(path.join(distDir, '.nojekyll'), '', 'utf8');

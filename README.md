@@ -9,7 +9,7 @@ La Versión 1 establece una identidad visual relacionada con UTMACH y organiza e
 - `portal/`: página pública principal de SIPA.
 - `src/` y `public/`: experiencia original de la Expoferia de Nutrición Animal.
 - `scripts/build-sipa.mjs`: compila el portal y preserva la expoferia dentro de `eventos/expoferia-nutricion-animal-2026/`.
-- `.github/workflows/deploy-pages.yml`: publicación automática en GitHub Pages después de cada actualización de `main`.
+- `.github/workflows/deploy.yml`: validación en pull requests y publicación automática en GitHub Pages después de cada actualización de `main`.
 
 ## Desarrollo
 
@@ -40,11 +40,15 @@ La compilación genera en `dist/`:
 
 ## Publicación
 
-Cada fusión a `main` ejecuta el flujo **Deploy SIPA UTMACH**, valida JavaScript, compila el portal y publica `dist/` en la rama `gh-pages`.
+Cada fusión a `main` ejecuta el flujo **Publicar SIPA en GitHub Pages**, valida JavaScript, compila el portal y publica el artefacto `dist/` mediante el mecanismo oficial de GitHub Pages.
 
 Sitio público:
 
+Mientras se configura el dominio, el sitio se publica en:
+
 `https://elranchodejuan-jo.github.io/SIPA_UTMACH/`
+
+La URL canónica objetivo es `https://sipautmach.com/`. Consulta [docs/SIPAUTMACH_PRODUCTION.md](docs/SIPAUTMACH_PRODUCTION.md) para el estado de configuración y los pasos externos pendientes.
 
 ## Principios de contenido
 

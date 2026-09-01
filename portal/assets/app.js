@@ -40,7 +40,12 @@
   });
 
   navLinks.forEach(link => link.addEventListener('click', closeMenu));
-  window.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      closeMenu();
+      menuToggle.focus();
+    }
+  });
   window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMenu(); });
 
   const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 12);
@@ -49,6 +54,7 @@
 
   const revealElements = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    root.classList.add('reveal-ready');
     const revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
