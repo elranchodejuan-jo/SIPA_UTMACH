@@ -2,8 +2,9 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { expect, test } from '@playwright/test';
+import { expectRuntimeClean, watchRuntime } from './helpers/qa.mjs';
 
-const captureDir = path.join(process.cwd(), 'tmp', 'sipa-v2-qa');
+const captureDir = path.join(process.cwd(), 'tmp', 'sipa-green-qa');
 
 const capture = async (page, name, { fullPage = true } = {}) => {
   await page.evaluate(() => {
@@ -17,49 +18,95 @@ const capture = async (page, name, { fullPage = true } = {}) => {
   });
 };
 
+const visit = async (page, route, { width, height, theme = 'light' }) => {
+  await page.setViewportSize({ width, height });
+  await page.goto(route, { waitUntil: 'load' });
+  await expect(page.locator('main')).toBeVisible();
+  const currentTheme = await page.locator('html').getAttribute('data-theme');
+  if (currentTheme !== theme) await page.locator('[data-theme-toggle]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+};
+
+const captureDropdown = async (page, name, theme) => {
+  await visit(page, '/', { width: 1366, height: 768, theme });
+  const toggle = page.locator('[data-submenu-toggle][aria-controls="submenu-outreach"]');
+  await toggle.click();
+  await expect(page.locator('#submenu-outreach')).toBeVisible();
+  await capture(page, name, { fullPage: false });
+};
+
+const captureMobileMenu = async (page, name, theme) => {
+  await visit(page, '/', { width: 360, height: 800, theme });
+  await page.locator('[data-menu-toggle]').click();
+  await expect(page.locator('[data-mobile-panel]')).toBeVisible();
+  await capture(page, name, { fullPage: false });
+};
+
 test.beforeAll(async () => {
   await mkdir(captureDir, { recursive: true });
 });
 
 test('genera el juego mínimo de capturas para inspección humana', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-1366', 'Las capturas se generan una sola vez.');
+  const runtime = watchRuntime(page);
 
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/', { waitUntil: 'load' });
-  await capture(page, 'inicio-escritorio');
-  await page.locator('[data-submenu-toggle][aria-controls="submenu-outreach"]').click();
-  await expect(page.locator('#submenu-outreach')).toBeVisible();
-  await capture(page, 'header-escritorio-dropdown', { fullPage: false });
+  await visit(page, '/', { width: 1440, height: 900, theme: 'light' });
+  await capture(page, 'light-home-desktop');
 
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/', { waitUntil: 'load' });
-  await capture(page, 'inicio-movil');
-  await page.locator('[data-menu-toggle]').click();
-  await expect(page.locator('[data-mobile-panel]')).toBeVisible();
-  await capture(page, 'menu-movil-abierto', { fullPage: false });
-  await page.locator('[data-submenu-toggle][aria-controls="submenu-outreach"]').click();
-  await expect(page.locator('#submenu-outreach')).toBeVisible();
-  await capture(page, 'menu-movil-submenu-abierto', { fullPage: false });
+  await visit(page, '/', { width: 390, height: 844, theme: 'light' });
+  await capture(page, 'light-home-mobile');
 
-  await page.setViewportSize({ width: 1366, height: 768 });
-  for (const [name, route] of [
-    ['sipa', '/sipa/'],
-    ['investigacion', '/investigacion/'],
-    ['webinars', '/divulgacion/webinars/'],
-    ['equipo', '/equipo/'],
-    ['contacto', '/contacto/'],
+  await captureDropdown(page, 'light-dropdown-open', 'light');
+  await captureMobileMenu(page, 'light-mobile-menu-open', 'light');
+
+  for (const [name, route, width, height] of [
+    ['light-sipa', '/sipa/', 1024, 768],
+    ['light-research', '/investigacion/', 1366, 768],
+    ['light-outreach', '/divulgacion/', 768, 1024],
+    ['light-webinars', '/divulgacion/webinars/', 1366, 768],
+    ['light-events', '/eventos/', 1024, 768],
+    ['light-team', '/equipo/', 1366, 768],
+    ['light-contact', '/contacto/', 1366, 768],
   ]) {
-    await page.goto(route, { waitUntil: 'load' });
+    await visit(page, route, { width, height, theme: 'light' });
     await capture(page, name);
   }
 
-  await page.goto('/', { waitUntil: 'load' });
+  await visit(page, '/', { width: 1440, height: 900, theme: 'light' });
   await page.locator('footer.site-footer').scrollIntoViewIfNeeded();
-  await capture(page, 'footer', { fullPage: false });
+  await capture(page, 'light-footer', { fullPage: false });
 
-  await page.goto('/investigacion/', { waitUntil: 'load' });
-  const theme = page.locator('[data-theme-toggle]');
-  if (await page.locator('html').getAttribute('data-theme') !== 'dark') await theme.click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await capture(page, 'modo-oscuro-investigacion');
+  await page.goto('/404.html', { waitUntil: 'load' });
+  await expect(page.getByRole('heading', { name: /p.gina no encontrada/i })).toBeVisible();
+  await capture(page, 'light-404');
+
+  await page.setViewportSize({ width: 1200, height: 630 });
+  const ogResponse = await page.goto('/assets/images/og-sipa.png', { waitUntil: 'load' });
+  expect(ogResponse?.status()).toBeLessThan(400);
+  await capture(page, 'open-graph');
+
+  await visit(page, '/', { width: 1440, height: 900, theme: 'dark' });
+  await capture(page, 'dark-home-desktop');
+
+  await visit(page, '/', { width: 390, height: 844, theme: 'dark' });
+  await capture(page, 'dark-home-mobile');
+
+  await captureDropdown(page, 'dark-dropdown-open', 'dark');
+  await captureMobileMenu(page, 'dark-mobile-menu-open', 'dark');
+
+  for (const [name, route, width, height] of [
+    ['dark-research', '/investigacion/', 1024, 768],
+    ['dark-webinars', '/divulgacion/webinars/', 1366, 768],
+    ['dark-team', '/equipo/', 768, 1024],
+    ['dark-contact', '/contacto/', 1366, 768],
+  ]) {
+    await visit(page, route, { width, height, theme: 'dark' });
+    await capture(page, name);
+  }
+
+  await visit(page, '/', { width: 1440, height: 900, theme: 'dark' });
+  await page.locator('footer.site-footer').scrollIntoViewIfNeeded();
+  await capture(page, 'dark-footer', { fullPage: false });
+
+  expectRuntimeClean(runtime);
 });
