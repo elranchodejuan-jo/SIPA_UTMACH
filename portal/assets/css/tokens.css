@@ -1,0 +1,130 @@
+:root {
+  color-scheme: light;
+
+  /* Identidad institucional */
+  --color-brand-950: #03233d;
+  --color-brand-900: #06385f;
+  --color-brand-800: #004f86;
+  --color-brand-700: #005b9f;
+  --color-brand-600: #087fba;
+  --color-brand-500: #2b9ed4;
+  --color-brand-200: #a9d8ed;
+  --color-brand-100: #dceff8;
+  --color-brand-50: #eff8fc;
+  --color-science-700: #006d77;
+  --color-science-600: #087f8c;
+  --color-science-100: #d8f1f0;
+  --color-warm-700: #a85d26;
+  --color-warm-100: #f8e7d8;
+
+  /* Las especies funcionan como acentos, no como paletas de página. */
+  --color-bovine: #8b5e3c;
+  --color-bovine-soft: #f2e7dd;
+  --color-swine: #8a3458;
+  --color-swine-soft: #f7e3eb;
+  --color-poultry: #7b5c00;
+  --color-poultry-soft: #f8edc9;
+
+  /* Superficies y texto */
+  --color-ink: #172b3a;
+  --color-text: #324957;
+  --color-muted: #526875;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f4f7fa;
+  --color-surface-raised: #ffffff;
+  --color-surface-strong: #e9f0f4;
+  --color-line: #d8e2e8;
+  --color-line-strong: #b9c9d2;
+  --color-success: #187451;
+  --color-danger: #a43737;
+  --color-focus: #005b9f;
+  --color-on-brand: #ffffff;
+
+  /* Tipografía local y de sistema */
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: clamp(1.5rem, 2vw, 1.875rem);
+  --font-size-3xl: clamp(1.875rem, 4vw, 2.75rem);
+  --font-size-hero: clamp(2.1rem, 6vw, 3.75rem);
+  --line-height-tight: 1.1;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.65;
+
+  /* Espaciado */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 5rem;
+
+  --container: 74rem;
+  --measure: 70ch;
+  --header-height: 4rem;
+  --institution-bar-height: 2.75rem;
+  --target-size: 2.75rem;
+
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.125rem;
+  --radius-pill: 999px;
+
+  --shadow-xs: 0 1px 2px rgba(3, 35, 61, 0.08);
+  --shadow-sm: 0 8px 22px rgba(3, 35, 61, 0.08);
+  --shadow-md: 0 16px 42px rgba(3, 35, 61, 0.12);
+  --focus-ring: 0 0 0 3px var(--color-surface), 0 0 0 6px var(--color-focus);
+
+  --duration-fast: 140ms;
+  --duration-normal: 220ms;
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --z-header: 100;
+  --z-backdrop: 180;
+  --z-nav: 190;
+  --z-skip: 300;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-brand-700: #63bdea;
+  --color-brand-600: #79c9ee;
+  --color-brand-500: #8dd3f2;
+  --color-brand-200: #39718d;
+  --color-brand-100: #203e4e;
+  --color-brand-50: #142b36;
+  --color-science-700: #54c3c0;
+  --color-science-600: #6bd0cd;
+  --color-science-100: #173c3d;
+  --color-warm-700: #e2a573;
+  --color-warm-100: #472f21;
+  --color-bovine: #d4a17d;
+  --color-bovine-soft: #3b2c24;
+  --color-swine: #e59ab8;
+  --color-swine-soft: #402735;
+  --color-poultry: #e1c66b;
+  --color-poultry-soft: #3c351f;
+  --color-ink: #f2f7fa;
+  --color-text: #d4e0e6;
+  --color-muted: #bbc9d2;
+  --color-surface: #0d1b23;
+  --color-surface-soft: #12232b;
+  --color-surface-raised: #182830;
+  --color-surface-strong: #20333c;
+  --color-line: #31444d;
+  --color-line-strong: #4a626d;
+  --color-success: #63c99c;
+  --color-danger: #f19a9a;
+  --color-focus: #79c9ee;
+  --color-on-brand: #061923;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 16px 42px rgba(0, 0, 0, 0.3);
+}

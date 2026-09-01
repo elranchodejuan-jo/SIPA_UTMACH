@@ -1,0 +1,343 @@
+@media (max-width: 23.99rem) {
+  .container {
+    width: min(calc(100% - 1.5rem), var(--container));
+  }
+
+  .brand {
+    gap: var(--space-2);
+  }
+
+  .brand__mark {
+    width: var(--target-size);
+    height: var(--target-size);
+    flex-basis: var(--target-size);
+  }
+
+  .brand__copy small {
+    display: none;
+  }
+
+  .home-hero h1 {
+    font-size: clamp(2rem, 9.5vw, 2.35rem);
+  }
+
+  .hero-actions .button,
+  .page-actions .button {
+    width: 100%;
+  }
+
+  .footer-bottom {
+    align-items: start;
+  }
+}
+
+@media (min-width: 40rem) {
+  .container {
+    width: min(calc(100% - 3rem), var(--container));
+  }
+
+  .institution-bar__meta {
+    display: block;
+  }
+
+  .hero-visual {
+    width: min(100%, 34rem);
+  }
+
+  .card-grid,
+  .webinar-grid,
+  .team-grid,
+  .contact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .species-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cta-panel {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .site-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-bottom {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .footer-bottom .back-to-top {
+    justify-self: end;
+  }
+
+  .contact-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-field--wide,
+  .form-actions,
+  .form-status {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 48rem) {
+  .section {
+    padding-block: var(--space-9);
+  }
+
+  .page-hero {
+    padding: var(--space-7) 0 var(--space-9);
+  }
+
+  .page-hero__grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: var(--space-7);
+  }
+
+  .content-grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+    gap: var(--space-7);
+  }
+
+  .card-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .process-steps {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .event-card {
+    min-height: 19rem;
+  }
+
+  .event-card__media,
+  .event-card > img {
+    height: 100%;
+    min-height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .team-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--space-4);
+  }
+
+  .site-footer__grid {
+    grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --header-height: 4.5rem;
+  }
+
+  .site-header__inner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-4);
+  }
+
+  .site-header__actions {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .brand__copy small {
+    display: none;
+  }
+
+  .js .nav-toggle,
+  .nav-backdrop {
+    display: none;
+  }
+
+  .primary-nav,
+  .primary-nav.is-open,
+  .js .primary-nav,
+  .js .primary-nav.is-open {
+    position: static;
+    z-index: auto;
+    inset: auto;
+    width: auto;
+    height: auto;
+    grid-column: 2;
+    grid-row: 1;
+    visibility: visible;
+    overflow: visible;
+    pointer-events: auto;
+  }
+
+  .primary-nav__panel,
+  .js .primary-nav__panel {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+    transition: none;
+  }
+
+  .primary-nav__list {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-link {
+    min-width: 2.875rem;
+    min-height: 2.75rem;
+    justify-content: center;
+    padding-inline: 0.5rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .nav-link[aria-current='page'],
+  .nav-item.is-active > .nav-item__row > .nav-link {
+    box-shadow: inset 0 -3px 0 var(--color-brand-700);
+  }
+
+  .submenu-toggle {
+    min-width: var(--target-size);
+    min-height: 2.75rem;
+    flex-basis: var(--target-size);
+  }
+
+  .submenu {
+    position: absolute;
+    z-index: 10;
+    inset: calc(100% + var(--space-2)) 0 auto auto;
+    min-width: 14.5rem;
+    margin: 0;
+    padding: var(--space-2);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-md);
+  }
+
+  .submenu a {
+    border-left: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .home-hero {
+    padding: var(--space-8) 0 var(--space-9);
+  }
+
+  .home-hero__grid,
+  .home-hero > .container {
+    grid-template-columns: minmax(0, 1.08fr) minmax(22rem, 0.92fr);
+    gap: clamp(3rem, 6vw, 5rem);
+  }
+
+  .hero-visual {
+    justify-self: end;
+  }
+
+  .card-grid,
+  .webinar-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card-grid--four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .card-grid:has(> .event-card:only-child),
+  .webinar-grid:has(> .webinar-card:only-child) {
+    grid-template-columns: minmax(0, 52rem);
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .contact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-footer__grid {
+    grid-template-columns: minmax(14rem, 1.55fr) repeat(4, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+@media (min-width: 72rem) {
+  .brand__copy small,
+  .brand__domain {
+    display: block;
+  }
+
+  .brand__domain {
+    margin-top: 0.18rem;
+  }
+
+  .nav-link {
+    padding-inline: 0.62rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (min-width: 85rem) {
+  .home-hero__grid,
+  .home-hero > .container {
+    gap: 5.5rem;
+  }
+}
+
+@media (max-height: 36rem) and (max-width: 63.99rem) {
+  .primary-nav__panel {
+    padding-top: calc(var(--institution-bar-height) + var(--header-height) + var(--space-2));
+    padding-bottom: var(--space-3);
+  }
+
+  .nav-link,
+  .submenu a {
+    min-height: var(--target-size);
+    padding-block: 0.45rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .button,
+  .nav-toggle,
+  .theme-toggle,
+  .submenu-toggle,
+  .card,
+  .project-card,
+  .resource-card,
+  .event-card,
+  .webinar-card,
+  .team-card,
+  .contact-card {
+    border: 1px solid CanvasText;
+  }
+
+  .nav-link[aria-current='page'],
+  .nav-item.is-active > .nav-item__row > .nav-link {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
