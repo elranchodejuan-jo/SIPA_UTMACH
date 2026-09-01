@@ -14,7 +14,7 @@ export function renderFooter({ route, helpers, metadata }) {
   return `<footer class="site-footer">
     <div class="container site-footer__grid">
       <div class="footer-brand">
-        <a class="brand brand--footer" href="${escapeAttribute(helpers.routeHref('home'))}"><img class="brand__mark" src="${escapeAttribute(helpers.assetHref('assets/logo-sipa.svg'))}" alt="" width="60" height="60"><span class="brand__copy"><strong>${escapeHtml(SITE_CONFIG.name)}</strong><small>${escapeHtml(SITE_CONFIG.fullName)}</small></span></a>
+        <a class="brand brand--footer" href="${escapeAttribute(helpers.routeHref('home'))}"><img class="brand__mark brand__mark--original" src="${escapeAttribute(helpers.assetHref('assets/images/logo-sipa-original.png'))}" alt="" width="502" height="282"><span class="brand__copy"><strong>${escapeHtml(SITE_CONFIG.name)}</strong><small>${escapeHtml(SITE_CONFIG.fullName)}</small></span></a>
         <p>${escapeHtml(SITE_CONFIG.description)}</p><p class="footer-domain">${escapeHtml(SITE_CONFIG.visualDomain)}</p>
       </div>
       ${groups.map(group => `<nav class="footer-column" aria-labelledby="footer-${escapeAttribute(group.id)}"><h2 id="footer-${escapeAttribute(group.id)}">${escapeHtml(group.label)}</h2><ul>${group.items.map(item => `<li><a href="${escapeAttribute(item.href)}">${escapeHtml(item.label)}</a></li>`).join('')}</ul></nav>`).join('')}
