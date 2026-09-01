@@ -49,6 +49,22 @@ const buildExpo = () => {
   });
 };
 
+const applyExpoFavicon = async () => {
+  const expoIndexPath = path.join(expoDistDir, 'index.html');
+  const expoIndex = await readFile(expoIndexPath, 'utf8');
+  const legacyHead = /<link rel="icon" href="\.\/favicon(?:-[A-Za-z0-9_-]+)?\.svg" type="image\/svg\+xml">\s*<link rel="manifest" href="\.\/manifest\.webmanifest">/;
+  const faviconHead = `<link rel="icon" href="./favicon.ico?v=${version}-sipa" sizes="any">
+  <link rel="icon" href="./favicon/favicon-48x48.png?v=${version}-sipa" type="image/png" sizes="48x48">
+  <link rel="icon" href="./favicon/favicon-32x32.png?v=${version}-sipa" type="image/png" sizes="32x32">
+  <link rel="icon" href="./favicon/favicon-16x16.png?v=${version}-sipa" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="./favicon/apple-touch-icon.png?v=${version}-sipa" sizes="180x180">
+  <link rel="manifest" href="./manifest.webmanifest?v=${version}-sipa">`;
+  const output = expoIndex.replace(legacyHead, faviconHead);
+
+  if (output === expoIndex) throw new Error('No se encontró la identidad de navegador histórica de la Expoferia.');
+  await writeFile(expoIndexPath, output, 'utf8');
+};
+
 const addPortalReturn = async () => {
   const eventIndexPath = path.join(eventDir, 'index.html');
   const eventIndex = await readFile(eventIndexPath, 'utf8');
@@ -80,6 +96,7 @@ await rm(expoDistDir, { recursive: true, force: true });
 try {
   console.log('1/5 Construyendo la experiencia histórica de la Expoferia…');
   buildExpo();
+  await applyExpoFavicon();
 
   console.log('2/5 Generando el portal institucional multipágina…');
   await buildPortal({ rootDir: root, distDir, version, buildDate, buildSha });
