@@ -18,10 +18,13 @@
 
   const menuIsOpen = () => menuToggle?.getAttribute('aria-expanded') === 'true';
 
+  const getSubmenuLabel = toggle => toggle.closest('.nav-item')?.querySelector('.nav-link')?.textContent.trim() || 'navegación';
+
   const closeSubmenus = exception => {
     document.querySelectorAll('[data-submenu-toggle]').forEach(toggle => {
       if (toggle === exception) return;
       toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', `Mostrar opciones de ${getSubmenuLabel(toggle)}`);
       const submenu = document.getElementById(toggle.getAttribute('aria-controls'));
       if (submenu) submenu.hidden = true;
     });
@@ -52,7 +55,9 @@
   menuToggle?.addEventListener('click', () => setMenu(!menuIsOpen(), { restoreFocus: menuIsOpen() }));
   menuBackdrop?.addEventListener('click', () => setMenu(false, { restoreFocus: true }));
   mobilePanel?.addEventListener('click', event => {
-    if (event.target.closest('a[href]') && !desktopQuery.matches) setMenu(false);
+    if (!event.target.closest('a[href]')) return;
+    closeSubmenus();
+    if (!desktopQuery.matches) setMenu(false);
   });
 
   document.querySelectorAll('[data-submenu-toggle]').forEach(toggle => {
@@ -63,9 +68,14 @@
       const open = toggle.getAttribute('aria-expanded') !== 'true';
       closeSubmenus(open ? toggle : null);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', `${open ? 'Ocultar' : 'Mostrar'} opciones de ${toggle.closest('.nav-item')?.querySelector('.nav-link')?.textContent.trim() || 'navegación'}`);
+      toggle.setAttribute('aria-label', `${open ? 'Ocultar' : 'Mostrar'} opciones de ${getSubmenuLabel(toggle)}`);
       submenu.hidden = !open;
     });
+  });
+
+  document.addEventListener('click', event => {
+    if (!(event.target instanceof Element) || event.target.closest('.nav-item')) return;
+    closeSubmenus();
   });
 
   window.addEventListener('keydown', event => {

@@ -63,6 +63,63 @@ test('los submenús usan controles separados y estados accesibles', async ({ pag
   expectRuntimeClean(runtime);
 });
 
+test('los grupos y submenús conservan un flujo vertical minimalista', async ({ page }) => {
+  const runtime = watchRuntime(page);
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('[data-menu-toggle]').click();
+
+  const toggles = page.locator('[data-submenu-toggle]');
+  const firstToggle = toggles.nth(0);
+  const secondToggle = toggles.nth(1);
+  await firstToggle.click();
+
+  const controlledId = await firstToggle.getAttribute('aria-controls');
+  const group = firstToggle.locator('xpath=ancestor::li[1]');
+  const row = group.locator(':scope > .nav-item__row');
+  const submenu = page.locator(`#${controlledId}`);
+  const [groupBox, rowBox, submenuBox, firstSubmenuLinkBox] = await Promise.all([
+    group.boundingBox(),
+    row.boundingBox(),
+    submenu.boundingBox(),
+    submenu.locator('a').first().boundingBox(),
+  ]);
+
+  expect(groupBox).not.toBeNull();
+  expect(rowBox).not.toBeNull();
+  expect(submenuBox).not.toBeNull();
+  expect(firstSubmenuLinkBox).not.toBeNull();
+  expect(Math.abs((groupBox?.width ?? 0) - (rowBox?.width ?? 0))).toBeLessThanOrEqual(1);
+  expect(submenuBox?.y ?? 0).toBeGreaterThanOrEqual((rowBox?.y ?? 0) + (rowBox?.height ?? 0) - 1);
+  expect((firstSubmenuLinkBox?.x ?? 0) - (groupBox?.x ?? 0)).toBeGreaterThanOrEqual(16);
+  expect((firstSubmenuLinkBox?.x ?? 0) - (groupBox?.x ?? 0)).toBeLessThanOrEqual(24);
+  expect((submenuBox?.x ?? 0) + (submenuBox?.width ?? 0)).toBeLessThanOrEqual((groupBox?.x ?? 0) + (groupBox?.width ?? 0) + 1);
+
+  const toggleStyle = await firstToggle.evaluate(element => {
+    const style = getComputedStyle(element);
+    const icon = element.querySelector('svg');
+    return {
+      backgroundColor: style.backgroundColor,
+      borderTopWidth: style.borderTopWidth,
+      boxShadow: style.boxShadow,
+      height: element.getBoundingClientRect().height,
+      iconWidth: icon ? Number.parseFloat(getComputedStyle(icon).width) : 0,
+    };
+  });
+  expect(toggleStyle.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(toggleStyle.borderTopWidth).toBe('0px');
+  expect(toggleStyle.boxShadow).toBe('none');
+  expect(toggleStyle.height).toBeGreaterThanOrEqual(44);
+  expect(toggleStyle.height).toBeLessThanOrEqual(46);
+  expect(toggleStyle.iconWidth).toBeGreaterThanOrEqual(14);
+  expect(toggleStyle.iconWidth).toBeLessThanOrEqual(16);
+
+  await secondToggle.click();
+  await expect(firstToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(submenu).toBeHidden();
+  await expect(secondToggle).toHaveAttribute('aria-expanded', 'true');
+  expectRuntimeClean(runtime);
+});
+
 test('el panel puede desplazarse en pantallas de poca altura y no desborda horizontalmente', async ({ page }) => {
   const runtime = watchRuntime(page);
   await page.setViewportSize({ width: 360, height: 480 });
