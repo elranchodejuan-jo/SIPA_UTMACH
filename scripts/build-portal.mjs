@@ -106,15 +106,10 @@ const copyPortalAssets = async (rootDir, distDir, generatedFiles) => {
     await cp(source, destination, { recursive: true, force: true });
     generatedFiles.push(`${relativePath}/`);
   }
-  const faviconDir = path.join(rootDir, 'public', 'favicon');
-  if (!await exists(faviconDir)) throw new Error('Asset obligatorio inexistente: public/favicon/');
-  await cp(faviconDir, path.join(distDir, 'favicon'), { recursive: true, force: true });
-  generatedFiles.push('favicon/');
-
-  const faviconIco = path.join(rootDir, 'public', 'favicon.ico');
-  if (!await exists(faviconIco)) throw new Error('Asset obligatorio inexistente: public/favicon.ico');
-  await cp(faviconIco, path.join(distDir, 'favicon.ico'), { force: true });
-  generatedFiles.push('favicon.ico');
+  const faviconDir = path.join(portalDir, 'assets', 'favicon');
+  if (!await exists(faviconDir)) throw new Error('Asset obligatorio inexistente: portal/assets/favicon/.');
+  await cp(faviconDir, distDir, { recursive: true, force: true });
+  generatedFiles.push('favicon assets');
 };
 
 const renderSitemap = () => `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${getSitemapRoutes().map(route => `  <url>\n    <loc>${route.loc}</loc>\n    <changefreq>${route.changefreq}</changefreq>\n    <priority>${route.priority}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
@@ -160,9 +155,8 @@ export async function buildPortal(options = {}) {
     theme_color: SITE_CONFIG.themeColors.primary,
     lang: SITE_CONFIG.locale,
     icons: [
-      { src: './favicon/favicon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-      { src: './favicon/favicon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-      { src: './favicon/favicon-1024x1024.png', sizes: '1024x1024', type: 'image/png', purpose: 'any' },
+      { src: './android-chrome-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: './android-chrome-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
     ]
   };
   await writeOutput(distDir, 'manifest.webmanifest', `${JSON.stringify(manifest, null, 2)}\n`, generatedFiles);

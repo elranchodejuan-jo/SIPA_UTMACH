@@ -88,14 +88,13 @@ export function renderLayout({ route, page, metadata }) {
   <meta name="twitter:image" content="${escapeAttribute(socialImage)}">
   <title>${escapeHtml(route.title)}</title>
   <link rel="canonical" href="${escapeAttribute(helpers.canonicalHref())}">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-64x64.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="64x64">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-48x48.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="48x48">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-32x32.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="32x32">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-24x24.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="24x24">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon/favicon-16x16.png'))}?v=${escapeAttribute(metadata.cacheKey)}" type="image/png" sizes="16x16">
-  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon.ico'))}?v=${escapeAttribute(metadata.cacheKey)}" sizes="16x16 24x24 32x32 48x48 64x64">
-  <link rel="apple-touch-icon" href="${escapeAttribute(helpers.assetHref('favicon/apple-touch-icon.png'))}?v=${escapeAttribute(metadata.cacheKey)}" sizes="180x180">
-  <link rel="manifest" href="${escapeAttribute(helpers.assetHref('manifest.webmanifest'))}?v=${escapeAttribute(metadata.cacheKey)}">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon.ico'))}" sizes="any">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon-16x16.png'))}" type="image/png" sizes="16x16">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon-32x32.png'))}" type="image/png" sizes="32x32">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon-48x48.png'))}" type="image/png" sizes="48x48">
+  <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon-96x96.png'))}" type="image/png" sizes="96x96">
+  <link rel="apple-touch-icon" href="${escapeAttribute(helpers.assetHref('apple-touch-icon.png'))}" sizes="180x180">
+  <link rel="manifest" href="${escapeAttribute(helpers.assetHref('manifest.webmanifest'))}">
   <script>(()=>{const d=document.documentElement;d.classList.add('js');try{const k='${escapeAttribute(SITE_CONFIG.storageKeys.theme)}';const s=localStorage.getItem(k);const t=s==='dark'||s==='light'?s:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.dataset.theme=t;d.style.colorScheme=t}catch{}})();</script>
   ${styles}
   ${renderJsonLd({ '@context': 'https://schema.org', '@graph': graph })}

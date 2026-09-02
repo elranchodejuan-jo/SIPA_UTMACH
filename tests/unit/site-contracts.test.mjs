@@ -27,6 +27,7 @@ import {
 } from '../../portal/lib/youtube.mjs';
 
 import './color-contracts.test.mjs';
+import './favicon-contracts.test.mjs';
 
 const EXPECTED_PATHS = [
   '/',
