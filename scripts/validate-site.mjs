@@ -11,7 +11,7 @@ import { researchProjects } from '../portal/content/research.mjs';
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../portal/content/socials.mjs';
 import { teamMembers } from '../portal/content/team.mjs';
 import { webinars, webinarStatuses } from '../portal/content/webinars.mjs';
-import { isValidExternalUrl, normalizeEmailHref } from '../portal/lib/urls.mjs';
+import { assetHref, isValidExternalUrl, normalizeEmailHref } from '../portal/lib/urls.mjs';
 import { validateWebinarVideo } from '../portal/lib/youtube.mjs';
 
 const rootDir = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -40,6 +40,33 @@ const readPngDimensions = async file => {
     throw new Error('es un PNG incompleto o corrupto');
   }
   return { width: contents.readUInt32BE(16), height: contents.readUInt32BE(20) };
+};
+
+const readIcoEntries = async file => {
+  const contents = await readFile(file);
+  if (contents.length < 6 || contents.readUInt16LE(0) !== 0 || contents.readUInt16LE(2) !== 1) {
+    throw new Error('no es un ICO válido');
+  }
+  const count = contents.readUInt16LE(4);
+  if (count < 1 || contents.length < 6 + (count * 16)) throw new Error('tiene un directorio ICO incompleto');
+  return Array.from({ length: count }, (_, index) => {
+    const offset = 6 + (index * 16);
+    const width = contents[offset] || 256;
+    const height = contents[offset + 1] || 256;
+    const planes = contents.readUInt16LE(offset + 4);
+    const bitCount = contents.readUInt16LE(offset + 6);
+    const byteLength = contents.readUInt32LE(offset + 8);
+    const imageOffset = contents.readUInt32LE(offset + 12);
+    const imageEnd = imageOffset + byteLength;
+    if (!byteLength || imageOffset < 6 + (count * 16) || imageEnd > contents.length) {
+      throw new Error(`contiene una entrada ICO fuera de rango (${width}×${height})`);
+    }
+    const payload = contents.subarray(imageOffset, imageEnd);
+    const isPng = payload.subarray(0, 8).equals(pngSignature);
+    const isDib = payload.length >= 4 && payload.readUInt32LE(0) >= 40;
+    if (!isPng && !isDib) throw new Error(`contiene un payload ICO inválido (${width}×${height})`);
+    return { width, height, planes, bitCount };
+  });
 };
 
 const walk = async directory => {
@@ -325,6 +352,29 @@ const validatePortalDocument = ({ html, route, relativeFile, errors }) => {
   if (/species-theme\.css|hero-produccion-animal\.svg|team-orbit|IntersectionObserver[^\n]+data-nav/i.test(html)) {
     errors.push(`${prefix}: conserva referencias visuales o de navegación obsoletas.`);
   }
+
+  const faviconLinks = getTagsByName(html, 'link');
+  const expectedFaviconLinks = [
+    { rel: 'icon', sizes: 'any', href: assetHref(route, 'favicon.ico') },
+    { rel: 'icon', sizes: '16x16', type: 'image/png', href: assetHref(route, 'favicon-16x16.png') },
+    { rel: 'icon', sizes: '32x32', type: 'image/png', href: assetHref(route, 'favicon-32x32.png') },
+    { rel: 'icon', sizes: '48x48', type: 'image/png', href: assetHref(route, 'favicon-48x48.png') },
+    { rel: 'icon', sizes: '96x96', type: 'image/png', href: assetHref(route, 'favicon-96x96.png') },
+    { rel: 'apple-touch-icon', sizes: '180x180', href: assetHref(route, 'apple-touch-icon.png') },
+    { rel: 'manifest', href: assetHref(route, 'manifest.webmanifest') },
+  ];
+  for (const expected of expectedFaviconLinks) {
+    const matches = faviconLinks.filter(link => link.attributes.get('rel') === expected.rel
+      && link.attributes.get('sizes') === expected.sizes
+      && link.attributes.get('href') === expected.href
+      && (!expected.type || link.attributes.get('type') === expected.type));
+    if (matches.length !== 1) errors.push(`${prefix}: falta o duplica el favicon ${expected.href}.`);
+  }
+  for (const link of faviconLinks.filter(link => ['icon', 'apple-touch-icon', 'manifest'].includes(link.attributes.get('rel')))) {
+    const href = link.attributes.get('href') || '';
+    if (href.includes('?') || href.includes('#')) errors.push(`${prefix}: favicon o manifest no debe usar query ni fragmento: ${href}.`);
+    if (href.includes('favicon/')) errors.push(`${prefix}: conserva una ruta de favicon histórica: ${href}.`);
+  }
 };
 
 const validateReferences = async ({ html, route, file, distDir, errors, summary }) => {
@@ -459,17 +509,30 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
   }
 
   const faviconAssets = [
-    ['favicon/favicon-16x16.png', 16],
-    ['favicon/favicon-24x24.png', 24],
-    ['favicon/favicon-32x32.png', 32],
-    ['favicon/favicon-48x48.png', 48],
-    ['favicon/favicon-64x64.png', 64],
-    ['favicon/apple-touch-icon.png', 180],
-    ['favicon/favicon-192x192.png', 192],
-    ['favicon/favicon-512x512.png', 512],
-    ['favicon/favicon-1024x1024.png', 1024],
+    ['favicon-16x16.png', 16],
+    ['favicon-32x32.png', 32],
+    ['favicon-48x48.png', 48],
+    ['favicon-96x96.png', 96],
+    ['apple-touch-icon.png', 180],
+    ['android-chrome-192x192.png', 192],
+    ['android-chrome-512x512.png', 512],
   ];
-  if (!await fileExists(path.join(distDir, 'favicon.ico'))) errors.push('Falta favicon.ico.');
+  const faviconIco = path.join(distDir, 'favicon.ico');
+  if (!await fileExists(faviconIco)) {
+    errors.push('Falta favicon.ico.');
+  } else {
+    try {
+      const icoEntries = await readIcoEntries(faviconIco);
+      for (const requiredSize of [16, 32, 48]) {
+        const entries = icoEntries.filter(entry => entry.width === requiredSize && entry.height === requiredSize);
+        if (entries.length !== 1 || entries[0].planes !== 1 || entries[0].bitCount !== 32) {
+          errors.push(`favicon.ico debe contener una entrada única de ${requiredSize} × ${requiredSize} a 32 bpp.`);
+        }
+      }
+    } catch (error) {
+      errors.push(`favicon.ico ${error.message}.`);
+    }
+  }
   for (const [relativePath, expectedSize] of faviconAssets) {
     const file = path.join(distDir, relativePath);
     if (!await fileExists(file)) {
@@ -505,6 +568,12 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
     if (!lines.includes('Allow: /')) errors.push('robots.txt debe permitir el rastreo con Allow: /.');
     if (!robots.includes(expected)) errors.push(`robots.txt no declara ${expected}.`);
     if (lines.filter(line => line.toLowerCase().startsWith('sitemap:')).length !== 1) errors.push('robots.txt debe declarar un único sitemap.');
+    const disallows = lines.filter(line => line.toLowerCase().startsWith('disallow:'))
+      .map(line => line.slice(line.indexOf(':') + 1).trim())
+      .filter(Boolean);
+    for (const faviconPath of ['/favicon.ico', '/favicon-16x16.png', '/favicon-32x32.png', '/favicon-48x48.png', '/favicon-96x96.png', '/apple-touch-icon.png', '/android-chrome-192x192.png', '/android-chrome-512x512.png']) {
+      if (disallows.some(rule => rule === '/' || faviconPath.startsWith(rule))) errors.push(`robots.txt bloquea el favicon público ${faviconPath}.`);
+    }
   }
 
   const buildInfoFile = path.join(distDir, 'build-info.json');
@@ -527,6 +596,13 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
     try {
       const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
       if (!manifest.name || !manifest.short_name) errors.push('manifest.webmanifest requiere name y short_name.');
+      const expectedManifestIcons = [
+        { src: './android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: './android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+      ];
+      if (manifest.icons?.length !== expectedManifestIcons.length || expectedManifestIcons.some(expectedIcon => !manifest.icons.some(icon => icon.src === expectedIcon.src && icon.sizes === expectedIcon.sizes && icon.type === expectedIcon.type))) {
+        errors.push('manifest.webmanifest debe declarar exactamente los iconos Android SIPA de 192 y 512 px.');
+      }
       for (const icon of manifest.icons ?? []) {
         const resolved = await normalizeLocalTarget({ distDir, fromFile: manifestFile, rawUrl: icon.src ?? '' });
         if (!icon.src || resolved.error || !resolved.exists) errors.push(`manifest.webmanifest referencia un icono inexistente: ${icon.src ?? '<vacío>'}.`);
