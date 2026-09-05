@@ -15,6 +15,14 @@ export const socialLinks = [
     url: 'https://www.facebook.com/sipa.utmach',
     icon: 'facebook',
     published: true
+  },
+  {
+    id: 'tiktok',
+    label: 'TikTok',
+    username: '@sipa_utmach',
+    url: 'https://www.tiktok.com/@sipa_utmach',
+    icon: 'tiktok',
+    published: true
   }
 ];
 
@@ -29,13 +37,22 @@ export const institutionalLinks = [
   }
 ];
 
-export const contactChannels = [];
+export const contactChannels = [
+  {
+    id: 'email',
+    label: 'Correo',
+    username: 'sipautmach@gmail.com',
+    url: 'mailto:sipautmach@gmail.com',
+    icon: 'mail',
+    published: true
+  }
+];
 
 export const contactContent = {
   institution: 'Universidad Técnica de Machala',
   academicUnit: 'Carrera de Medicina Veterinaria',
   location: 'Machala, El Oro, Ecuador',
-  note: 'Los canales oficiales de correo y WhatsApp se incorporarán cuando sean confirmados.',
+  note: 'El canal oficial de WhatsApp se incorporará cuando sea confirmado.',
   form: {
     published: false,
     endpoint: '',
