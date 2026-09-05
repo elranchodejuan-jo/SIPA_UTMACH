@@ -56,14 +56,23 @@ test('Contacto muestra únicamente canales publicados y no simula un formulario'
   expectRuntimeClean(runtime);
 });
 
-test('el footer deriva exactamente los canales publicados', async ({ page }) => {
+test('el footer muestra únicamente iconos de redes y contacto publicados', async ({ page }) => {
   const runtime = await gotoPortal(page, '/', watchRuntime(page));
-  const published = [...socialLinks, ...contactChannels, ...institutionalLinks]
+  const published = [...socialLinks, ...contactChannels]
     .filter(item => item.published === true && item.url);
   const links = page.locator('footer.site-footer .social-list a');
   await expect(links).toHaveCount(published.length);
   const hrefs = await links.evaluateAll(elements => elements.map(element => element.href));
   assertSameUrls(hrefs, published.map(item => item.url));
+
+  for (const item of published) {
+    const link = page.locator(`footer.site-footer .social-list a[href="${item.url}"]`).first();
+    await expect(link).toHaveAttribute('aria-label', `${item.label} de SIPA`);
+    await expect(link.locator('svg')).toHaveCount(1);
+    await expect(link.locator(':scope > span:not(.visually-hidden)')).toHaveCount(0);
+  }
+
+  await expect(page.locator('footer.site-footer .social-list a[href="https://www.utmachala.edu.ec/"]')).toHaveCount(0);
   expectRuntimeClean(runtime);
 });
 
