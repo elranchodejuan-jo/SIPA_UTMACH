@@ -9,7 +9,7 @@ import {
   getSitemapRoutes,
 } from '../../portal/config/navigation.mjs';
 import { getPublishedRoutes } from '../../portal/config/routes.mjs';
-import { socialLinks } from '../../portal/content/socials.mjs';
+import { contactChannels, socialLinks } from '../../portal/content/socials.mjs';
 import { escapeAttribute, escapeHtml, safeJson } from '../../portal/lib/html.mjs';
 import {
   assetHref,
@@ -65,7 +65,7 @@ test('breadcrumbs conserva la jerarquía Inicio > Divulgación > Webinars', () =
   assert.equal(breadcrumbs.at(-1).current, true);
 });
 
-test('redes oficiales de SIPA publican Instagram y Facebook confirmados', () => {
+test('redes oficiales de SIPA publican Instagram, Facebook y TikTok confirmados', () => {
   assert.deepEqual(
     socialLinks.map(({ id, label, username, url, icon, published }) => ({ id, label, username, url, icon, published })),
     [
@@ -85,8 +85,30 @@ test('redes oficiales de SIPA publican Instagram y Facebook confirmados', () => 
         icon: 'facebook',
         published: true,
       },
+      {
+        id: 'tiktok',
+        label: 'TikTok',
+        username: '@sipa_utmach',
+        url: 'https://www.tiktok.com/@sipa_utmach',
+        icon: 'tiktok',
+        published: true,
+      },
     ],
   );
+});
+
+test('correo oficial de SIPA se publica como canal mailto válido', () => {
+  assert.deepEqual(contactChannels, [
+    {
+      id: 'email',
+      label: 'Correo',
+      username: 'sipautmach@gmail.com',
+      url: 'mailto:sipautmach@gmail.com',
+      icon: 'mail',
+      published: true,
+    },
+  ]);
+  assert.equal(normalizeEmailHref('sipautmach@gmail.com'), 'mailto:sipautmach@gmail.com');
 });
 
 test('todos los enlaces relativos resuelven en dominio raíz y GitHub Pages', () => {
