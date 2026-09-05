@@ -1,5 +1,22 @@
 /** Redes oficiales de SIPA. No publicar cuentas personales. */
-export const socialLinks = [];
+export const socialLinks = [
+  {
+    id: 'instagram',
+    label: 'Instagram',
+    username: '@sipa_utmach',
+    url: 'https://www.instagram.com/sipa_utmach/',
+    icon: 'instagram',
+    published: true
+  },
+  {
+    id: 'facebook',
+    label: 'Facebook',
+    username: 'sipa.utmach',
+    url: 'https://www.facebook.com/sipa.utmach',
+    icon: 'facebook',
+    published: true
+  }
+];
 
 export const institutionalLinks = [
   {
@@ -18,7 +35,7 @@ export const contactContent = {
   institution: 'Universidad Técnica de Machala',
   academicUnit: 'Carrera de Medicina Veterinaria',
   location: 'Machala, El Oro, Ecuador',
-  note: 'Los canales oficiales de correo, WhatsApp y redes sociales se incorporarán cuando sean confirmados.',
+  note: 'Los canales oficiales de correo y WhatsApp se incorporarán cuando sean confirmados.',
   form: {
     published: false,
     endpoint: '',

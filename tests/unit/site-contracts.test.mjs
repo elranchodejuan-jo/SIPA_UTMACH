@@ -9,6 +9,7 @@ import {
   getSitemapRoutes,
 } from '../../portal/config/navigation.mjs';
 import { getPublishedRoutes } from '../../portal/config/routes.mjs';
+import { socialLinks } from '../../portal/content/socials.mjs';
 import { escapeAttribute, escapeHtml, safeJson } from '../../portal/lib/html.mjs';
 import {
   assetHref,
@@ -62,6 +63,30 @@ test('breadcrumbs conserva la jerarquía Inicio > Divulgación > Webinars', () =
   const breadcrumbs = getBreadcrumbs('webinars');
   assert.deepEqual(breadcrumbs.map(item => item.label), ['Inicio', 'Divulgación', 'Webinars']);
   assert.equal(breadcrumbs.at(-1).current, true);
+});
+
+test('redes oficiales de SIPA publican Instagram y Facebook confirmados', () => {
+  assert.deepEqual(
+    socialLinks.map(({ id, label, username, url, icon, published }) => ({ id, label, username, url, icon, published })),
+    [
+      {
+        id: 'instagram',
+        label: 'Instagram',
+        username: '@sipa_utmach',
+        url: 'https://www.instagram.com/sipa_utmach/',
+        icon: 'instagram',
+        published: true,
+      },
+      {
+        id: 'facebook',
+        label: 'Facebook',
+        username: 'sipa.utmach',
+        url: 'https://www.facebook.com/sipa.utmach',
+        icon: 'facebook',
+        published: true,
+      },
+    ],
+  );
 });
 
 test('todos los enlaces relativos resuelven en dominio raíz y GitHub Pages', () => {
