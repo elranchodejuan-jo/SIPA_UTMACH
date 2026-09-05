@@ -65,7 +65,7 @@ test('breadcrumbs conserva la jerarquía Inicio > Divulgación > Webinars', () =
   assert.equal(breadcrumbs.at(-1).current, true);
 });
 
-test('redes oficiales de SIPA publican Instagram, Facebook y TikTok confirmados', () => {
+test('redes oficiales de SIPA publican Instagram, Facebook, TikTok y YouTube confirmados', () => {
   assert.deepEqual(
     socialLinks.map(({ id, label, username, url, icon, published }) => ({ id, label, username, url, icon, published })),
     [
@@ -91,6 +91,14 @@ test('redes oficiales de SIPA publican Instagram, Facebook y TikTok confirmados'
         username: '@sipa_utmach',
         url: 'https://www.tiktok.com/@sipa_utmach',
         icon: 'tiktok',
+        published: true,
+      },
+      {
+        id: 'youtube',
+        label: 'YouTube',
+        username: '@SIPA_UTMACH',
+        url: 'https://www.youtube.com/@SIPA_UTMACH',
+        icon: 'youtube',
         published: true,
       },
     ],

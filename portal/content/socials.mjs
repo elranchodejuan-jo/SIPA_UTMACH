@@ -23,6 +23,14 @@ export const socialLinks = [
     url: 'https://www.tiktok.com/@sipa_utmach',
     icon: 'tiktok',
     published: true
+  },
+  {
+    id: 'youtube',
+    label: 'YouTube',
+    username: '@SIPA_UTMACH',
+    url: 'https://www.youtube.com/@SIPA_UTMACH',
+    icon: 'youtube',
+    published: true
   }
 ];
 

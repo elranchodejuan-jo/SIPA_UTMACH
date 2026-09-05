@@ -6,7 +6,7 @@ import { renderBreadcrumb } from './partials/breadcrumb.mjs';
 import { renderFooter } from './partials/footer.mjs';
 import { renderHeader } from './partials/header.mjs';
 
-const cssFiles = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'pages.css', 'responsive.css'];
+const cssFiles = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'footer-socials.css', 'pages.css', 'responsive.css'];
 
 function baseStructuredData(route, helpers, breadcrumbs) {
   const graph = [
