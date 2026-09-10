@@ -50,6 +50,7 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   await expect(angelCard.locator('.team-card__badges li')).toHaveText(['Docente']);
   await expect(robinsonCard.locator('.team-card__badges li')).toHaveText(['Ayudante de cátedra']);
   await expect(alisonCard.locator('.team-card__badges li')).toHaveText(['Ayudante de campo']);
+  await expect(alisonCard).toContainText('Medicina Veterinaria');
   await expect(juanCard.locator('.team-card__badges li')).toHaveText(['Desarrollo web', 'Administración de redes']);
   await expect(juanCard).toHaveCount(1);
 
