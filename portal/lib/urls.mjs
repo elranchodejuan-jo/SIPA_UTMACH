@@ -88,8 +88,10 @@ export const normalizeEmailHref = value => {
 
 export const normalizeWhatsAppHref = value => {
   if (typeof value !== 'string' && typeof value !== 'number') return null;
-  const digits = String(value).replace(/[\s()+.-]/g, '');
-  if (!/^\d{8,15}$/.test(digits)) return null;
+  const source = String(value).trim();
+  if (!source.startsWith('+')) return null;
+  const digits = source.replace(/[\s()+.-]/g, '');
+  if (!/^[1-9]\d{7,14}$/.test(digits)) return null;
   return `https://wa.me/${digits}`;
 };
 

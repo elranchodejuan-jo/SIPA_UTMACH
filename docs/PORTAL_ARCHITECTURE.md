@@ -11,17 +11,17 @@ dist-expo/                                     -> dist/eventos/expoferia-nutrici
 shared/people.mjs + assets/images/people/      -> ambos productos
 ```
 
-La raíz `index.html`, `src/` y `public/` pertenecen exclusivamente a la Expoferia. Sus roles, redes, datos históricos y formularios no son automáticamente contenido institucional del portal SIPA. La excepción deliberada es la identidad neutral compartida en `shared/people.mjs` y la fuente única de retratos en `assets/images/people/`.
+La raíz `index.html`, `src/` y `public/` pertenecen exclusivamente a la Expoferia. Sus roles, datos históricos y formularios no son automáticamente contenido institucional del portal SIPA. La excepción deliberada es la identidad neutral compartida en `shared/people.mjs`, que también puede contener formación académica reutilizable y contactos personales expresamente autorizados, y la fuente única de retratos en `assets/images/people/`.
 
 ## Personas, membresías y eventos
 
 La arquitectura separa tres conceptos:
 
-- `shared/people.mjs`: `id`, nombre publicado y ruta del retrato; no contiene cargos SIPA ni roles de eventos.
-- `portal/content/team.mjs`: membresías institucionales por `personId`, con categoría, función SIPA, orden y estado editorial. Exporta el adaptador `teamMembers` para conservar la página y su tarjeta actuales.
+- `shared/people.mjs`: `id`, nombre, retrato, formación reutilizable, contactos autorizados y estado de identidad. `people` contiene identidades confirmadas; `draftPeople` reserva incorporaciones incompletas para el build editorial del portal y se elimina por tree-shaking del bundle de Expoferia. No contiene cargos SIPA ni roles de eventos.
+- `portal/content/team.mjs`: membresías institucionales por `personId`, con grupo de presentación, varias insignias posibles, cargo oficial opcional, orden y estado editorial. Exporta el adaptador `teamMembers` para la página institucional.
 - `src/data/site.ts`: participaciones de Expoferia por `eventId` y `personId`, con rol, orden y contexto históricos. Exporta los adaptadores `siteData.teacher` y `siteData.team` para conservar el renderer y el CSS del evento.
 
-Los validadores rechazan IDs inexistentes y relaciones duplicadas dentro de su contexto. Una misma persona sí puede pertenecer a SIPA y participar en uno o varios eventos.
+Los validadores rechazan IDs inexistentes, relaciones duplicadas, órdenes repetidos, insignias vacías, contactos inseguros, borradores dentro de los artefactos generados y cualquier intento de publicar una identidad incompleta. Una misma persona sí puede pertenecer a SIPA y participar en uno o varios eventos.
 
 ## Registro canónico de rutas
 
@@ -83,7 +83,7 @@ Las plantillas deben obtener helpers con `createRouteHelpers(route.id)` y evitar
 
 [`portal/lib/content.mjs`](../portal/lib/content.mjs) aplica las reglas de publicación. Un elemento solo aparece cuando `published === true`; los estados `draft` y `hidden` permanecen fuera del HTML público.
 
-[`portal/lib/urls.mjs`](../portal/lib/urls.mjs) valida URLs externas, correo y WhatsApp. No se publican `href="#"`, protocolos ejecutables, credenciales embebidas ni contactos no confirmados.
+[`portal/lib/urls.mjs`](../portal/lib/urls.mjs) valida URLs externas, correo y WhatsApp. El WhatsApp institucional se deriva exclusivamente de `SITE_CONFIG.contact.whatsappNumber` cuando existe un número E.164 confirmado. No se publican `href="#"`, protocolos ejecutables, credenciales embebidas ni contactos no confirmados.
 
 [`portal/lib/youtube.mjs`](../portal/lib/youtube.mjs) acepta IDs y URLs `watch`, `youtu.be`, `embed` y `shorts`, normaliza el enlace público y genera el embed con `youtube-nocookie.com`. Los webinars publicados deben superar `assertValidPublishedWebinars()` durante el build.
 
@@ -106,7 +106,7 @@ La ejecución Windows existente con `execFileSync`, `ComSpec`/`cmd.exe` y sin `s
 
 ## Incorporación de contenido
 
-Las colecciones de `portal/content/` son datos editoriales; las plantillas no contienen tarjetas copiadas manualmente. Los campos ausentes no se renderizan. Contenido institucional no confirmado permanece `draft`, `hidden` o sin publicar. Para incorporar una persona se registra primero su identidad compartida, después se crea la membresía SIPA o la relación del evento correspondiente; nunca se copia un perfil completo.
+Las colecciones de `portal/content/` son datos editoriales; las plantillas no contienen tarjetas copiadas manualmente. Los campos ausentes no se renderizan. Contenido institucional no confirmado permanece `draft`, `hidden` o sin publicar. Para incorporar una persona se registra primero su identidad compartida, después se crea la membresía SIPA o la relación del evento correspondiente; nunca se copia un perfil completo. Los grupos vacíos se omiten y una membresía puede publicar varias insignias sin duplicar a la persona.
 
 La Expoferia es un evento educativo, no un proyecto científico. Sus integrantes y canales solo pueden incorporarse a `team.mjs` o `socials.mjs` tras confirmación institucional específica.
 
@@ -115,3 +115,5 @@ La Expoferia es un evento educativo, no un proyecto científico. Sus integrantes
 El validador estático debe importar `getPublishedRoutes()` y `getSitemapRoutes()` en lugar de duplicar rutas. Por cada página comprueba archivo generado, un único `h1`, metadatos, canonical, IDs, enlaces y assets. También debe confirmar que el sitemap coincide exactamente con el registro y que la Expoferia conserva su salida histórica.
 
 Las pruebas E2E complementan, pero no sustituyen, esta validación. Deben cubrir navegación, menú móvil, tema, volver arriba, estado vacío de webinars, consola, responsive y al menos un escenario servido bajo un prefijo equivalente a `/SIPA_UTMACH/`.
+
+El smoke específico del servidor de desarrollo de Expoferia se ejecuta con `npm.cmd run dev:expo -- --host 127.0.0.1 --port 4176 --strictPort` y, en otra terminal PowerShell, `$env:SIPA_EXPO_DEV_URL = 'http://127.0.0.1:4176/'; npx.cmd playwright test tests/e2e/expoferia-dev.spec.mjs --project=desktop-1366`. La variable es deliberadamente obligatoria para que la suite general no simule ese servidor con el preview integrado.

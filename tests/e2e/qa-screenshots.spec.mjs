@@ -7,6 +7,16 @@ import { expectRuntimeClean, watchRuntime } from './helpers/qa.mjs';
 const captureDir = path.join(process.cwd(), 'tmp', 'sipa-green-qa');
 
 const capture = async (page, name, { fullPage = true } = {}) => {
+  if (await page.locator("body[data-route-id='team']").count()) {
+    const portraits = page.locator('.team-card__portrait img');
+    for (let index = 0; index < (await portraits.count()); index += 1) {
+      const portrait = portraits.nth(index);
+      await portrait.scrollIntoViewIfNeeded();
+      await expect.poll(() => portrait.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+    }
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  }
+
   await page.evaluate(() => {
     document.documentElement.classList.remove('reveal-ready');
     document.querySelectorAll('.reveal').forEach(element => element.classList.add('is-visible'));
@@ -65,7 +75,8 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
     ['light-outreach', '/divulgacion/', 768, 1024],
     ['light-webinars', '/divulgacion/webinars/', 1366, 768],
     ['light-events', '/eventos/', 1024, 768],
-    ['light-team', '/equipo/', 1366, 768],
+    ['light-team-desktop', '/equipo/', 1366, 768],
+    ['light-team-mobile', '/equipo/', 390, 844],
     ['light-contact', '/contacto/', 1366, 768],
   ]) {
     await visit(page, route, { width, height, theme: 'light' });
@@ -97,7 +108,8 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
   for (const [name, route, width, height] of [
     ['dark-research', '/investigacion/', 1024, 768],
     ['dark-webinars', '/divulgacion/webinars/', 1366, 768],
-    ['dark-team', '/equipo/', 768, 1024],
+    ['dark-team-desktop', '/equipo/', 1366, 768],
+    ['dark-team-mobile', '/equipo/', 390, 844],
     ['dark-contact', '/contacto/', 1366, 768],
   ]) {
     await visit(page, route, { width, height, theme: 'dark' });

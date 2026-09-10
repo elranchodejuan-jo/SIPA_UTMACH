@@ -36,6 +36,10 @@ export const SITE_CONFIG = deepFreeze({
   storageKeys: {
     theme: 'sipa-theme',
   },
+  contact: {
+    // Formato E.164 con prefijo +. Mantener vacío hasta confirmar el número institucional.
+    whatsappNumber: '',
+  },
 });
 
 // Alias breve para consumidores que prefieran imports con nombre semántico.

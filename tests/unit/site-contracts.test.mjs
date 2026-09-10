@@ -10,7 +10,7 @@ import {
 } from '../../portal/config/navigation.mjs';
 import { getPublishedRoutes } from '../../portal/config/routes.mjs';
 import { contactChannels, socialLinks } from '../../portal/content/socials.mjs';
-import { sipaMemberships, teamMembers } from '../../portal/content/team.mjs';
+import { sipaDraftMemberships, sipaMemberships, teamMembers } from '../../portal/content/team.mjs';
 import { escapeAttribute, escapeHtml, safeJson } from '../../portal/lib/html.mjs';
 import {
   assetHref,
@@ -32,7 +32,7 @@ import {
   expoferiaParticipants,
   sharedPersonPortraitHref,
 } from '../../src/data/site.ts';
-import { assertValidPersonRelations, people } from '../../shared/people.mjs';
+import { assertValidPersonRelations, draftPeople, people } from '../../shared/people.mjs';
 
 import './color-contracts.test.mjs';
 import './favicon-contracts.test.mjs';
@@ -120,7 +120,9 @@ test('correo oficial de SIPA se publica como canal mailto válido', () => {
       username: 'sipautmach@gmail.com',
       url: 'mailto:sipautmach@gmail.com',
       icon: 'mail',
+      order: 10,
       published: true,
+      status: 'confirmed',
     },
   ]);
   assert.equal(normalizeEmailHref('sipautmach@gmail.com'), 'mailto:sipautmach@gmail.com');
@@ -151,15 +153,29 @@ test('todos los enlaces relativos resuelven en dominio raíz y GitHub Pages', ()
 
 test('personas compartidas tienen IDs únicos y relaciones válidas por contexto', () => {
   assert.deepEqual(
-    people.map(({ id, name, portrait }) => ({ id, name, portrait })),
+    people.map(({ id, name, portrait, status }) => ({ id, name, portrait, status })),
     [
-      { id: 'angel-sanchez', name: 'Angel Roberto Sánchez Quinche', portrait: 'assets/images/people/angel-sanchez.png' },
-      { id: 'carolina-cajamarca', name: 'Carolina Cajamarca', portrait: 'assets/images/people/carolina-cajamarca.png' },
-      { id: 'juan-bajana', name: 'Juan José Bajaña', portrait: 'assets/images/people/juan-bajana.jpg' },
-      { id: 'robinson-macas', name: 'Robinson Macas', portrait: 'assets/images/people/robinson-macas.jpeg' },
+      { id: 'angel-sanchez', name: 'Angel Roberto Sánchez Quinche', portrait: 'assets/images/people/angel-sanchez.png', status: 'confirmed' },
+      { id: 'carolina-cajamarca', name: 'Carolina Cajamarca', portrait: 'assets/images/people/carolina-cajamarca.png', status: 'confirmed' },
+      { id: 'juan-bajana', name: 'Juan José Bajaña', portrait: 'assets/images/people/juan-bajana.jpg', status: 'confirmed' },
+      { id: 'robinson-macas', name: 'Robinson Macas', portrait: 'assets/images/people/robinson-macas.jpeg', status: 'confirmed' },
     ],
   );
-  assert.equal(new Set(people.map(person => person.id)).size, people.length);
+  assert.deepEqual(draftPeople.map(({ id, name, portrait, status }) => ({ id, name, portrait, status })), [
+    { id: 'allison-machuca', name: 'Allison Machuca', portrait: '', status: 'draft' },
+    { id: 'jimmy', name: 'Jimmy', portrait: '', status: 'draft' },
+    { id: 'abigail', name: 'Abigail', portrait: '', status: 'draft' },
+  ]);
+  const allPersonIds = [...people, ...draftPeople].map(person => person.id);
+  assert.equal(new Set(allPersonIds).size, allPersonIds.length);
+  const angel = people.find(person => person.id === 'angel-sanchez');
+  assert.deepEqual(angel.academicProfile.credentials.map(({ degree, institution, country }) => ({ degree, institution, country })), [
+    { degree: 'Doctor en Medicina Veterinaria y Zootecnia', institution: 'Universidad Técnica de Machala', country: 'Ecuador' },
+    { degree: 'Máster Universitario en Producción Animal', institution: 'Universitat Politècnica de València', country: 'España' },
+    { degree: 'Doctor en Ciencias Veterinarias', institution: 'Universidad del Zulia', country: 'Venezuela' },
+  ]);
+  assert.equal(angel.academicProfile.trajectory.some(item => /Desde 2013|más de \d+ años|asesor de SIPA/i.test(item)), false);
+  assert.equal(draftPeople.every(person => person.status === 'draft' && !person.portrait), true);
   assert.doesNotThrow(() => assertValidPersonRelations([
     { eventId: 'evento-a', personId: 'juan-bajana' },
     { eventId: 'evento-b', personId: 'juan-bajana' },
@@ -173,26 +189,45 @@ test('personas compartidas tienen IDs únicos y relaciones válidas por contexto
   ]), /no existe la persona compartida/i);
 });
 
-test('Equipo publica tres membresías SIPA confirmadas sin reutilizar roles de Expoferia', () => {
+test('Equipo organiza perfiles confirmados y conserva borradores fuera de publicación', () => {
   assert.deepEqual(
-    sipaMemberships.map(({ personId, category, institutionalRole, order, published, status }) => (
-      { personId, category, institutionalRole, order, published, status }
+    sipaMemberships.map(({ personId, category, institutionalRole, badges, order, published, status }) => (
+      { personId, category, institutionalRole, badges: badges.map(badge => badge.label), order, published, status }
     )),
     [
-      { personId: 'angel-sanchez', category: 'docentes', institutionalRole: 'Miembro de SIPA', order: 10, published: true, status: 'confirmed' },
-      { personId: 'juan-bajana', category: 'estudiantes', institutionalRole: 'Miembro de SIPA', order: 20, published: true, status: 'confirmed' },
-      { personId: 'robinson-macas', category: 'estudiantes', institutionalRole: 'Miembro de SIPA', order: 30, published: true, status: 'confirmed' },
+      { personId: 'angel-sanchez', category: 'docentes', institutionalRole: 'Miembro de SIPA', badges: ['Docente'], order: 10, published: true, status: 'confirmed' },
+      { personId: 'robinson-macas', category: 'ayudantias', institutionalRole: 'Miembro de SIPA', badges: ['Ayudante de cátedra'], order: 10, published: true, status: 'confirmed' },
+      { personId: 'juan-bajana', category: 'comunicacion-digital', institutionalRole: 'Miembro de SIPA', badges: ['Desarrollo web', 'Administración de redes'], order: 10, published: true, status: 'confirmed' },
     ],
   );
-  assert.equal(new Set(sipaMemberships.map(membership => membership.personId)).size, 3);
-  assert.deepEqual(teamMembers.map(member => member.name), [
-    'Angel Roberto Sánchez Quinche',
-    'Juan José Bajaña',
-    'Robinson Macas',
+  assert.deepEqual(sipaDraftMemberships.map(({ personId, category, badges, order, published, status }) => ({
+    personId,
+    category,
+    badges: badges.map(badge => badge.label),
+    order,
+    published,
+    status,
+  })), [
+    { personId: 'allison-machuca', category: 'ayudantias', badges: ['Ayudante de campo'], order: 20, published: false, status: 'draft' },
+    { personId: 'jimmy', category: 'ayudantias', badges: ['Ayudante de cátedra'], order: 30, published: false, status: 'draft' },
+    { personId: 'abigail', category: 'comunicacion-digital', badges: [], order: 20, published: false, status: 'draft' },
   ]);
-  assert.ok(teamMembers.every(member => member.role === 'Miembro de SIPA'));
-  assert.ok(teamMembers.every(member => !member.semester));
-  assert.ok(teamMembers.every(member => !['Exponente', 'Desarrollador Web', 'Master Solver'].includes(member.role)));
+  const membershipIds = [...sipaMemberships, ...sipaDraftMemberships].map(membership => membership.personId);
+  assert.equal(new Set(membershipIds).size, membershipIds.length);
+  const published = teamMembers.filter(member => member.published && member.status === 'confirmed');
+  assert.deepEqual(published.map(member => member.name), [
+    'Angel Roberto Sánchez Quinche',
+    'Robinson Macas',
+    'Juan José Bajaña',
+  ]);
+  assert.ok(published.every(member => member.role === 'Miembro de SIPA'));
+  assert.ok(published.every(member => !member.semester));
+  assert.ok(published.every(member => !['Exponente', 'Desarrollador Web', 'Master Solver'].includes(member.role)));
+  assert.deepEqual(published.find(member => member.id === 'juan-bajana').badges.map(badge => badge.label), [
+    'Desarrollo web',
+    'Administración de redes',
+  ]);
+  assert.equal(teamMembers.some(member => member.status === 'draft'), false);
   assert.equal(teamMembers.some(member => member.id === 'carolina-cajamarca'), false);
 });
 
@@ -295,6 +330,9 @@ test('helpers de URL rechazan protocolos, credenciales y rutas peligrosas', () =
   assert.equal(normalizeEmailHref('contacto@example.edu.ec'), 'mailto:contacto@example.edu.ec');
   assert.equal(normalizeEmailHref('correo inválido'), null);
   assert.equal(normalizeWhatsAppHref('+593 99 123 4567'), 'https://wa.me/593991234567');
+  assert.equal(normalizeWhatsAppHref('593991234567'), null);
+  assert.equal(SITE_CONFIG.contact.whatsappNumber, '');
+  assert.equal(contactChannels.some(channel => channel.id === 'whatsapp'), false);
   assert.equal(isSafePublicHref('#'), false);
   assert.equal(isSafePublicHref('javascript:alert(1)'), false);
   assert.throws(() => assetHref('home', '../secreto.txt'), /asset inválida/i);
