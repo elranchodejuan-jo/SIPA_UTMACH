@@ -159,10 +159,10 @@ test('personas compartidas tienen IDs únicos y relaciones válidas por contexto
       { id: 'carolina-cajamarca', name: 'Carolina Cajamarca', portrait: 'assets/images/people/carolina-cajamarca.png', status: 'confirmed' },
       { id: 'juan-bajana', name: 'Juan José Bajaña', portrait: 'assets/images/people/juan-bajana.jpg', status: 'confirmed' },
       { id: 'robinson-macas', name: 'Robinson Macas', portrait: 'assets/images/people/robinson-macas.jpeg', status: 'confirmed' },
+      { id: 'allison-machuca', name: 'Alison Machuca', portrait: 'assets/images/people/alison-machuca.jpeg', status: 'confirmed' },
     ],
   );
   assert.deepEqual(draftPeople.map(({ id, name, portrait, status }) => ({ id, name, portrait, status })), [
-    { id: 'allison-machuca', name: 'Allison Machuca', portrait: '', status: 'draft' },
     { id: 'jimmy', name: 'Jimmy', portrait: '', status: 'draft' },
     { id: 'abigail', name: 'Abigail', portrait: '', status: 'draft' },
   ]);
@@ -197,6 +197,7 @@ test('Equipo organiza perfiles confirmados y conserva borradores fuera de public
     [
       { personId: 'angel-sanchez', category: 'docentes', institutionalRole: 'Miembro de SIPA', badges: ['Docente'], order: 10, published: true, status: 'confirmed' },
       { personId: 'robinson-macas', category: 'ayudantias', institutionalRole: 'Miembro de SIPA', badges: ['Ayudante de cátedra'], order: 10, published: true, status: 'confirmed' },
+      { personId: 'allison-machuca', category: 'ayudantias', institutionalRole: 'Miembro de SIPA', badges: ['Ayudante de campo'], order: 20, published: true, status: 'confirmed' },
       { personId: 'juan-bajana', category: 'comunicacion-digital', institutionalRole: 'Miembro de SIPA', badges: ['Desarrollo web', 'Administración de redes'], order: 10, published: true, status: 'confirmed' },
     ],
   );
@@ -208,7 +209,6 @@ test('Equipo organiza perfiles confirmados y conserva borradores fuera de public
     published,
     status,
   })), [
-    { personId: 'allison-machuca', category: 'ayudantias', badges: ['Ayudante de campo'], order: 20, published: false, status: 'draft' },
     { personId: 'jimmy', category: 'ayudantias', badges: ['Ayudante de cátedra'], order: 30, published: false, status: 'draft' },
     { personId: 'abigail', category: 'comunicacion-digital', badges: [], order: 20, published: false, status: 'draft' },
   ]);
@@ -218,6 +218,7 @@ test('Equipo organiza perfiles confirmados y conserva borradores fuera de public
   assert.deepEqual(published.map(member => member.name), [
     'Angel Roberto Sánchez Quinche',
     'Robinson Macas',
+    'Alison Machuca',
     'Juan José Bajaña',
   ]);
   assert.ok(published.every(member => member.role === 'Miembro de SIPA'));

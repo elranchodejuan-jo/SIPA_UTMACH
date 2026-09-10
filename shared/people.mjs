@@ -85,19 +85,27 @@ const personRecords = [
       },
     ],
   },
+  {
+    id: 'allison-machuca',
+    name: 'Alison Machuca',
+    portrait: `${PEOPLE_ASSET_ROOT}alison-machuca.jpeg`,
+    status: 'confirmed',
+    contacts: [
+      {
+        type: 'instagram',
+        label: 'Instagram',
+        url: 'https://www.instagram.com/aymo_8a?stkn=N2Q3dnM5aXN0OHpz&utm_source=qr',
+        published: true,
+        status: 'confirmed',
+      },
+    ],
+  },
 ];
 
 // Identidades incompletas reservadas para edición del portal. Este export no es
 // consumido por Expoferia y debe promoverse a `people` únicamente al confirmar
 // nombre completo, retrato y datos publicables.
 export const draftPeople = /* @__PURE__ */ deepFreeze([
-  {
-    id: 'allison-machuca',
-    name: 'Allison Machuca',
-    portrait: '',
-    status: 'draft',
-    contacts: [],
-  },
   {
     id: 'jimmy',
     name: 'Jimmy',

@@ -13,15 +13,17 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   const runtime = await gotoPortal(page, '/equipo/', watchRuntime(page));
   const published = teamMembers.filter(member => member.published === true && member.status === 'confirmed');
   const cards = page.locator('main .team-card');
-  expect(published).toHaveLength(3);
+  expect(published).toHaveLength(4);
   await expect(cards).toHaveCount(published.length);
 
   await expect(cards.locator('h3')).toHaveText([
     'Angel Roberto Sánchez Quinche',
     'Robinson Macas',
+    'Alison Machuca',
     'Juan José Bajaña',
   ]);
   await expect(cards.locator('.team-card__role')).toHaveText([
+    'Miembro de SIPA',
     'Miembro de SIPA',
     'Miembro de SIPA',
     'Miembro de SIPA',
@@ -39,13 +41,15 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   await expect(page.locator('#estudiantes')).toHaveCount(1);
   await expect(page.locator('main')).not.toContainText(/perfiles en actualización/i);
   await expect(page.locator('main')).not.toContainText(/Cuarto semestre|Exponente|Desarrollador Web|Master Solver/);
-  await expect(page.locator('main')).not.toContainText(/Allison Machuca|Jimmy|Abigail/);
+  await expect(page.locator('main')).not.toContainText(/Jimmy|Abigail/);
 
   const angelCard = page.locator('[data-person-id="angel-sanchez"]');
   const robinsonCard = page.locator('[data-person-id="robinson-macas"]');
+  const alisonCard = page.locator('[data-person-id="allison-machuca"]');
   const juanCard = page.locator('[data-person-id="juan-bajana"]');
   await expect(angelCard.locator('.team-card__badges li')).toHaveText(['Docente']);
   await expect(robinsonCard.locator('.team-card__badges li')).toHaveText(['Ayudante de cátedra']);
+  await expect(alisonCard.locator('.team-card__badges li')).toHaveText(['Ayudante de campo']);
   await expect(juanCard.locator('.team-card__badges li')).toHaveText(['Desarrollo web', 'Administración de redes']);
   await expect(juanCard).toHaveCount(1);
 
@@ -67,6 +71,7 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   for (const [card, href] of [
     [juanCard, 'https://www.instagram.com/elranchodejuan_jo'],
     [robinsonCard, 'https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ=='],
+    [alisonCard, 'https://www.instagram.com/aymo_8a?stkn=N2Q3dnM5aXN0OHpz&utm_source=qr'],
   ]) {
     const instagram = card.locator(`a[href="${href}"]`);
     await expect(instagram).toHaveCount(1);
@@ -83,8 +88,8 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   await expect(page.locator('a[href*="wa.me/"]')).toHaveCount(0);
 
   const portraits = cards.locator('img');
-  await expect(portraits).toHaveCount(3);
-  for (let index = 0; index < 3; index += 1) {
+  await expect(portraits).toHaveCount(4);
+  for (let index = 0; index < 4; index += 1) {
     const portrait = portraits.nth(index);
     await portrait.scrollIntoViewIfNeeded();
     await expect(portrait).toHaveAttribute('src', /assets\/images\/people\//);
@@ -116,8 +121,8 @@ test('Equipo mantiene escala, proporción y composición a 360, 768 y 1440 px', 
     expect(teacherColumns).toBe(viewport.horizontalTeacher ? 2 : 1);
 
     const memberCards = page.locator('.team-card--member');
-    await expect(memberCards).toHaveCount(2);
-    for (let index = 0; index < 2; index += 1) {
+    await expect(memberCards).toHaveCount(3);
+    for (let index = 0; index < 3; index += 1) {
       const card = memberCards.nth(index);
       const portrait = card.locator('.team-card__portrait img');
       await portrait.scrollIntoViewIfNeeded();

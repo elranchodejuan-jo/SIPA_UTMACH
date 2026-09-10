@@ -58,6 +58,16 @@ export const sipaMemberships = Object.freeze([
     status: 'confirmed',
   }),
   Object.freeze({
+    personId: 'allison-machuca',
+    category: 'ayudantias',
+    institutionalRole: 'Miembro de SIPA',
+    officialPosition: '',
+    badges: Object.freeze([confirmedBadge('Ayudante de campo')]),
+    order: 20,
+    published: true,
+    status: 'confirmed',
+  }),
+  Object.freeze({
     personId: 'juan-bajana',
     category: 'comunicacion-digital',
     institutionalRole: 'Miembro de SIPA',
@@ -76,16 +86,6 @@ export const sipaMemberships = Object.freeze([
 // Relaciones editoriales incompletas. No forman parte de `teamMembers` ni de
 // ningún artefacto público hasta que la identidad sea promovida a `people`.
 export const sipaDraftMemberships = Object.freeze([
-  Object.freeze({
-    personId: 'allison-machuca',
-    category: 'ayudantias',
-    institutionalRole: 'Miembro de SIPA',
-    officialPosition: '',
-    badges: Object.freeze([confirmedBadge('Ayudante de campo')]),
-    order: 20,
-    published: false,
-    status: 'draft',
-  }),
   Object.freeze({
     personId: 'jimmy',
     category: 'ayudantias',
