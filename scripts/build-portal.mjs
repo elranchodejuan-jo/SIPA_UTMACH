@@ -7,10 +7,10 @@ import { pathToFileURL } from 'node:url';
 import { SITE_CONFIG } from '../portal/config/site.mjs';
 import { getPublishedRoutes, getRouteById } from '../portal/config/routes.mjs';
 import { getSitemapRoutes } from '../portal/config/navigation.mjs';
-import { normalizeEmailHref, normalizeExternalUrl } from '../portal/lib/urls.mjs';
+import { isSafePublicHref, normalizeEmailHref, normalizeExternalUrl, normalizeWhatsAppHref } from '../portal/lib/urls.mjs';
 import { assertValidPublishedWebinars } from '../portal/lib/youtube.mjs';
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../portal/content/socials.mjs';
-import { teamCategories, teamMembers } from '../portal/content/team.mjs';
+import { sipaDraftMemberships, sipaMemberships, teamCategories, teamMembers } from '../portal/content/team.mjs';
 import { webinars, webinarStatuses } from '../portal/content/webinars.mjs';
 import { events } from '../portal/content/events.mjs';
 import { renderLayout } from '../portal/templates/layout.mjs';
@@ -66,20 +66,49 @@ const validateContent = () => {
   }
   for (const item of contactChannels) {
     if (item.published !== true) continue;
+    if (item.status !== 'confirmed') throw new Error(`Canal público no confirmado en ${item.id || item.label}.`);
     const mailto = typeof item.url === 'string' && item.url.toLowerCase().startsWith('mailto:')
       ? normalizeEmailHref(item.url.slice(7))
       : null;
     if (!normalizeExternalUrl(item.url, { allowedProtocols: ['https:'] }) && mailto !== item.url) throw new Error(`Canal público inválido en ${item.id || item.label}: ${item.url || '(vacía)'}`);
+    if (item.id === 'whatsapp' && item.url !== normalizeWhatsAppHref(SITE_CONFIG.contact.whatsappNumber)) {
+      throw new Error('El canal de WhatsApp no coincide con el número institucional configurado.');
+    }
   }
   if (contactContent.form.published && !normalizeExternalUrl(contactContent.form.endpoint, { allowedProtocols: ['https:'] })) {
     throw new Error('El formulario de contacto publicado requiere un endpoint HTTPS válido');
   }
+  const orderKeys = new Set();
+  for (const membership of [...sipaMemberships, ...sipaDraftMemberships]) {
+    if (!['confirmed', 'draft', 'hidden'].includes(membership.status)) throw new Error(`Estado inválido en la membresía ${membership.personId}.`);
+    if (membership.published === true && membership.status !== 'confirmed') throw new Error(`La membresía ${membership.personId} no puede publicar un borrador.`);
+    if (!Number.isInteger(membership.order) || membership.order < 0) throw new Error(`Orden inválido en la membresía ${membership.personId}.`);
+    const orderKey = `${membership.category}:${membership.order}`;
+    if (orderKeys.has(orderKey)) throw new Error(`Orden duplicado en membresías SIPA: ${orderKey}.`);
+    orderKeys.add(orderKey);
+    const labels = new Set();
+    for (const badge of membership.badges || []) {
+      if (!badge.label?.trim()) throw new Error(`Insignia vacía en la membresía ${membership.personId}.`);
+      if (!['confirmed', 'draft', 'hidden'].includes(badge.status)) throw new Error(`Estado inválido en una insignia de ${membership.personId}.`);
+      if (badge.published === true && badge.status !== 'confirmed') throw new Error(`La membresía ${membership.personId} intenta publicar una insignia no confirmada.`);
+      const normalized = badge.label.trim().toLocaleLowerCase('es');
+      if (labels.has(normalized)) throw new Error(`Insignia duplicada en la membresía ${membership.personId}: ${badge.label}.`);
+      labels.add(normalized);
+    }
+  }
   for (const member of teamMembers.filter(item => item.published)) {
     if (!member.id || !member.name) throw new Error('Cada integrante publicado requiere id y nombre');
+    if (member.status !== 'confirmed' || member.personStatus !== 'confirmed') throw new Error(`El perfil ${member.id} no está confirmado para publicación.`);
+    if (!member.photo) throw new Error(`El perfil publicado ${member.id} requiere retrato.`);
     if (!teamCategories.some(category => category.id === member.category)) throw new Error(`Categoría inválida en el perfil ${member.id}: ${member.category}`);
-    if (member.email && !normalizeEmailHref(member.email)) throw new Error(`Correo inválido en el perfil ${member.id}`);
-    for (const field of ['orcid', 'googleScholar', 'linkedin', 'instagram']) {
-      if (member[field] && !normalizeExternalUrl(member[field])) throw new Error(`URL ${field} inválida en el perfil ${member.id}`);
+    for (const contact of member.contacts || []) {
+      if (!isSafePublicHref(contact.url)) throw new Error(`Contacto ${contact.type} inválido en el perfil ${member.id}.`);
+      if (contact.type === 'email' && normalizeEmailHref(contact.url.replace(/^mailto:/i, '')) !== contact.url) {
+        throw new Error(`Correo inválido en el perfil ${member.id}.`);
+      }
+      if (contact.type !== 'email' && !normalizeExternalUrl(contact.url, { allowedProtocols: ['https:'] })) {
+        throw new Error(`URL ${contact.type} inválida en el perfil ${member.id}.`);
+      }
     }
   }
   for (const event of events.filter(item => item.published)) {

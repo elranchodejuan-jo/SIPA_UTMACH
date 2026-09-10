@@ -2,11 +2,12 @@ import { SITE_CONFIG } from '../../config/site.mjs';
 import { getFooterNavigation } from '../../config/navigation.mjs';
 import { escapeAttribute, escapeHtml } from '../../lib/html.mjs';
 import { contactChannels, socialLinks } from '../../content/socials.mjs';
+import { filterPublished } from '../../lib/content.mjs';
 import { renderIcon } from './icons.mjs';
 
 export function renderFooter({ route, helpers, metadata }) {
   const groups = getFooterNavigation(route.id);
-  const connected = [...socialLinks, ...contactChannels].filter(item => item.published && item.url);
+  const connected = filterPublished([...socialLinks, ...contactChannels]).filter(item => item.url);
   const buildYear = Number.parseInt(String(metadata.buildDate).slice(0, 4), 10) || new Date().getFullYear();
   const buildDate = new Date(metadata.buildDate);
   const formattedDate = Number.isNaN(buildDate.getTime()) ? '' : new Intl.DateTimeFormat('es-EC', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(buildDate);

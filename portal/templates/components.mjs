@@ -1,4 +1,5 @@
 import { escapeAttribute, escapeHtml } from '../lib/html.mjs';
+import { isSafePublicHref } from '../lib/urls.mjs';
 import { renderIcon } from './partials/icons.mjs';
 
 export function renderTags(items = []) {
@@ -76,29 +77,66 @@ export function renderWebinarCard(webinar, helpers) {
   </article>`;
 }
 
+const contactIcons = Object.freeze({
+  email: 'mail',
+  googleScholar: 'external',
+  instagram: 'instagram',
+  linkedin: 'external',
+  orcid: 'external',
+  whatsapp: 'whatsapp',
+});
+
+export function renderContactIconLinks(contacts = [], helpers, { ownerName = 'SIPA', className = '' } = {}) {
+  const published = contacts.filter(contact => (
+    contact?.published === true
+    && contact.status === 'confirmed'
+    && isSafePublicHref(contact.url)
+  ));
+  if (!published.length) return '';
+
+  return `<ul class="team-contact-links${className ? ` ${escapeAttribute(className)}` : ''}" aria-label="Contactos de ${escapeAttribute(ownerName)}">${published.map(contact => {
+    const external = /^https?:/i.test(contact.url);
+    const accessibleLabel = `${contact.label} de ${ownerName}`;
+    return `<li><a class="team-contact-link" href="${escapeAttribute(contact.url)}" aria-label="${escapeAttribute(accessibleLabel)}" title="${escapeAttribute(accessibleLabel)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${renderIcon(contact.icon || contactIcons[contact.type] || 'external', helpers)}<span class="visually-hidden">${escapeHtml(accessibleLabel)}${external ? ' (se abre en una pestaña nueva)' : ''}</span></a></li>`;
+  }).join('')}</ul>`;
+}
+
+function renderAcademicProfile(profile, helpers) {
+  if (!profile?.credentials?.length) return '';
+  const trajectory = profile.trajectory || [];
+  const areas = profile.areas || [];
+
+  return `<details class="team-card__academic">
+    <summary><span class="team-card__academic-label">${renderIcon('learning', helpers)}<span>Ver perfil académico</span></span>${renderIcon('chevron-down', helpers, { className: 'icon team-card__academic-chevron' })}</summary>
+    <div class="team-card__academic-content">
+      <h4>Formación académica</h4>
+      <ul class="team-card__credentials">${profile.credentials.map(credential => `<li><strong>${escapeHtml(credential.degree)}</strong><span>${escapeHtml(credential.institution)} · ${escapeHtml(credential.country)}</span></li>`).join('')}</ul>
+      ${trajectory.length ? `<h4>Trayectoria</h4><ul>${trajectory.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+      ${areas.length ? `<h4>Áreas de trabajo</h4><ul class="team-card__areas">${areas.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+    </div>
+  </details>`;
+}
+
 export function renderTeamCard(member, helpers) {
   const initials = member.name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
   const portrait = member.photo
     ? `<img src="${escapeAttribute(helpers.assetHref(member.photo))}" alt="Fotografía de ${escapeAttribute(member.name)}" width="360" height="360" loading="lazy" decoding="async">`
     : `<span class="avatar-initials" aria-hidden="true">${escapeHtml(initials)}</span>`;
-  const profileLinks = [
-    { label: 'Correo', url: member.email ? `mailto:${member.email}` : '', external: false },
-    { label: 'ORCID', url: member.orcid, external: true },
-    { label: 'Google Scholar', url: member.googleScholar, external: true },
-    { label: 'LinkedIn', url: member.linkedin, external: true },
-    { label: 'Instagram', url: member.instagram, external: true }
-  ].filter(item => item.url);
+  const badges = (member.badges || []).filter(badge => badge.published === true && badge.status === 'confirmed');
+  const variant = member.featured ? 'featured' : 'member';
 
-  return `<article class="card team-card">
+  return `<article class="card team-card team-card--${variant}" data-person-id="${escapeAttribute(member.id)}">
     <div class="team-card__portrait">${portrait}</div>
     <div class="team-card__body">
       <h3>${escapeHtml(member.name)}</h3>
-      ${member.professionalTitle ? `<p>${escapeHtml(member.professionalTitle)}</p>` : ''}
-      ${member.role ? `<p class="card__meta">${escapeHtml(member.role)}</p>` : ''}
+      ${member.role ? `<p class="team-card__role">${escapeHtml(member.role)}</p>` : ''}
+      ${badges.length ? `<ul class="team-card__badges" aria-label="Funciones de ${escapeAttribute(member.name)}">${badges.map(badge => `<li>${escapeHtml(badge.label)}</li>`).join('')}</ul>` : ''}
+      ${member.professionalTitle ? `<p class="team-card__qualification">${escapeHtml(member.professionalTitle)}</p>` : ''}
       ${member.career || member.specialty ? `<p>${[member.career, member.specialty].filter(Boolean).map(escapeHtml).join(' · ')}</p>` : ''}
       ${member.bio ? `<p>${escapeHtml(member.bio)}</p>` : ''}
       ${renderTags(member.researchInterests || [])}
-      ${profileLinks.length ? `<ul class="team-card__links">${profileLinks.map(item => `<li><a href="${escapeAttribute(item.url)}"${item.external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(item.label)}</a></li>`).join('')}</ul>` : ''}
+      ${renderAcademicProfile(member.academicProfile, helpers)}
+      ${renderContactIconLinks(member.contacts, helpers, { ownerName: member.name, className: 'team-card__contacts' })}
     </div>
   </article>`;
 }

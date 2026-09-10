@@ -1,3 +1,15 @@
+import { SITE_CONFIG } from '../config/site.mjs';
+import { normalizeWhatsAppHref } from '../lib/urls.mjs';
+
+const configuredWhatsAppNumber = SITE_CONFIG.contact.whatsappNumber;
+const configuredWhatsAppHref = configuredWhatsAppNumber
+  ? normalizeWhatsAppHref(configuredWhatsAppNumber)
+  : null;
+
+if (configuredWhatsAppNumber && !configuredWhatsAppHref) {
+  throw new Error('El WhatsApp institucional debe usar formato internacional E.164 con prefijo +.');
+}
+
 /** Redes oficiales de SIPA. No publicar cuentas personales. */
 export const socialLinks = [
   {
@@ -52,8 +64,20 @@ export const contactChannels = [
     username: 'sipautmach@gmail.com',
     url: 'mailto:sipautmach@gmail.com',
     icon: 'mail',
-    published: true
-  }
+    order: 10,
+    published: true,
+    status: 'confirmed',
+  },
+  ...(configuredWhatsAppHref ? [{
+    id: 'whatsapp',
+    label: 'WhatsApp',
+    username: configuredWhatsAppNumber,
+    url: configuredWhatsAppHref,
+    icon: 'whatsapp',
+    order: 20,
+    published: true,
+    status: 'confirmed',
+  }] : []),
 ];
 
 export const contactContent = {

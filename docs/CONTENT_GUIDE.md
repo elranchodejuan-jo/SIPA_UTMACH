@@ -72,11 +72,31 @@ Añadir una entrada neutral en `shared/people.mjs` y guardar su único retrato f
 {
   id: 'nombre-apellido',
   name: 'Nombre completo confirmado',
-  portrait: 'assets/images/people/nombre-apellido.webp'
+  portrait: 'assets/images/people/nombre-apellido.webp',
+  status: 'confirmed',
+  contacts: []
 }
 ```
 
 El registro compartido identifica a la persona, no afirma que pertenezca a SIPA ni que participe en un evento. El `id` es estable: los cambios editoriales del nombre no deben crear otra persona. No se debe mantener una segunda copia editable del retrato en `public/` o `portal/`.
+
+Si la persona está identificada pero faltan apellido, retrato u otros datos indispensables, se registra temporalmente en `draftPeople` con `status: 'draft'`, `portrait: ''` y `contacts: []`. Su relación se prepara en `sipaDraftMemberships`; estos exports editoriales no llegan a los artefactos públicos. Un borrador nunca se publica y no se crea un registro para una persona todavía sin nombre.
+
+Los contactos personales autorizados se registran una sola vez en `contacts` con `type`, `label`, `url`, `published` y `status`. Solo se publican contactos `confirmed` con URL segura; no se copian teléfonos o correos encontrados incidentalmente.
+
+La formación académica reutilizable se añade a `academicProfile`:
+
+```js
+academicProfile: {
+  credentials: [
+    { degree: 'Título confirmado', institution: 'Universidad confirmada', country: 'País' }
+  ],
+  trajectory: ['Trayectoria respaldada sin antigüedad dinámica'],
+  areas: ['Área confirmada']
+}
+```
+
+No trasladar cargos de eventos, funciones temporales, años de experiencia que queden obsoletos ni afiliaciones cuya vigencia no esté confirmada.
 
 ## Incorporar una persona a SIPA
 
@@ -85,9 +105,12 @@ Editar `sipaMemberships` en `portal/content/team.mjs` y referenciar el `personId
 ```js
 {
   personId: 'nombre-apellido',
-  category: 'docentes',
+  category: 'ayudantias',
   institutionalRole: 'Miembro de SIPA',
-  professionalTitle: 'Título confirmado',
+  officialPosition: '',
+  badges: [
+    { label: 'Función confirmada', published: true, status: 'confirmed' }
+  ],
   career: 'Medicina Veterinaria',
   order: 10,
   published: true,
@@ -95,19 +118,20 @@ Editar `sipaMemberships` en `portal/content/team.mjs` y referenciar el `personId
 }
 ```
 
-`teamMembers` se deriva automáticamente de las personas y las membresías; no se edita directamente. Usar `Miembro de SIPA` cuando la pertenencia esté confirmada pero no exista un cargo institucional confirmado. No copiar roles, semestres, temas ni redes personales de un evento.
+`teamMembers` se deriva automáticamente de las personas y las membresías; no se edita directamente. `badges` permite varias funciones en una sola tarjeta. Usar `Miembro de SIPA` cuando la pertenencia esté confirmada pero no exista un cargo institucional confirmado y dejar `officialPosition: ''` hasta conocer la denominación exacta. No copiar roles, semestres ni temas de un evento.
 
 Categorías válidas:
 
-- `coordinacion`
-- `coordinacion-adjunta`
 - `docentes`
-- `estudiantes`
-- `colaboradores`
+- `ayudantias`
+- `comunicacion-digital`
+- `otros`
 
 No inferir cargos a partir de la participación en la Expoferia. Antes de publicar a otra persona, confirmar nombre publicado, pertenencia, función, categoría, fotografía y autorización de publicación.
 
 Si una persona todavía no tiene un retrato autorizado, no se debe inventar ni reutilizar una imagen ajena; su publicación queda pendiente hasta completar el registro compartido.
+
+Para preparar una incorporación incompleta, crear la persona en `draftPeople` y la membresía en `sipaDraftMemberships` con `status: 'draft'` y `published: false`. La función también puede permanecer como insignia `draft`. Antes de publicar, confirmar nombre, retrato, pertenencia, grupo, insignias, orden y contactos; después mover el registro a `people`, mover su relación a `sipaMemberships`, cambiar ambos a `confirmed` y activar `published: true`. Los validadores impiden publicar o incluir en el bundle un borrador y también rechazan una persona confirmada sin retrato.
 
 ## Añadir un evento
 
@@ -149,14 +173,13 @@ Editar `expoferiaParticipants` en `src/data/site.ts` y añadir una relación con
   career: 'Dato respaldado para el evento',
   semester: 'Dato histórico del evento',
   topic: 'Tema del evento',
-  instagram: '',
   altText: 'Texto alternativo confirmado',
   portraitQuery: '',
   visible: true
 }
 ```
 
-Una persona puede vincularse a varios eventos, pero no repetirse dentro del mismo `eventId`. El adaptador mantiene `siteData.teacher` y `siteData.team`; no se duplican identidad ni retrato y no es necesario cambiar el renderer.
+Una persona puede vincularse a varios eventos, pero no repetirse dentro del mismo `eventId`. El adaptador mantiene `siteData.teacher` y `siteData.team`; no se duplican identidad, retrato, formación ni contactos personales y no es necesario cambiar el renderer.
 
 ## Añadir una red o canal
 
@@ -177,7 +200,8 @@ Las redes oficiales se añaden a `socialLinks`; correo y WhatsApp confirmados se
 
 - No publicar cuentas personales como redes SIPA.
 - No inventar nombres de usuario.
-- WhatsApp debe confirmarse en formato internacional.
+- WhatsApp institucional no se añade manualmente a `contactChannels`: configurar `SITE_CONFIG.contact.whatsappNumber` en `portal/config/site.mjs` con formato E.164 y prefijo `+`. El canal aparecerá automáticamente en Contacto, footer y Equipo.
+- Mientras `whatsappNumber` esté vacío, no se genera ningún enlace de WhatsApp.
 - El correo solo debe publicarse cuando sea un canal autorizado.
 - Los elementos sin URL no deben marcarse como publicados.
 

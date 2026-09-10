@@ -9,12 +9,18 @@ import { getPublishedRoutes } from '../portal/config/routes.mjs';
 import { events } from '../portal/content/events.mjs';
 import { researchProjects } from '../portal/content/research.mjs';
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../portal/content/socials.mjs';
-import { sipaMemberships, teamCategories, teamMembers } from '../portal/content/team.mjs';
+import { sipaDraftMemberships, sipaMemberships, teamCategories, teamMembers } from '../portal/content/team.mjs';
 import { webinars, webinarStatuses } from '../portal/content/webinars.mjs';
-import { assetHref, isValidExternalUrl, normalizeEmailHref } from '../portal/lib/urls.mjs';
+import {
+  assetHref,
+  isSafePublicHref,
+  isValidExternalUrl,
+  normalizeEmailHref,
+  normalizeWhatsAppHref,
+} from '../portal/lib/urls.mjs';
 import { validateWebinarVideo } from '../portal/lib/youtube.mjs';
 import { expoferiaParticipants } from '../src/data/site.ts';
-import { people } from '../shared/people.mjs';
+import { draftPeople, people } from '../shared/people.mjs';
 
 const rootDir = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const executableProtocols = /^(?:javascript|data|vbscript):/i;
@@ -163,17 +169,64 @@ const validateContentCollections = errors => {
   assertUniqueIds(contactChannels, 'Canales de contacto');
   assertUniqueIds(researchProjects, 'Proyectos');
   assertUniqueIds(events, 'Eventos');
-  assertUniqueIds(people, 'Personas compartidas');
+  const allPeople = [...people, ...draftPeople];
+  assertUniqueIds(allPeople, 'Personas compartidas y borradores');
   assertUniqueIds(teamMembers, 'Equipo');
 
   const personIds = new Set(people.map(person => person.id));
+  const draftPersonIds = new Set(draftPeople.map(person => person.id));
+  for (const person of allPeople) {
+    if (!['confirmed', 'draft'].includes(person.status)) errors.push(`Persona ${person.id}: estado editorial inválido.`);
+    if (person.status === 'confirmed' && !person.portrait) errors.push(`Persona confirmada ${person.id}: falta retrato.`);
+    if (draftPersonIds.has(person.id) && person.status !== 'draft') errors.push(`Persona ${person.id}: un registro editorial debe permanecer draft.`);
+    const contactTypes = new Set();
+    for (const contact of person.contacts || []) {
+      if (!contact.type || contactTypes.has(contact.type)) errors.push(`Persona ${person.id}: contacto duplicado o sin tipo ${contact.type || '(vacío)'}.`);
+      contactTypes.add(contact.type);
+      if (!contact.label?.trim() || !['confirmed', 'draft', 'hidden'].includes(contact.status)) {
+        errors.push(`Persona ${person.id}: contacto ${contact.type || '(sin tipo)'} incompleto.`);
+      }
+      if (contact.published === true && contact.status !== 'confirmed') errors.push(`Persona ${person.id}: un contacto no confirmado no puede publicarse.`);
+      if (contact.published === true && !isSafePublicHref(contact.url)) errors.push(`Persona ${person.id}: contacto público inválido.`);
+      if (contact.published === true && contact.type !== 'email'
+        && !isValidExternalUrl(contact.url, { allowedProtocols: ['https:'] })) {
+        errors.push(`Persona ${person.id}: contacto ${contact.type} debe usar HTTPS.`);
+      }
+    }
+  }
   const membershipPersonIds = new Set();
-  for (const membership of sipaMemberships) {
-    if (!personIds.has(membership.personId)) errors.push(`Membresía SIPA: personId inexistente ${membership.personId}.`);
+  const membershipOrders = new Set();
+  const membershipEntries = [
+    ...sipaMemberships.map(membership => ({ membership, draft: false })),
+    ...sipaDraftMemberships.map(membership => ({ membership, draft: true })),
+  ];
+  for (const { membership, draft } of membershipEntries) {
+    const expectedIds = draft ? draftPersonIds : personIds;
+    if (!expectedIds.has(membership.personId)) errors.push(`Membresía SIPA${draft ? ' borrador' : ''}: personId inexistente o en registro incorrecto ${membership.personId}.`);
     if (membershipPersonIds.has(membership.personId)) errors.push(`Membresía SIPA duplicada para ${membership.personId}.`);
     else membershipPersonIds.add(membership.personId);
     if (!teamCategories.some(category => category.id === membership.category)) {
       errors.push(`Membresía SIPA ${membership.personId}: categoría inexistente ${membership.category}.`);
+    }
+    if (!['confirmed', 'draft', 'hidden'].includes(membership.status)) errors.push(`Membresía SIPA ${membership.personId}: estado inválido.`);
+    if (membership.published === true && membership.status !== 'confirmed') errors.push(`Membresía SIPA ${membership.personId}: un borrador no puede publicarse.`);
+    if (draft && (membership.published !== false || membership.status !== 'draft')) errors.push(`Membresía SIPA ${membership.personId}: un registro editorial no puede publicarse.`);
+    if (!Number.isInteger(membership.order) || membership.order < 0) errors.push(`Membresía SIPA ${membership.personId}: orden inválido.`);
+    const orderKey = `${membership.category}:${membership.order}`;
+    if (membershipOrders.has(orderKey)) errors.push(`Membresía SIPA: orden duplicado ${orderKey}.`);
+    membershipOrders.add(orderKey);
+    const badgeLabels = new Set();
+    for (const badge of membership.badges || []) {
+      const normalizedLabel = badge.label?.trim().toLocaleLowerCase('es') || '';
+      if (!normalizedLabel) errors.push(`Membresía SIPA ${membership.personId}: insignia vacía.`);
+      if (badgeLabels.has(normalizedLabel)) errors.push(`Membresía SIPA ${membership.personId}: insignia duplicada ${badge.label}.`);
+      badgeLabels.add(normalizedLabel);
+      if (!['confirmed', 'draft', 'hidden'].includes(badge.status)) errors.push(`Membresía SIPA ${membership.personId}: estado de insignia inválido.`);
+      if (badge.published === true && badge.status !== 'confirmed') errors.push(`Membresía SIPA ${membership.personId}: insignia no confirmada publicada.`);
+    }
+    const person = allPeople.find(candidate => candidate.id === membership.personId);
+    if (membership.published === true && (person?.status !== 'confirmed' || !person.portrait)) {
+      errors.push(`Membresía SIPA ${membership.personId}: la persona no está completa para publicación.`);
     }
   }
 
@@ -185,6 +238,10 @@ const validateContentCollections = errors => {
     const participantKey = `${participant.eventId}:${participant.personId}`;
     if (participantKeys.has(participantKey)) errors.push(`Participación de evento duplicada: ${participantKey}.`);
     else participantKeys.add(participantKey);
+    const person = people.find(candidate => candidate.id === participant.personId);
+    if (participant.visible === true && (person?.status !== 'confirmed' || !person.portrait)) {
+      errors.push(`Participación de evento ${participantKey}: una persona visible debe estar confirmada y tener retrato.`);
+    }
   }
 
   for (const webinar of webinars) {
@@ -206,11 +263,15 @@ const validateContentCollections = errors => {
     }
   }
   for (const item of contactChannels.filter(item => item.published === true)) {
+    if (item.status !== 'confirmed') errors.push(`Canal de contacto ${item.id}: un canal publicado debe estar confirmado.`);
     const validHttps = isValidExternalUrl(item.url, { allowedProtocols: ['https:'] });
     const validMailto = typeof item.url === 'string'
       && /^mailto:/i.test(item.url)
       && normalizeEmailHref(item.url.replace(/^mailto:/i, '')) === item.url;
     if (!validHttps && !validMailto) errors.push(`Canal de contacto ${item.id}: URL publicada inválida.`);
+    if (item.id === 'whatsapp' && item.url !== normalizeWhatsAppHref(SITE_CONFIG.contact.whatsappNumber)) {
+      errors.push('Canal de contacto whatsapp: no coincide con el número institucional configurado.');
+    }
   }
 
   if (contactContent.form?.published === true
@@ -533,6 +594,7 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
   }
 
   for (const person of people) {
+    if (!person.portrait) continue;
     if (!await fileExists(path.join(distDir, ...person.portrait.split('/')))) {
       errors.push(`Falta el retrato compartido de ${person.id}: ${person.portrait}.`);
     }
@@ -708,6 +770,25 @@ export const validateSite = async ({ distDir = path.join(rootDir, 'dist') } = {}
       });
     } else if (extension === '.css') {
       await validateCssReferences({ file, css: await readFile(file, 'utf8'), distDir: resolvedDist, errors, summary });
+    }
+  }
+
+  const teamRoute = routes.find(route => route.id === 'team');
+  if (teamRoute) {
+    const teamFile = path.join(resolvedDist, teamRoute.output);
+    if (await fileExists(teamFile)) {
+      const teamHtml = await readFile(teamFile, 'utf8');
+      if (!SITE_CONFIG.contact.whatsappNumber && /https:\/\/wa\.me\//i.test(teamHtml)) {
+        errors.push('/equipo/: se publicó WhatsApp sin número institucional configurado.');
+      }
+    }
+  }
+
+  for (const file of files.filter(file => ['.html', '.js', '.json'].includes(path.extname(file).toLowerCase()))) {
+    const publicData = await readFile(file, 'utf8');
+    const relativeFile = path.relative(resolvedDist, file).replaceAll('\\', '/');
+    for (const draft of draftPeople) {
+      if (publicData.includes(draft.name)) errors.push(`${relativeFile}: el borrador ${draft.id} aparece en datos públicos generados.`);
     }
   }
 

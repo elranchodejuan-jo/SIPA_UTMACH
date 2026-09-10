@@ -174,7 +174,6 @@ interface ExpoferiaParticipationBase {
 
 export interface ExpoferiaTeacherParticipation extends ExpoferiaParticipationBase {
   presentation: 'teacher';
-  professionalTitle: string;
   subjects: readonly string[];
   description: string;
   biography: string;
@@ -185,7 +184,6 @@ export interface ExpoferiaTeamParticipation extends ExpoferiaParticipationBase {
   career: string;
   semester: string;
   topic: string;
-  instagram: string;
   altText: string;
   portraitQuery: string;
 }
@@ -199,7 +197,6 @@ export const expoferiaParticipants: readonly ExpoferiaParticipation[] = [
     eventRole: 'Docente-Investigador de la UTMACH',
     order: 0,
     presentation: 'teacher',
-    professionalTitle: 'Doctor en Medicina Veterinaria y Zootecnia · Máster Universitario en Producción Animal · Doctor en Ciencias Veterinarias',
     subjects: ['Nutrición Animal', 'Salud en la Producción Porcina'],
     description: '',
     biography: 'Angel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMach, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica, ha participado en proyectos académicos, conferencias nacionales e internacionales, es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
@@ -214,7 +211,6 @@ export const expoferiaParticipants: readonly ExpoferiaParticipation[] = [
     career: 'Medicina Veterinaria',
     semester: 'Cuarto semestre',
     topic: 'Nutrición Animal',
-    instagram: 'https://www.instagram.com/carolina.skl',
     altText: 'Carolina Cajamarca - Integrante del equipo expositor',
     portraitQuery: '?v=2',
     visible: true,
@@ -228,7 +224,6 @@ export const expoferiaParticipants: readonly ExpoferiaParticipation[] = [
     career: 'Medicina Veterinaria',
     semester: 'Cuarto semestre',
     topic: 'Nutrición Animal',
-    instagram: 'https://www.instagram.com/elranchodejuan_jo',
     altText: 'Juan José Bajaña - Integrante del equipo expositor',
     portraitQuery: '?v=2',
     visible: true,
@@ -242,7 +237,6 @@ export const expoferiaParticipants: readonly ExpoferiaParticipation[] = [
     career: 'Medicina Veterinaria',
     semester: 'Cuarto semestre',
     topic: 'Nutrición Animal',
-    instagram: 'https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ==',
     altText: 'Robinson Macas - Integrante del equipo expositor',
     portraitQuery: '?v=2',
     visible: true,
@@ -256,6 +250,23 @@ assertValidPersonRelations(expoferiaParticipants, {
 
 const viteDevelopment = () => (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV === true;
 
+const sharedProfessionalTitle = (person: ReturnType<typeof getPerson>) => (
+  person.academicProfile?.credentials.map(credential => credential.degree).join(' · ') || ''
+);
+
+const sharedContactUrl = (person: ReturnType<typeof getPerson>, type: string) => (
+  person.contacts.find(contact => (
+    contact.type === type && contact.published === true && contact.status === 'confirmed'
+  ))?.url || ''
+);
+
+const assertPublicPerson = (person: ReturnType<typeof getPerson>, context: string) => {
+  if (person.status !== 'confirmed' || !person.portrait) {
+    throw new Error(`${context} no puede publicar la identidad incompleta ${person.id}.`);
+  }
+  return person;
+};
+
 export const sharedPersonPortraitHref = (portrait: string, isDevelopment = viteDevelopment()) => {
   const normalizedPortrait = portrait.replace(/^\.\//, '');
   return `${isDevelopment ? './' : '../../'}${normalizedPortrait}`;
@@ -268,10 +279,12 @@ export const createExpoferiaRoster = (isDevelopment = viteDevelopment()): Pick<S
   );
   if (!teacherParticipation) throw new Error('Expoferia requiere un docente destacado.');
 
-  const teacherPerson = getPerson(teacherParticipation.personId);
+  const teacherPerson = assertPublicPerson(getPerson(teacherParticipation.personId), 'Expoferia');
+  const professionalTitle = sharedProfessionalTitle(teacherPerson);
+  if (!professionalTitle) throw new Error(`Expoferia requiere formación académica para ${teacherPerson.id}.`);
   const teacher: Teacher = {
     name: teacherPerson.name,
-    professionalTitle: teacherParticipation.professionalTitle,
+    professionalTitle,
     role: teacherParticipation.eventRole,
     subjects: [...teacherParticipation.subjects],
     description: teacherParticipation.description,
@@ -283,7 +296,7 @@ export const createExpoferiaRoster = (isDevelopment = viteDevelopment()): Pick<S
   const team = ordered
     .filter((participation): participation is ExpoferiaTeamParticipation => participation.presentation === 'member')
     .map<TeamMember>(participation => {
-      const person = getPerson(participation.personId);
+      const person = assertPublicPerson(getPerson(participation.personId), 'Expoferia');
       return {
         id: person.id,
         name: person.name,
@@ -292,7 +305,7 @@ export const createExpoferiaRoster = (isDevelopment = viteDevelopment()): Pick<S
         semester: participation.semester,
         topic: participation.topic,
         role: participation.eventRole,
-        instagram: participation.instagram,
+        instagram: sharedContactUrl(person, 'instagram'),
         altText: participation.altText,
         visible: participation.visible,
       };

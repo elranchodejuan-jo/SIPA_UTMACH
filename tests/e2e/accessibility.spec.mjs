@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { SITE_CONFIG } from '../../portal/config/site.mjs';
 import { expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
 
 const auditedRoutes = ['/', '/investigacion/', '/divulgacion/webinars/', '/equipo/', '/contacto/'];
@@ -19,6 +20,26 @@ for (const route of auditedRoutes) {
     expectRuntimeClean(runtime);
   });
 }
+
+test('Equipo en modo oscuro y con perfil académico abierto conserva WCAG AA', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-1366', 'La auditoría oscura de Equipo se cubre una sola vez.');
+  await page.addInitScript(storageKey => localStorage.setItem(storageKey, 'dark'), SITE_CONFIG.storageKeys.theme);
+  const runtime = await gotoPortal(page, '/equipo/', watchRuntime(page));
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const details = page.locator('[data-person-id="angel-sanchez"] details');
+  await details.locator('summary').press('Enter');
+  await expect(details).toHaveAttribute('open', '');
+
+  const results = await new AxeBuilder({ page })
+    .include('main')
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze();
+  expect(
+    results.violations,
+    results.violations.map(violation => `${violation.id}: ${violation.help} (${violation.nodes.length})`).join('\n'),
+  ).toEqual([]);
+  expectRuntimeClean(runtime);
+});
 
 test('el menú móvil abierto mantiene accesibilidad automática', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-360', 'Auditoría específica del menú móvil.');

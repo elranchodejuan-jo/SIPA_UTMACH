@@ -1,4 +1,5 @@
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../content/socials.mjs';
+import { filterPublished } from '../lib/content.mjs';
 import { escapeAttribute, escapeHtml } from '../lib/html.mjs';
 import { renderButtonLink } from '../templates/components.mjs';
 import { renderEmptyState } from '../templates/partials/empty-state.mjs';
@@ -24,9 +25,9 @@ function renderContactForm(form) {
 }
 
 export function renderContactPage({ helpers, route }) {
-  const publishedSocials = socialLinks.filter(item => item.published && item.url);
-  const publishedChannels = contactChannels.filter(item => item.published && item.url);
-  const publishedInstitutions = institutionalLinks.filter(item => item.published && item.url);
+  const publishedSocials = filterPublished(socialLinks).filter(item => item.url);
+  const publishedChannels = filterPublished(contactChannels).filter(item => item.url);
+  const publishedInstitutions = filterPublished(institutionalLinks).filter(item => item.url);
   const availableLinks = [...publishedChannels, ...publishedSocials, ...publishedInstitutions];
   const html = `${renderPageHero({ eyebrow: 'Información institucional', title: 'Contacto', description: route.description })}
   <section class="section" id="canales" aria-labelledby="channels-title"><div class="container"><div class="section-heading"><p class="eyebrow">Canales disponibles</p><h2 id="channels-title">Contacto y redes</h2></div>${availableLinks.length ? `<ul class="contact-grid">${availableLinks.map(item => renderContactLink(item, helpers)).join('')}</ul>` : renderEmptyState({ title: 'Canales en actualización', message: contactContent.note, icon: 'outreach' }, helpers)}${(!publishedChannels.length || !publishedSocials.length) ? `<p class="editorial-note">${escapeHtml(contactContent.note)}</p>` : ''}</div></section>
