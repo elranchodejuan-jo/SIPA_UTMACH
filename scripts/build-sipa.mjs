@@ -6,11 +6,18 @@ import { fileURLToPath } from 'node:url';
 
 import { buildPortal } from './build-portal.mjs';
 import { validateSite } from './validate-site.mjs';
+import { getPerson } from '../shared/people.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const distDir = path.join(root, 'dist');
 const expoDistDir = path.join(root, 'dist-expo');
 const eventDir = path.join(distDir, 'eventos', 'expoferia-nutricion-animal-2026');
+const legacyPortraitPersonIds = [
+  'angel-sanchez',
+  'carolina-cajamarca',
+  'juan-bajana',
+  'robinson-macas',
+];
 const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const version = packageJson.version;
 const buildDate = new Date().toISOString();
@@ -67,6 +74,18 @@ const applyExpoFavicon = async () => {
   await writeFile(expoIndexPath, output, 'utf8');
 };
 
+const publishLegacyPortraitAliases = async () => {
+  const legacyImagesDir = path.join(expoDistDir, 'images');
+  await mkdir(legacyImagesDir, { recursive: true });
+
+  for (const personId of legacyPortraitPersonIds) {
+    const person = getPerson(personId);
+    const source = path.join(root, ...person.portrait.split('/'));
+    const destination = path.join(legacyImagesDir, path.basename(person.portrait));
+    await cp(source, destination, { force: true });
+  }
+};
+
 const addPortalReturn = async () => {
   const eventIndexPath = path.join(eventDir, 'index.html');
   const eventIndex = await readFile(eventIndexPath, 'utf8');
@@ -99,6 +118,7 @@ try {
   console.log('1/5 Construyendo la experiencia histórica de la Expoferia…');
   buildExpo();
   await applyExpoFavicon();
+  await publishLegacyPortraitAliases();
 
   console.log('2/5 Generando el portal institucional multipágina…');
   await buildPortal({ rootDir: root, distDir, version, buildDate, buildSha });

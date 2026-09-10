@@ -39,6 +39,11 @@ portal/
 ├── templates/    # layout, header, footer y componentes compartidos
 └── assets/       # CSS, JavaScript, iconos e imágenes publicables
 
+shared/
+└── people.mjs    # identidad y retrato reutilizables entre productos
+
+assets/images/people/ # fuente única de retratos compartidos
+
 scripts/
 ├── build-portal.mjs   # genera el portal multipágina
 ├── build-sipa.mjs     # ensambla portal + Expoferia
@@ -46,7 +51,7 @@ scripts/
 └── validate-site.mjs  # audita el contenido estático generado
 ```
 
-La raíz Vite/TypeScript (`index.html`, `src/` y `public/`) pertenece a la Expoferia, no a la portada institucional. `scripts/build-sipa.mjs` preserva esa experiencia en `dist/eventos/expoferia-nutricion-animal-2026/`.
+La raíz Vite/TypeScript (`index.html`, `src/` y `public/`) pertenece a la Expoferia, no a la portada institucional. `scripts/build-sipa.mjs` preserva esa experiencia en `dist/eventos/expoferia-nutricion-animal-2026/`. La identidad neutral de las personas se comparte mediante `shared/people.mjs`; la pertenencia a SIPA permanece en `portal/content/team.mjs` y cada evento conserva sus roles y contexto propios.
 
 El registro central de rutas alimenta navegación, página activa, breadcrumbs, footer y sitemap. Los enlaces locales se generan de forma relativa para funcionar tanto en `https://sipautmach.com/` como en la URL temporal de proyecto de GitHub Pages.
 
@@ -96,7 +101,7 @@ El artefacto final se genera en `dist/` e incluye únicamente páginas HTML publ
 
 ## Gestión de contenido
 
-Las colecciones de webinars, integrantes, eventos, proyectos y redes se editan en `portal/content/`. Los elementos con `published: false` no se generan para producción. No deben añadirse personas, cargos, contactos, publicaciones ni enlaces sin confirmación institucional.
+Las colecciones de webinars, membresías del equipo, eventos, proyectos y redes se editan en `portal/content/`. Los elementos con `published: false` no se generan para producción. No deben añadirse personas, cargos, contactos, publicaciones ni enlaces sin confirmación institucional. Los retratos compartidos se publican en `dist/assets/images/people/`; las rutas históricas de Expoferia se generan como aliases desde esa única fuente.
 
 Consulta [docs/CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md) para los procedimientos editoriales y [docs/PORTAL_ARCHITECTURE.md](docs/PORTAL_ARCHITECTURE.md) para el diseño técnico.
 

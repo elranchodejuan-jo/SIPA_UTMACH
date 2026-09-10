@@ -1,5 +1,18 @@
 import { expect } from '@playwright/test';
 
+const configuredBaseURL = process.env.SIPA_BASE_URL?.trim() || '';
+const normalizedBaseURL = configuredBaseURL
+  ? `${configuredBaseURL.replace(/\/+$/, '')}/`
+  : '';
+
+export const resolveTestRoute = routePath => normalizedBaseURL
+  ? new URL(routePath.replace(/^\/+/, ''), normalizedBaseURL).href
+  : routePath;
+
+export const PORTAL_ROOT_PATHNAME = normalizedBaseURL
+  ? new URL(normalizedBaseURL).pathname
+  : '/';
+
 export const MAIN_ROUTES = [
   { path: '/', label: 'Inicio' },
   { path: '/sipa/', label: 'SIPA' },
@@ -11,7 +24,7 @@ export const MAIN_ROUTES = [
   { path: '/contacto/', label: 'Contacto' },
 ];
 
-export const EXPO_ROUTE = '/eventos/expoferia-nutricion-animal-2026/';
+export const EXPO_ROUTE = resolveTestRoute('/eventos/expoferia-nutricion-animal-2026/');
 
 export const VIEWPORTS = [
   { name: 'mobile-360', width: 360, height: 800 },
@@ -52,7 +65,8 @@ export const expectRuntimeClean = state => {
 };
 
 export const gotoPortal = async (page, path, state = watchRuntime(page)) => {
-  const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+  const target = resolveTestRoute(path);
+  const response = await page.goto(target, { waitUntil: 'domcontentloaded' });
   expect(response, `La ruta ${path} no produjo respuesta`).not.toBeNull();
   expect(response?.status(), `Estado HTTP inesperado en ${path}`).toBeLessThan(400);
   await page.waitForLoadState('load');

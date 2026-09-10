@@ -8,9 +8,20 @@ SIPA V2 es un portal HTML multipágina generado estáticamente. No es una SPA y 
 portal/ + scripts/build-portal.mjs            -> dist/ (portal institucional)
 index.html + src/ + public/ + Vite            -> dist-expo/ (Expoferia)
 dist-expo/                                     -> dist/eventos/expoferia-nutricion-animal-2026/
+shared/people.mjs + assets/images/people/      -> ambos productos
 ```
 
-La raíz `index.html`, `src/` y `public/` pertenecen exclusivamente a la Expoferia. Sus datos personales, redes, imágenes y formularios no son automáticamente contenido institucional del portal SIPA.
+La raíz `index.html`, `src/` y `public/` pertenecen exclusivamente a la Expoferia. Sus roles, redes, datos históricos y formularios no son automáticamente contenido institucional del portal SIPA. La excepción deliberada es la identidad neutral compartida en `shared/people.mjs` y la fuente única de retratos en `assets/images/people/`.
+
+## Personas, membresías y eventos
+
+La arquitectura separa tres conceptos:
+
+- `shared/people.mjs`: `id`, nombre publicado y ruta del retrato; no contiene cargos SIPA ni roles de eventos.
+- `portal/content/team.mjs`: membresías institucionales por `personId`, con categoría, función SIPA, orden y estado editorial. Exporta el adaptador `teamMembers` para conservar la página y su tarjeta actuales.
+- `src/data/site.ts`: participaciones de Expoferia por `eventId` y `personId`, con rol, orden y contexto históricos. Exporta los adaptadores `siteData.teacher` y `siteData.team` para conservar el renderer y el CSS del evento.
+
+Los validadores rechazan IDs inexistentes y relaciones duplicadas dentro de su contexto. Una misma persona sí puede pertenecer a SIPA y participar en uno o varios eventos.
 
 ## Registro canónico de rutas
 
@@ -83,18 +94,19 @@ El flujo de producción esperado es:
 1. Verificar que solo se limpiarán `dist/` y `dist-expo/`.
 2. Leer versión desde `package.json` y SHA desde CI o Git.
 3. Construir la Expoferia mediante el mecanismo existente compatible con Windows.
-4. Generar las páginas del portal y copiar únicamente assets públicos.
-5. Copiar la Expoferia a su ruta registrada.
-6. Añadir su barra de retorno relativa, sin reescribir la experiencia.
-7. Generar `404.html`, `robots.txt`, `sitemap.xml`, `build-info.json` y `.nojekyll`.
-8. Validar rutas, enlaces, assets, metadatos, IDs y colecciones publicadas.
-9. Eliminar `dist-expo/` temporal.
+4. Generar desde la fuente compartida los aliases históricos de los cuatro retratos de Expoferia.
+5. Generar las páginas del portal y publicar los retratos en `dist/assets/images/people/`.
+6. Copiar la Expoferia a su ruta registrada.
+7. Añadir su barra de retorno relativa, sin reescribir la experiencia.
+8. Generar `404.html`, `robots.txt`, `sitemap.xml`, `build-info.json` y `.nojekyll`.
+9. Validar rutas, enlaces, assets, metadatos, IDs y colecciones publicadas.
+10. Eliminar `dist-expo/` temporal.
 
 La ejecución Windows existente con `execFileSync`, `ComSpec`/`cmd.exe` y sin `shell: true` es un contrato protegido. El directorio raíz `public/` no se copia al portal: Vite lo reserva para la Expoferia.
 
 ## Incorporación de contenido
 
-Las colecciones de `portal/content/` son datos editoriales; las plantillas no contienen tarjetas copiadas manualmente. Los campos ausentes no se renderizan. Contenido institucional no confirmado permanece `draft`, `hidden` o sin publicar.
+Las colecciones de `portal/content/` son datos editoriales; las plantillas no contienen tarjetas copiadas manualmente. Los campos ausentes no se renderizan. Contenido institucional no confirmado permanece `draft`, `hidden` o sin publicar. Para incorporar una persona se registra primero su identidad compartida, después se crea la membresía SIPA o la relación del evento correspondiente; nunca se copia un perfil completo.
 
 La Expoferia es un evento educativo, no un proyecto científico. Sus integrantes y canales solo pueden incorporarse a `team.mjs` o `socials.mjs` tras confirmación institucional específica.
 

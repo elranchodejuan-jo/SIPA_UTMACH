@@ -10,6 +10,7 @@ import {
 } from '../../portal/config/navigation.mjs';
 import { getPublishedRoutes } from '../../portal/config/routes.mjs';
 import { contactChannels, socialLinks } from '../../portal/content/socials.mjs';
+import { sipaMemberships, teamMembers } from '../../portal/content/team.mjs';
 import { escapeAttribute, escapeHtml, safeJson } from '../../portal/lib/html.mjs';
 import {
   assetHref,
@@ -26,6 +27,12 @@ import {
   parseYouTubeId,
   youtubeEmbedUrl,
 } from '../../portal/lib/youtube.mjs';
+import {
+  createExpoferiaRoster,
+  expoferiaParticipants,
+  sharedPersonPortraitHref,
+} from '../../src/data/site.ts';
+import { assertValidPersonRelations, people } from '../../shared/people.mjs';
 
 import './color-contracts.test.mjs';
 import './favicon-contracts.test.mjs';
@@ -132,6 +139,146 @@ test('todos los enlaces relativos resuelven en dominio raíz y GitHub Pages', ()
     assert.equal(new URL(asset, `https://example.test${from.path}`).pathname, '/assets/css/tokens.css');
     assert.equal(new URL(asset, `https://example.test/SIPA_UTMACH${from.path}`).pathname, '/SIPA_UTMACH/assets/css/tokens.css');
   }
+
+  const teamRoute = getPublishedRoutes().find(route => route.id === 'team');
+  const portrait = assetHref(teamRoute, people[0].portrait);
+  assert.equal(new URL(portrait, 'https://example.test/equipo/').pathname, '/assets/images/people/angel-sanchez.png');
+  assert.equal(
+    new URL(portrait, 'https://example.test/SIPA_UTMACH/equipo/').pathname,
+    '/SIPA_UTMACH/assets/images/people/angel-sanchez.png',
+  );
+});
+
+test('personas compartidas tienen IDs únicos y relaciones válidas por contexto', () => {
+  assert.deepEqual(
+    people.map(({ id, name, portrait }) => ({ id, name, portrait })),
+    [
+      { id: 'angel-sanchez', name: 'Angel Roberto Sánchez Quinche', portrait: 'assets/images/people/angel-sanchez.png' },
+      { id: 'carolina-cajamarca', name: 'Carolina Cajamarca', portrait: 'assets/images/people/carolina-cajamarca.png' },
+      { id: 'juan-bajana', name: 'Juan José Bajaña', portrait: 'assets/images/people/juan-bajana.jpg' },
+      { id: 'robinson-macas', name: 'Robinson Macas', portrait: 'assets/images/people/robinson-macas.jpeg' },
+    ],
+  );
+  assert.equal(new Set(people.map(person => person.id)).size, people.length);
+  assert.doesNotThrow(() => assertValidPersonRelations([
+    { eventId: 'evento-a', personId: 'juan-bajana' },
+    { eventId: 'evento-b', personId: 'juan-bajana' },
+  ], { scopeField: 'eventId' }));
+  assert.throws(() => assertValidPersonRelations([
+    { eventId: 'evento-a', personId: 'juan-bajana' },
+    { eventId: 'evento-a', personId: 'juan-bajana' },
+  ], { scopeField: 'eventId' }), /relación duplicada/i);
+  assert.throws(() => assertValidPersonRelations([
+    { personId: 'persona-inexistente' },
+  ]), /no existe la persona compartida/i);
+});
+
+test('Equipo publica tres membresías SIPA confirmadas sin reutilizar roles de Expoferia', () => {
+  assert.deepEqual(
+    sipaMemberships.map(({ personId, category, institutionalRole, order, published, status }) => (
+      { personId, category, institutionalRole, order, published, status }
+    )),
+    [
+      { personId: 'angel-sanchez', category: 'docentes', institutionalRole: 'Miembro de SIPA', order: 10, published: true, status: 'confirmed' },
+      { personId: 'juan-bajana', category: 'estudiantes', institutionalRole: 'Miembro de SIPA', order: 20, published: true, status: 'confirmed' },
+      { personId: 'robinson-macas', category: 'estudiantes', institutionalRole: 'Miembro de SIPA', order: 30, published: true, status: 'confirmed' },
+    ],
+  );
+  assert.equal(new Set(sipaMemberships.map(membership => membership.personId)).size, 3);
+  assert.deepEqual(teamMembers.map(member => member.name), [
+    'Angel Roberto Sánchez Quinche',
+    'Juan José Bajaña',
+    'Robinson Macas',
+  ]);
+  assert.ok(teamMembers.every(member => member.role === 'Miembro de SIPA'));
+  assert.ok(teamMembers.every(member => !member.semester));
+  assert.ok(teamMembers.every(member => !['Exponente', 'Desarrollador Web', 'Master Solver'].includes(member.role)));
+  assert.equal(teamMembers.some(member => member.id === 'carolina-cajamarca'), false);
+});
+
+test('Expoferia conserva cuatro perfiles y todo su contexto histórico', () => {
+  assert.deepEqual(
+    expoferiaParticipants.map(({ personId, eventRole, order, presentation, visible }) => (
+      { personId, eventRole, order, presentation, visible }
+    )),
+    [
+      { personId: 'angel-sanchez', eventRole: 'Docente-Investigador de la UTMACH', order: 0, presentation: 'teacher', visible: true },
+      { personId: 'carolina-cajamarca', eventRole: 'Exponente', order: 10, presentation: 'member', visible: true },
+      { personId: 'juan-bajana', eventRole: 'Desarrollador Web', order: 20, presentation: 'member', visible: true },
+      { personId: 'robinson-macas', eventRole: 'Master Solver', order: 30, presentation: 'member', visible: true },
+    ],
+  );
+
+  const roster = createExpoferiaRoster(false);
+  assert.deepEqual(roster.teacher, {
+    name: 'Angel Roberto Sánchez Quinche',
+    professionalTitle: 'Doctor en Medicina Veterinaria y Zootecnia · Máster Universitario en Producción Animal · Doctor en Ciencias Veterinarias',
+    role: 'Docente-Investigador de la UTMACH',
+    subjects: ['Nutrición Animal', 'Salud en la Producción Porcina'],
+    description: '',
+    biography: 'Angel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMach, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica, ha participado en proyectos académicos, conferencias nacionales e internacionales, es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
+    image: '../../assets/images/people/angel-sanchez.png',
+    visible: true,
+  });
+  assert.deepEqual(roster.team, [
+    {
+      id: 'carolina-cajamarca',
+      name: 'Carolina Cajamarca',
+      photo: '../../assets/images/people/carolina-cajamarca.png?v=2',
+      career: 'Medicina Veterinaria',
+      semester: 'Cuarto semestre',
+      topic: 'Nutrición Animal',
+      role: 'Exponente',
+      instagram: 'https://www.instagram.com/carolina.skl',
+      altText: 'Carolina Cajamarca - Integrante del equipo expositor',
+      visible: true,
+    },
+    {
+      id: 'juan-bajana',
+      name: 'Juan José Bajaña',
+      photo: '../../assets/images/people/juan-bajana.jpg?v=2',
+      career: 'Medicina Veterinaria',
+      semester: 'Cuarto semestre',
+      topic: 'Nutrición Animal',
+      role: 'Desarrollador Web',
+      instagram: 'https://www.instagram.com/elranchodejuan_jo',
+      altText: 'Juan José Bajaña - Integrante del equipo expositor',
+      visible: true,
+    },
+    {
+      id: 'robinson-macas',
+      name: 'Robinson Macas',
+      photo: '../../assets/images/people/robinson-macas.jpeg?v=2',
+      career: 'Medicina Veterinaria',
+      semester: 'Cuarto semestre',
+      topic: 'Nutrición Animal',
+      role: 'Master Solver',
+      instagram: 'https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ==',
+      altText: 'Robinson Macas - Integrante del equipo expositor',
+      visible: true,
+    },
+  ]);
+});
+
+test('retratos de Expoferia resuelven en desarrollo, dominio raíz y Pages con prefijo', () => {
+  const portrait = 'assets/images/people/juan-bajana.jpg';
+  const developmentHref = sharedPersonPortraitHref(portrait, true);
+  const integratedHref = sharedPersonPortraitHref(portrait, false);
+
+  assert.equal(developmentHref, './assets/images/people/juan-bajana.jpg');
+  assert.equal(new URL(developmentHref, 'https://example.test/').pathname, '/assets/images/people/juan-bajana.jpg');
+  assert.equal(
+    new URL(developmentHref, 'https://example.test/SIPA_UTMACH/').pathname,
+    '/SIPA_UTMACH/assets/images/people/juan-bajana.jpg',
+  );
+  assert.equal(
+    new URL(integratedHref, 'https://example.test/eventos/expoferia-nutricion-animal-2026/').pathname,
+    '/assets/images/people/juan-bajana.jpg',
+  );
+  assert.equal(
+    new URL(integratedHref, 'https://example.test/SIPA_UTMACH/eventos/expoferia-nutricion-animal-2026/').pathname,
+    '/SIPA_UTMACH/assets/images/people/juan-bajana.jpg',
+  );
 });
 
 test('canonicales son absolutas, técnicas y en minúsculas', () => {

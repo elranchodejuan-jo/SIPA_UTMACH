@@ -182,9 +182,10 @@ test('Eventos enlaza a la Expoferia histórica', async ({ page }) => {
   const href = await expoLink.getAttribute('href');
   expect(href).toBeTruthy();
   expect(href.startsWith('/')).toBe(false);
-  expect(new URL(href, page.url()).pathname).toBe(EXPO_ROUTE);
+  const expectedExpoUrl = new URL(EXPO_ROUTE, page.url());
+  expect(new URL(href, page.url()).pathname).toBe(expectedExpoUrl.pathname);
   await expoLink.click();
-  await expect(page).toHaveURL(new RegExp(`${EXPO_ROUTE.replaceAll('/', '\\/')}$`));
+  await expect(page).toHaveURL(expectedExpoUrl.href);
   expectRuntimeClean(runtime);
 });
 
