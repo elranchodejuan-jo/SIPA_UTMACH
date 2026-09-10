@@ -106,6 +106,13 @@ const copyPortalAssets = async (rootDir, distDir, generatedFiles) => {
     await cp(source, destination, { recursive: true, force: true });
     generatedFiles.push(`${relativePath}/`);
   }
+  const sharedPeopleSource = path.join(rootDir, 'assets', 'images', 'people');
+  if (!await exists(sharedPeopleSource)) throw new Error('Asset obligatorio inexistente: assets/images/people/.');
+  const sharedPeopleDestination = path.join(distDir, 'assets', 'images', 'people');
+  await mkdir(path.dirname(sharedPeopleDestination), { recursive: true });
+  await cp(sharedPeopleSource, sharedPeopleDestination, { recursive: true, force: true });
+  generatedFiles.push('assets/images/people/');
+
   const faviconDir = path.join(portalDir, 'assets', 'favicon');
   if (!await exists(faviconDir)) throw new Error('Asset obligatorio inexistente: portal/assets/favicon/.');
   await cp(faviconDir, distDir, { recursive: true, force: true });

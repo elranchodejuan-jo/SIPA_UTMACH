@@ -4,7 +4,7 @@ import path from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
-const sourceRoots = ['portal', 'scripts', 'tests'];
+const sourceRoots = ['portal', 'scripts', 'shared', 'tests'];
 const rootFiles = ['playwright.config.mjs'];
 const extensions = new Set(['.js', '.mjs', '.cjs']);
 

@@ -9,10 +9,12 @@ import { getPublishedRoutes } from '../portal/config/routes.mjs';
 import { events } from '../portal/content/events.mjs';
 import { researchProjects } from '../portal/content/research.mjs';
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../portal/content/socials.mjs';
-import { teamMembers } from '../portal/content/team.mjs';
+import { sipaMemberships, teamCategories, teamMembers } from '../portal/content/team.mjs';
 import { webinars, webinarStatuses } from '../portal/content/webinars.mjs';
 import { assetHref, isValidExternalUrl, normalizeEmailHref } from '../portal/lib/urls.mjs';
 import { validateWebinarVideo } from '../portal/lib/youtube.mjs';
+import { expoferiaParticipants } from '../src/data/site.ts';
+import { people } from '../shared/people.mjs';
 
 const rootDir = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const executableProtocols = /^(?:javascript|data|vbscript):/i;
@@ -161,7 +163,29 @@ const validateContentCollections = errors => {
   assertUniqueIds(contactChannels, 'Canales de contacto');
   assertUniqueIds(researchProjects, 'Proyectos');
   assertUniqueIds(events, 'Eventos');
+  assertUniqueIds(people, 'Personas compartidas');
   assertUniqueIds(teamMembers, 'Equipo');
+
+  const personIds = new Set(people.map(person => person.id));
+  const membershipPersonIds = new Set();
+  for (const membership of sipaMemberships) {
+    if (!personIds.has(membership.personId)) errors.push(`Membresía SIPA: personId inexistente ${membership.personId}.`);
+    if (membershipPersonIds.has(membership.personId)) errors.push(`Membresía SIPA duplicada para ${membership.personId}.`);
+    else membershipPersonIds.add(membership.personId);
+    if (!teamCategories.some(category => category.id === membership.category)) {
+      errors.push(`Membresía SIPA ${membership.personId}: categoría inexistente ${membership.category}.`);
+    }
+  }
+
+  const eventIds = new Set(events.map(event => event.id));
+  const participantKeys = new Set();
+  for (const participant of expoferiaParticipants) {
+    if (!personIds.has(participant.personId)) errors.push(`Participación de evento: personId inexistente ${participant.personId}.`);
+    if (!eventIds.has(participant.eventId)) errors.push(`Participación de evento: eventId inexistente ${participant.eventId}.`);
+    const participantKey = `${participant.eventId}:${participant.personId}`;
+    if (participantKeys.has(participantKey)) errors.push(`Participación de evento duplicada: ${participantKey}.`);
+    else participantKeys.add(participantKey);
+  }
 
   for (const webinar of webinars) {
     if (!webinarStatuses.includes(webinar.status)) errors.push(`Webinar ${webinar.id}: estado no permitido ${webinar.status}.`);
@@ -506,6 +530,26 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
   }
   if (!await fileExists(path.join(distDir, SITE_CONFIG.socialImage))) {
     errors.push(`Falta la imagen social configurada: ${SITE_CONFIG.socialImage}.`);
+  }
+
+  for (const person of people) {
+    if (!await fileExists(path.join(distDir, ...person.portrait.split('/')))) {
+      errors.push(`Falta el retrato compartido de ${person.id}: ${person.portrait}.`);
+    }
+  }
+  for (const participant of expoferiaParticipants) {
+    const person = people.find(candidate => candidate.id === participant.personId);
+    if (!person) continue;
+    const legacyPortrait = path.join(
+      distDir,
+      'eventos',
+      participant.eventId,
+      'images',
+      path.basename(person.portrait),
+    );
+    if (!await fileExists(legacyPortrait)) {
+      errors.push(`Falta el alias histórico del retrato de ${person.id}.`);
+    }
   }
 
   const faviconAssets = [

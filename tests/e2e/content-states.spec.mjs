@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../../portal/content/socials.mjs';
 import { teamMembers } from '../../portal/content/team.mjs';
-import { expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
+import { expectNoHorizontalOverflow, expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
 
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-1366', 'Los estados editoriales se cubren una sola vez.');
@@ -12,17 +12,51 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   const runtime = await gotoPortal(page, '/equipo/', watchRuntime(page));
   const published = teamMembers.filter(member => member.published === true);
   const cards = page.locator('main .team-card');
+  expect(published).toHaveLength(3);
   await expect(cards).toHaveCount(published.length);
 
-  if (published.length === 0) {
-    await expect(page.locator('main')).toContainText(/perfiles en actualización/i);
-    await expect(page.locator('main .team-card img')).toHaveCount(0);
-  } else {
-    for (const member of published) await expect(page.getByRole('heading', { name: member.name, exact: true })).toBeVisible();
-    const brokenPortraits = await cards.locator('img').evaluateAll(images => images
-      .filter(image => !image.alt || !image.complete || image.naturalWidth === 0)
-      .map(image => image.getAttribute('src')));
-    expect(brokenPortraits).toEqual([]);
+  await expect(cards.locator('h3')).toHaveText([
+    'Angel Roberto Sánchez Quinche',
+    'Juan José Bajaña',
+    'Robinson Macas',
+  ]);
+  await expect(cards.locator('.card__meta')).toHaveText([
+    'Miembro de SIPA',
+    'Miembro de SIPA',
+    'Miembro de SIPA',
+  ]);
+  await expect(page.locator('main')).not.toContainText(/perfiles en actualización/i);
+  await expect(page.locator('main')).not.toContainText(/Cuarto semestre|Exponente|Desarrollador Web|Master Solver/);
+
+  const portraits = cards.locator('img');
+  await expect(portraits).toHaveCount(3);
+  for (let index = 0; index < 3; index += 1) {
+    const portrait = portraits.nth(index);
+    await portrait.scrollIntoViewIfNeeded();
+    await expect(portrait).toHaveAttribute('src', /assets\/images\/people\//);
+    await expect.poll(() => portrait.evaluate(image => (
+      Boolean(image.alt) && image.complete && image.naturalWidth > 0
+    ))).toBe(true);
+  }
+  expectRuntimeClean(runtime);
+});
+
+test('Equipo conserva una columna móvil sin desbordar sus retratos', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  const runtime = await gotoPortal(page, '/equipo/', watchRuntime(page));
+  const cards = page.locator('main .team-card');
+  await expect(cards).toHaveCount(3);
+  await expectNoHorizontalOverflow(page);
+
+  const studentGrid = page.locator('main .team-group#estudiantes .team-grid');
+  const columns = await studentGrid.evaluate(element => getComputedStyle(element).gridTemplateColumns.trim().split(/\s+/));
+  expect(columns).toHaveLength(1);
+
+  const portraits = cards.locator('img');
+  for (let index = 0; index < 3; index += 1) {
+    const portrait = portraits.nth(index);
+    await portrait.scrollIntoViewIfNeeded();
+    await expect.poll(() => portrait.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
   }
   expectRuntimeClean(runtime);
 });

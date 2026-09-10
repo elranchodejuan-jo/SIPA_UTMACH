@@ -1,3 +1,5 @@
+import { assertValidPersonRelations, getPerson } from '../../shared/people.mjs';
+
 export interface SiteIdentity {
   university: string;
   faculty: string;
@@ -159,6 +161,147 @@ export interface SiteData {
   references: ReferenceSource[];
   phaseBenefits: string[];
 }
+
+export const EXPOFERIA_EVENT_ID = 'expoferia-nutricion-animal-2026';
+
+interface ExpoferiaParticipationBase {
+  eventId: typeof EXPOFERIA_EVENT_ID;
+  personId: string;
+  eventRole: string;
+  order: number;
+  visible: boolean;
+}
+
+export interface ExpoferiaTeacherParticipation extends ExpoferiaParticipationBase {
+  presentation: 'teacher';
+  professionalTitle: string;
+  subjects: readonly string[];
+  description: string;
+  biography: string;
+}
+
+export interface ExpoferiaTeamParticipation extends ExpoferiaParticipationBase {
+  presentation: 'member';
+  career: string;
+  semester: string;
+  topic: string;
+  instagram: string;
+  altText: string;
+  portraitQuery: string;
+}
+
+export type ExpoferiaParticipation = ExpoferiaTeacherParticipation | ExpoferiaTeamParticipation;
+
+export const expoferiaParticipants: readonly ExpoferiaParticipation[] = [
+  {
+    eventId: EXPOFERIA_EVENT_ID,
+    personId: 'angel-sanchez',
+    eventRole: 'Docente-Investigador de la UTMACH',
+    order: 0,
+    presentation: 'teacher',
+    professionalTitle: 'Doctor en Medicina Veterinaria y Zootecnia · Máster Universitario en Producción Animal · Doctor en Ciencias Veterinarias',
+    subjects: ['Nutrición Animal', 'Salud en la Producción Porcina'],
+    description: '',
+    biography: 'Angel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMach, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica, ha participado en proyectos académicos, conferencias nacionales e internacionales, es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
+    visible: true,
+  },
+  {
+    eventId: EXPOFERIA_EVENT_ID,
+    personId: 'carolina-cajamarca',
+    eventRole: 'Exponente',
+    order: 10,
+    presentation: 'member',
+    career: 'Medicina Veterinaria',
+    semester: 'Cuarto semestre',
+    topic: 'Nutrición Animal',
+    instagram: 'https://www.instagram.com/carolina.skl',
+    altText: 'Carolina Cajamarca - Integrante del equipo expositor',
+    portraitQuery: '?v=2',
+    visible: true,
+  },
+  {
+    eventId: EXPOFERIA_EVENT_ID,
+    personId: 'juan-bajana',
+    eventRole: 'Desarrollador Web',
+    order: 20,
+    presentation: 'member',
+    career: 'Medicina Veterinaria',
+    semester: 'Cuarto semestre',
+    topic: 'Nutrición Animal',
+    instagram: 'https://www.instagram.com/elranchodejuan_jo',
+    altText: 'Juan José Bajaña - Integrante del equipo expositor',
+    portraitQuery: '?v=2',
+    visible: true,
+  },
+  {
+    eventId: EXPOFERIA_EVENT_ID,
+    personId: 'robinson-macas',
+    eventRole: 'Master Solver',
+    order: 30,
+    presentation: 'member',
+    career: 'Medicina Veterinaria',
+    semester: 'Cuarto semestre',
+    topic: 'Nutrición Animal',
+    instagram: 'https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ==',
+    altText: 'Robinson Macas - Integrante del equipo expositor',
+    portraitQuery: '?v=2',
+    visible: true,
+  },
+];
+
+assertValidPersonRelations(expoferiaParticipants, {
+  label: 'Participantes de Expoferia',
+  scopeField: 'eventId',
+});
+
+const viteDevelopment = () => (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV === true;
+
+export const sharedPersonPortraitHref = (portrait: string, isDevelopment = viteDevelopment()) => {
+  const normalizedPortrait = portrait.replace(/^\.\//, '');
+  return `${isDevelopment ? './' : '../../'}${normalizedPortrait}`;
+};
+
+export const createExpoferiaRoster = (isDevelopment = viteDevelopment()): Pick<SiteData, 'teacher' | 'team'> => {
+  const ordered = [...expoferiaParticipants].sort((left, right) => left.order - right.order);
+  const teacherParticipation = ordered.find(
+    (participation): participation is ExpoferiaTeacherParticipation => participation.presentation === 'teacher',
+  );
+  if (!teacherParticipation) throw new Error('Expoferia requiere un docente destacado.');
+
+  const teacherPerson = getPerson(teacherParticipation.personId);
+  const teacher: Teacher = {
+    name: teacherPerson.name,
+    professionalTitle: teacherParticipation.professionalTitle,
+    role: teacherParticipation.eventRole,
+    subjects: [...teacherParticipation.subjects],
+    description: teacherParticipation.description,
+    biography: teacherParticipation.biography,
+    image: sharedPersonPortraitHref(teacherPerson.portrait, isDevelopment),
+    visible: teacherParticipation.visible,
+  };
+
+  const team = ordered
+    .filter((participation): participation is ExpoferiaTeamParticipation => participation.presentation === 'member')
+    .map<TeamMember>(participation => {
+      const person = getPerson(participation.personId);
+      return {
+        id: person.id,
+        name: person.name,
+        photo: `${sharedPersonPortraitHref(person.portrait, isDevelopment)}${participation.portraitQuery}`,
+        career: participation.career,
+        semester: participation.semester,
+        topic: participation.topic,
+        role: participation.eventRole,
+        instagram: participation.instagram,
+        altText: participation.altText,
+        visible: participation.visible,
+      };
+    });
+
+  return { teacher, team };
+};
+
+const expoferiaRoster = createExpoferiaRoster();
 
 export const siteData: SiteData = {
   identity: {
@@ -588,54 +731,8 @@ export const siteData: SiteData = {
     { id: 'equipo', label: 'Equipo' },
     { id: 'expoferia', label: 'Expoferia' }
   ],
-  teacher: {
-    name: 'Angel Roberto Sánchez Quinche',
-    professionalTitle: 'Doctor en Medicina Veterinaria y Zootecnia · Máster Universitario en Producción Animal · Doctor en Ciencias Veterinarias',
-    role: 'Docente-Investigador de la UTMACH',
-    subjects: ['Nutrición Animal', 'Salud en la Producción Porcina'],
-    description: '',
-    biography: 'Angel Roberto Sánchez Quinche, Doctor en Medicina Veterinaria y Zootecnia (Universidad Técnica de Machala, Ecuador), Máster Universitario en Producción Animal (Universitat Politècnica de València, España), Doctor en Ciencias Veterinarias (Universidad del Zulia, Venezuela). Desde 2013, combina su labor docente e investigadora en la Universidad Técnica de Machala, con más de 8 años de experiencia en el sector privado, donde ha trabajado como veterinario de campo y administrador de granjas, y hasta la presente fecha con más de 12 años de experiencia en la docencia de pregrado. En la UTMach, destaca como miembro de GIPASA-UTMACH y asesor de SIPA-UTMACH, activo en la investigación y la divulgación científica, ha participado en proyectos académicos, conferencias nacionales e internacionales, es revisor y ha contribuido con artículos en revistas regionales y de alto impacto, enfocándose en Producción Animal, Nutrición Animal y Ciencia de los Alimentos.',
-    image: 'images/angel-sanchez.png',
-    visible: true
-  },
-  team: [
-    {
-      id: "carolina-cajamarca",
-      name: "Carolina Cajamarca",
-      photo: "images/carolina-cajamarca.png?v=2",
-      career: "Medicina Veterinaria",
-      semester: "Cuarto semestre",
-      topic: "Nutrición Animal",
-      role: "Exponente",
-      instagram: "https://www.instagram.com/carolina.skl",
-      altText: "Carolina Cajamarca - Integrante del equipo expositor",
-      visible: true
-    },
-    {
-      id: "juan-bajana",
-      name: "Juan José Bajaña",
-      photo: "images/juan-bajana.jpg?v=2",
-      career: "Medicina Veterinaria",
-      semester: "Cuarto semestre",
-      topic: "Nutrición Animal",
-      role: "Desarrollador Web",
-      instagram: "https://www.instagram.com/elranchodejuan_jo",
-      altText: "Juan José Bajaña - Integrante del equipo expositor",
-      visible: true
-    },
-    {
-      id: "robinson-macas",
-      name: "Robinson Macas",
-      photo: "images/robinson-macas.jpeg?v=2",
-      career: "Medicina Veterinaria",
-      semester: "Cuarto semestre",
-      topic: "Nutrición Animal",
-      role: "Master Solver",
-      instagram: "https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ==",
-      altText: "Robinson Macas - Integrante del equipo expositor",
-      visible: true
-    }
-  ],
+  teacher: expoferiaRoster.teacher,
+  team: expoferiaRoster.team,
   comments: {
     provider: 'googleForms',
     embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd8w3eNooySoeQjn7OEQEVFdbQmyPePeK_ij_RRTan5-Ootcw/viewform?embedded=true',

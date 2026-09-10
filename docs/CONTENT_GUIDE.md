@@ -12,7 +12,8 @@ Todo contenido institucional debe estar confirmado antes de publicarse. No se de
 - `status` describe el estado del contenido. Los estados `draft` y `hidden` nunca deben publicarse.
 - Los campos vacíos no se renderizan.
 - Las URL externas deben ser completas y usar `https://`.
-- Las imágenes deben estar autorizadas para publicación y guardarse en `portal/assets/images/`.
+- Las imágenes generales del portal deben estar autorizadas para publicación y guardarse en `portal/assets/images/`.
+- Los retratos reutilizados por el portal y los eventos tienen una única fuente en `assets/images/people/`.
 
 Después de cualquier cambio de contenido, ejecutar:
 
@@ -63,32 +64,38 @@ El ID debe tener 11 caracteres válidos. El build detiene la publicación si un 
 
 Estados disponibles: `upcoming`, `available`, `archived` y `draft`. Un borrador debe mantener `published: false`.
 
-## Añadir un integrante
+## Registrar una persona compartida
 
-Editar `portal/content/team.mjs` y añadir un objeto a `teamMembers`:
+Añadir una entrada neutral en `shared/people.mjs` y guardar su único retrato fuente en `assets/images/people/`:
 
 ```js
 {
   id: 'nombre-apellido',
   name: 'Nombre completo confirmado',
-  professionalTitle: 'Título confirmado',
-  role: 'Función confirmada en SIPA',
+  portrait: 'assets/images/people/nombre-apellido.webp'
+}
+```
+
+El registro compartido identifica a la persona, no afirma que pertenezca a SIPA ni que participe en un evento. El `id` es estable: los cambios editoriales del nombre no deben crear otra persona. No se debe mantener una segunda copia editable del retrato en `public/` o `portal/`.
+
+## Incorporar una persona a SIPA
+
+Editar `sipaMemberships` en `portal/content/team.mjs` y referenciar el `personId` existente:
+
+```js
+{
+  personId: 'nombre-apellido',
   category: 'docentes',
+  institutionalRole: 'Miembro de SIPA',
+  professionalTitle: 'Título confirmado',
   career: 'Medicina Veterinaria',
-  specialty: '',
-  bio: '',
-  researchInterests: [],
-  photo: 'assets/images/equipo/nombre-apellido.webp',
-  email: '',
-  orcid: '',
-  googleScholar: '',
-  linkedin: '',
-  instagram: '',
   order: 10,
   published: true,
   status: 'confirmed'
 }
 ```
+
+`teamMembers` se deriva automáticamente de las personas y las membresías; no se edita directamente. Usar `Miembro de SIPA` cuando la pertenencia esté confirmada pero no exista un cargo institucional confirmado. No copiar roles, semestres, temas ni redes personales de un evento.
 
 Categorías válidas:
 
@@ -98,9 +105,9 @@ Categorías válidas:
 - `estudiantes`
 - `colaboradores`
 
-No inferir cargos a partir de la participación en la Expoferia. Antes de publicar al Dr. Ángel, la Dra. Pimboza, Juan José Bajaña Chuno u otra persona, confirmar nombre completo, grado, función, categoría, fotografía y autorización de publicación.
+No inferir cargos a partir de la participación en la Expoferia. Antes de publicar a otra persona, confirmar nombre publicado, pertenencia, función, categoría, fotografía y autorización de publicación.
 
-Si no existe fotografía, omitir `photo`: la plantilla genera un avatar institucional con iniciales.
+Si una persona todavía no tiene un retrato autorizado, no se debe inventar ni reutilizar una imagen ajena; su publicación queda pendiente hasta completar el registro compartido.
 
 ## Añadir un evento
 
@@ -127,6 +134,29 @@ Editar `portal/content/events.mjs` y añadir un objeto a `events`:
 ```
 
 Usar `status: 'upcoming'` para próximos eventos y `status: 'completed'` para el archivo. Un evento necesita un destino real antes de mostrar una llamada a la acción. La Expoferia 2026 conserva su `routeId: 'expoferia'` y no debe reclasificarse como proyecto científico.
+
+## Vincular una persona a Expoferia
+
+Editar `expoferiaParticipants` en `src/data/site.ts` y añadir una relación con el `personId` existente. La relación conserva el rol, orden, visibilidad y datos históricos propios del evento:
+
+```ts
+{
+  eventId: EXPOFERIA_EVENT_ID,
+  personId: 'nombre-apellido',
+  eventRole: 'Rol confirmado en el evento',
+  order: 40,
+  presentation: 'member',
+  career: 'Dato respaldado para el evento',
+  semester: 'Dato histórico del evento',
+  topic: 'Tema del evento',
+  instagram: '',
+  altText: 'Texto alternativo confirmado',
+  portraitQuery: '',
+  visible: true
+}
+```
+
+Una persona puede vincularse a varios eventos, pero no repetirse dentro del mismo `eventId`. El adaptador mantiene `siteData.teacher` y `siteData.team`; no se duplican identidad ni retrato y no es necesario cambiar el renderer.
 
 ## Añadir una red o canal
 
