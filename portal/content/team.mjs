@@ -63,6 +63,7 @@ export const sipaMemberships = Object.freeze([
     institutionalRole: 'Miembro de SIPA',
     officialPosition: '',
     badges: Object.freeze([confirmedBadge('Ayudante de campo')]),
+    career: 'Medicina Veterinaria',
     order: 20,
     published: true,
     status: 'confirmed',

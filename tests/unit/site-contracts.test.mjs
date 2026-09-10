@@ -224,6 +224,7 @@ test('Equipo organiza perfiles confirmados y conserva borradores fuera de public
   assert.ok(published.every(member => member.role === 'Miembro de SIPA'));
   assert.ok(published.every(member => !member.semester));
   assert.ok(published.every(member => !['Exponente', 'Desarrollador Web', 'Master Solver'].includes(member.role)));
+  assert.equal(published.find(member => member.id === 'allison-machuca').career, 'Medicina Veterinaria');
   assert.deepEqual(published.find(member => member.id === 'juan-bajana').badges.map(badge => badge.label), [
     'Desarrollo web',
     'Administración de redes',
