@@ -165,6 +165,56 @@
     window.requestAnimationFrame(() => iframe.focus());
   });
 
+  const dateKeyInTimeZone = (value, timeZone) => {
+    try {
+      const parts = new Intl.DateTimeFormat('en', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone,
+      }).formatToParts(value);
+      const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+      return `${values.year}-${values.month}-${values.day}`;
+    } catch {
+      return '';
+    }
+  };
+
+  document.querySelectorAll('[data-webinar-temporal]').forEach(label => {
+    const start = new Date(label.dataset.webinarStart || '');
+    const timeZone = label.dataset.webinarTimeZone || 'America/Guayaquil';
+    if (Number.isNaN(start.getTime())) return;
+    const declaredDay = label.dataset.webinarDate || '';
+    const eventDay = /^\d{4}-\d{2}-\d{2}$/.test(declaredDay) ? declaredDay : dateKeyInTimeZone(start, timeZone);
+    const currentDay = dateKeyInTimeZone(new Date(), timeZone);
+    if (!eventDay || !currentDay || currentDay <= eventDay) return;
+    label.textContent = 'Fecha transcurrida';
+    label.dataset.temporalState = 'past';
+    const webinar = label.closest('[data-webinar-card], [data-webinar-detail]');
+    if (webinar) webinar.dataset.webinarTemporalState = 'past';
+    const homeFeatured = webinar?.closest('[data-home-webinar-featured]');
+    if (homeFeatured) {
+      homeFeatured.hidden = true;
+      const homePast = document.querySelector('[data-home-webinar-past]');
+      const homeHeading = document.querySelector('[data-home-webinar-heading]');
+      if (homePast) homePast.hidden = false;
+      if (homeHeading) homeHeading.textContent = 'Biblioteca de webinars';
+    }
+    if (webinar?.dataset.webinarProjection === 'agenda') {
+      const archive = document.querySelector('[data-webinar-past-section]');
+      const archiveList = archive?.querySelector('[data-webinar-past-list]');
+      if (archive && archiveList) {
+        archiveList.append(webinar);
+        archive.hidden = false;
+        const agendaList = document.querySelector('[data-webinar-agenda-list]');
+        if (agendaList && !agendaList.querySelector('.event-card, .webinar-card')) {
+          const emptyMessage = document.querySelector('[data-webinar-agenda-empty]');
+          if (emptyMessage) emptyMessage.hidden = false;
+        }
+      }
+    }
+  });
+
   document.querySelectorAll('[data-contact-form]').forEach(form => {
     form.addEventListener('submit', async event => {
       if (!form.checkValidity()) {

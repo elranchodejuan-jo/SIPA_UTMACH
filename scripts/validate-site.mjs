@@ -10,7 +10,7 @@ import { events } from '../portal/content/events.mjs';
 import { researchProjects } from '../portal/content/research.mjs';
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../portal/content/socials.mjs';
 import { sipaDraftMemberships, sipaMemberships, teamCategories, teamMembers } from '../portal/content/team.mjs';
-import { webinars, webinarStatuses } from '../portal/content/webinars.mjs';
+import { webinars } from '../portal/content/webinars.mjs';
 import {
   assetHref,
   isSafePublicHref,
@@ -18,7 +18,11 @@ import {
   normalizeEmailHref,
   normalizeWhatsAppHref,
 } from '../portal/lib/urls.mjs';
-import { validateWebinarVideo } from '../portal/lib/youtube.mjs';
+import {
+  getPublishedWebinars,
+  getWebinarRouteId,
+  validateWebinarCollection,
+} from '../portal/lib/webinars.mjs';
 import { expoferiaParticipants } from '../src/data/site.ts';
 import { draftPeople, people } from '../shared/people.mjs';
 
@@ -163,7 +167,6 @@ const validateContentCollections = errors => {
     }
   };
 
-  assertUniqueIds(webinars, 'Webinars');
   assertUniqueIds(socialLinks, 'Redes sociales');
   assertUniqueIds(institutionalLinks, 'Enlaces institucionales');
   assertUniqueIds(contactChannels, 'Canales de contacto');
@@ -244,12 +247,12 @@ const validateContentCollections = errors => {
     }
   }
 
-  for (const webinar of webinars) {
-    if (!webinarStatuses.includes(webinar.status)) errors.push(`Webinar ${webinar.id}: estado no permitido ${webinar.status}.`);
-    if (webinar.published === true) {
-      const validation = validateWebinarVideo(webinar);
-      if (!validation.valid) errors.push(`Webinar ${webinar.id}: ${validation.errors.join('; ')}.`);
-    }
+  const webinarValidation = validateWebinarCollection(webinars);
+  errors.push(...webinarValidation.errors.map(error => `${error}.`));
+  const publicRouteIds = new Set(getPublishedRoutes().map(route => route.id));
+  for (const webinar of getPublishedWebinars(webinars)) {
+    const routeId = getWebinarRouteId(webinar);
+    if (!publicRouteIds.has(routeId)) errors.push(`Webinar ${webinar.id}: falta su ruta pública derivada.`);
   }
 
   for (const [label, items] of [
@@ -592,6 +595,11 @@ const validateBuildArtifacts = async ({ distDir, files, errors }) => {
   if (!await fileExists(path.join(distDir, SITE_CONFIG.socialImage))) {
     errors.push(`Falta la imagen social configurada: ${SITE_CONFIG.socialImage}.`);
   }
+  for (const webinar of getPublishedWebinars(webinars)) {
+    if (!webinar.thumbnail) continue;
+    const thumbnail = path.join(distDir, ...webinar.thumbnail.split('/'));
+    if (!await fileExists(thumbnail)) errors.push(`Falta el afiche del webinar ${webinar.id}: ${webinar.thumbnail}.`);
+  }
 
   for (const person of people) {
     if (!person.portrait) continue;
@@ -789,6 +797,11 @@ export const validateSite = async ({ distDir = path.join(rootDir, 'dist') } = {}
     const relativeFile = path.relative(resolvedDist, file).replaceAll('\\', '/');
     for (const draft of draftPeople) {
       if (publicData.includes(draft.name)) errors.push(`${relativeFile}: el borrador ${draft.id} aparece en datos públicos generados.`);
+    }
+    for (const hiddenWebinar of webinars.filter(webinar => webinar.published !== true || webinar.status === 'draft')) {
+      if (hiddenWebinar.title && publicData.includes(hiddenWebinar.title)) {
+        errors.push(`${relativeFile}: el webinar no publicado ${hiddenWebinar.id} aparece en datos públicos generados.`);
+      }
     }
   }
 

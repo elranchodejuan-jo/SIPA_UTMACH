@@ -2,7 +2,7 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { expect, test } from '@playwright/test';
-import { expectRuntimeClean, watchRuntime } from './helpers/qa.mjs';
+import { WEBINAR_DETAIL_ROUTE, expectRuntimeClean, resolveTestRoute, watchRuntime } from './helpers/qa.mjs';
 
 const captureDir = path.join(process.cwd(), 'tmp', 'sipa-green-qa');
 
@@ -30,7 +30,7 @@ const capture = async (page, name, { fullPage = true } = {}) => {
 
 const visit = async (page, route, { width, height, theme = 'light' }) => {
   await page.setViewportSize({ width, height });
-  await page.goto(route, { waitUntil: 'load' });
+  await page.goto(resolveTestRoute(route), { waitUntil: 'load' });
   await expect(page.locator('main')).toBeVisible();
   const currentTheme = await page.locator('html').getAttribute('data-theme');
   if (currentTheme !== theme) await page.locator('[data-theme-toggle]').click();
@@ -74,6 +74,8 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
     ['light-research', '/investigacion/', 1366, 768],
     ['light-outreach', '/divulgacion/', 768, 1024],
     ['light-webinars', '/divulgacion/webinars/', 1366, 768],
+    ['light-webinar-detail-desktop', WEBINAR_DETAIL_ROUTE.path, 1440, 900],
+    ['light-webinar-detail-mobile', WEBINAR_DETAIL_ROUTE.path, 390, 844],
     ['light-events', '/eventos/', 1024, 768],
     ['light-team-desktop', '/equipo/', 1366, 768],
     ['light-team-mobile', '/equipo/', 390, 844],
@@ -87,12 +89,12 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
   await page.locator('footer.site-footer').scrollIntoViewIfNeeded();
   await capture(page, 'light-footer', { fullPage: false });
 
-  await page.goto('/404.html', { waitUntil: 'load' });
+  await page.goto(resolveTestRoute('/404.html'), { waitUntil: 'load' });
   await expect(page.getByRole('heading', { name: /p.gina no encontrada/i })).toBeVisible();
   await capture(page, 'light-404');
 
   await page.setViewportSize({ width: 1200, height: 630 });
-  const ogResponse = await page.goto('/assets/images/og-sipa.png', { waitUntil: 'load' });
+  const ogResponse = await page.goto(resolveTestRoute('/assets/images/og-sipa.png'), { waitUntil: 'load' });
   expect(ogResponse?.status()).toBeLessThan(400);
   await capture(page, 'open-graph');
 
@@ -108,6 +110,8 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
   for (const [name, route, width, height] of [
     ['dark-research', '/investigacion/', 1024, 768],
     ['dark-webinars', '/divulgacion/webinars/', 1366, 768],
+    ['dark-webinar-detail-desktop', WEBINAR_DETAIL_ROUTE.path, 1440, 900],
+    ['dark-webinar-detail-mobile', WEBINAR_DETAIL_ROUTE.path, 390, 844],
     ['dark-team-desktop', '/equipo/', 1366, 768],
     ['dark-team-mobile', '/equipo/', 390, 844],
     ['dark-contact', '/contacto/', 1366, 768],

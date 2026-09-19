@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   EXPO_ROUTE,
   MAIN_ROUTES,
+  WEBINAR_DETAIL_ROUTE,
   expectRuntimeClean,
   gotoPortal,
   openPrimaryNavigation,
@@ -172,6 +173,20 @@ test('los breadcrumbs de páginas internas enlazan al inicio', async ({ page }) 
   const breadcrumb = page.getByRole('navigation', { name: /ruta de navegación|migas|breadcrumb/i });
   await expect(breadcrumb).toBeVisible();
   await expect(breadcrumb.getByRole('link', { name: 'Inicio', exact: true })).toHaveAttribute('href', /.+/);
+  expectRuntimeClean(runtime);
+});
+
+test('la ficha del webinar mantiene Divulgación activa y breadcrumb completo', async ({ page }) => {
+  const runtime = await gotoPortal(page, WEBINAR_DETAIL_ROUTE.path, watchRuntime(page));
+  await expect(
+    page.locator('nav[aria-label="Navegación principal"]').getByRole('link', { name: 'Divulgación', exact: true }),
+  ).toHaveAttribute('aria-current', 'page');
+
+  const breadcrumb = page.getByRole('navigation', { name: /ruta de navegación|migas|breadcrumb/i });
+  await expect(breadcrumb.getByRole('link', { name: 'Inicio', exact: true })).toBeVisible();
+  await expect(breadcrumb.getByRole('link', { name: 'Divulgación', exact: true })).toBeVisible();
+  await expect(breadcrumb.getByRole('link', { name: 'Webinars', exact: true })).toBeVisible();
+  await expect(breadcrumb).toContainText(/Ganadería 4\.0/i);
   expectRuntimeClean(runtime);
 });
 

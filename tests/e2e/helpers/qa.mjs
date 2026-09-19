@@ -24,6 +24,14 @@ export const MAIN_ROUTES = [
   { path: '/contacto/', label: 'Contacto' },
 ];
 
+export const WEBINAR_DETAIL_ROUTE = Object.freeze({
+  path: '/divulgacion/webinars/ganaderia-4-0-2026/',
+  label: 'Ganadería 4.0',
+  slug: 'ganaderia-4-0-2026',
+});
+
+export const RESPONSIVE_ROUTES = Object.freeze([...MAIN_ROUTES, WEBINAR_DETAIL_ROUTE]);
+
 export const EXPO_ROUTE = resolveTestRoute('/eventos/expoferia-nutricion-animal-2026/');
 
 export const VIEWPORTS = [
@@ -116,4 +124,12 @@ export const expectImagesLoaded = async page => {
     .filter(image => !image.complete || image.naturalWidth === 0 || image.naturalHeight === 0)
     .map(image => image.currentSrc || image.getAttribute('src') || '<sin src>'));
   expect(failures, `Imágenes que no cargaron: ${failures.join(', ')}`).toEqual([]);
+};
+
+export const expectImageNaturalSize = async (image, expected) => {
+  await expect.poll(() => image.evaluate(element => ({
+    complete: element.complete,
+    width: element.naturalWidth,
+    height: element.naturalHeight,
+  }))).toEqual({ complete: true, ...expected });
 };

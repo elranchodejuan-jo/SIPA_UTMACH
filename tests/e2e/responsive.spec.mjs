@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 import {
-  MAIN_ROUTES,
+  RESPONSIVE_ROUTES,
   VIEWPORTS,
+  WEBINAR_DETAIL_ROUTE,
   expectImagesLoaded,
   expectNoHorizontalOverflow,
   expectRuntimeClean,
@@ -16,7 +17,7 @@ for (const viewport of VIEWPORTS) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     const runtime = watchRuntime(page);
 
-    for (const route of MAIN_ROUTES) {
+    for (const route of RESPONSIVE_ROUTES) {
       await gotoPortal(page, route.path, runtime);
       await expectNoHorizontalOverflow(page);
       await expectImagesLoaded(page);
@@ -31,6 +32,24 @@ for (const viewport of VIEWPORTS) {
         .filter(heading => heading.scrollWidth > heading.clientWidth + 1)
         .map(heading => heading.textContent?.trim()));
       expect(overflowingHeadings, `Títulos desbordados en ${route.path}`).toEqual([]);
+
+      if (route.path === WEBINAR_DETAIL_ROUTE.path) {
+        const poster = page.locator('[data-webinar-poster]');
+        await expect(poster).toBeVisible();
+        const presentation = await poster.evaluate(image => {
+          const rect = image.getBoundingClientRect();
+          const style = getComputedStyle(image);
+          return {
+            aspectRatio: rect.width / rect.height,
+            objectFit: style.objectFit,
+            clipped: image.scrollHeight > image.clientHeight + 1 || image.scrollWidth > image.clientWidth + 1,
+          };
+        });
+        expect(presentation.aspectRatio).toBeGreaterThan(0.98);
+        expect(presentation.aspectRatio).toBeLessThan(1.02);
+        expect(presentation.objectFit).toBe('contain');
+        expect(presentation.clipped).toBe(false);
+      }
     }
 
     expectRuntimeClean(runtime);

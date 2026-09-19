@@ -23,6 +23,7 @@ Consulta [docs/SIPA_GREEN_COLOR_MAP.md](docs/SIPA_GREEN_COLOR_MAP.md) para la es
 - `/investigacion/`: áreas, metodología, proyectos y producción científica.
 - `/divulgacion/`: centro de divulgación.
 - `/divulgacion/webinars/`: biblioteca de webinars.
+- `/divulgacion/webinars/ganaderia-4-0-2026/`: ficha del webinar Ganadería 4.0.
 - `/eventos/`: próximos eventos y archivo histórico.
 - `/eventos/expoferia-nutricion-animal-2026/`: experiencia histórica de la Expoferia.
 - `/equipo/`: integrantes publicados del semillero.
@@ -53,7 +54,7 @@ scripts/
 
 La raíz Vite/TypeScript (`index.html`, `src/` y `public/`) pertenece a la Expoferia, no a la portada institucional. `scripts/build-sipa.mjs` preserva esa experiencia en `dist/eventos/expoferia-nutricion-animal-2026/`. La identidad neutral de las personas se comparte mediante `shared/people.mjs`; la pertenencia a SIPA permanece en `portal/content/team.mjs` y cada evento conserva sus roles y contexto propios.
 
-El registro central de rutas alimenta navegación, página activa, breadcrumbs, footer y sitemap. Los enlaces locales se generan de forma relativa para funcionar tanto en `https://sipautmach.com/` como en la URL temporal de proyecto de GitHub Pages.
+El registro central de rutas alimenta navegación, página activa, breadcrumbs, footer y sitemap. Las fichas públicas de webinars se derivan por `slug` del catálogo, por lo que un próximo encuentro no requiere editar HTML, CSS ni el registro de rutas. Los enlaces locales se generan de forma relativa para funcionar tanto en `https://sipautmach.com/` como en la URL temporal de proyecto de GitHub Pages.
 
 ## Requisitos
 

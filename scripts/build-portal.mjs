@@ -8,10 +8,10 @@ import { SITE_CONFIG } from '../portal/config/site.mjs';
 import { getPublishedRoutes, getRouteById } from '../portal/config/routes.mjs';
 import { getSitemapRoutes } from '../portal/config/navigation.mjs';
 import { isSafePublicHref, normalizeEmailHref, normalizeExternalUrl, normalizeWhatsAppHref } from '../portal/lib/urls.mjs';
-import { assertValidPublishedWebinars } from '../portal/lib/youtube.mjs';
+import { assertValidWebinarCollection, getWebinarBySlug } from '../portal/lib/webinars.mjs';
 import { contactChannels, contactContent, institutionalLinks, socialLinks } from '../portal/content/socials.mjs';
 import { sipaDraftMemberships, sipaMemberships, teamCategories, teamMembers } from '../portal/content/team.mjs';
-import { webinars, webinarStatuses } from '../portal/content/webinars.mjs';
+import { webinars } from '../portal/content/webinars.mjs';
 import { events } from '../portal/content/events.mjs';
 import { renderLayout } from '../portal/templates/layout.mjs';
 import { renderHomePage } from '../portal/pages/home.mjs';
@@ -19,6 +19,7 @@ import { renderSipaPage } from '../portal/pages/sipa.mjs';
 import { renderResearchPage } from '../portal/pages/research.mjs';
 import { renderOutreachPage } from '../portal/pages/outreach.mjs';
 import { renderWebinarsPage } from '../portal/pages/webinars.mjs';
+import { renderWebinarDetailPage } from '../portal/pages/webinar-detail.mjs';
 import { renderEventsPage } from '../portal/pages/events.mjs';
 import { renderTeamPage } from '../portal/pages/team.mjs';
 import { renderContactPage } from '../portal/pages/contact.mjs';
@@ -29,6 +30,7 @@ const pageRenderers = Object.freeze({
   research: renderResearchPage,
   outreach: renderOutreachPage,
   webinars: renderWebinarsPage,
+  'webinar-detail': renderWebinarDetailPage,
   events: renderEventsPage,
   team: renderTeamPage,
   contact: renderContactPage,
@@ -53,13 +55,7 @@ const getLocalSha = rootDir => {
 };
 
 const validateContent = () => {
-  assertValidPublishedWebinars(webinars);
-  for (const webinar of webinars.filter(item => item.published)) {
-    for (const field of ['id', 'slug', 'title', 'speaker', 'date', 'summary']) {
-      if (typeof webinar[field] !== 'string' || !webinar[field].trim()) throw new Error(`El webinar publicado ${webinar.id || '(sin id)'} requiere ${field}`);
-    }
-    if (!webinarStatuses.includes(webinar.status)) throw new Error(`Estado inválido en el webinar ${webinar.id}: ${webinar.status}`);
-  }
+  assertValidWebinarCollection(webinars);
   for (const item of [...socialLinks, ...institutionalLinks]) {
     if (item.published !== true) continue;
     if (!normalizeExternalUrl(item.url, { allowedProtocols: ['https:'] })) throw new Error(`URL pública HTTPS inválida en ${item.id || item.label}: ${item.url || '(vacía)'}`);
@@ -174,7 +170,9 @@ export async function buildPortal(options = {}) {
     const renderer = pageRenderers[route.page];
     if (!renderer) throw new Error(`No existe renderer para la ruta ${route.id}`);
     const helpers = (await import('../portal/lib/urls.mjs')).createRouteHelpers(route.id);
-    const page = renderer({ route, helpers, metadata });
+    const webinar = route.webinarSlug ? getWebinarBySlug(webinars, route.webinarSlug) : null;
+    if (route.page === 'webinar-detail' && !webinar) throw new Error(`No existe contenido para la ruta ${route.id}`);
+    const page = renderer({ route, helpers, metadata, webinar });
     const html = renderLayout({ route, page, metadata });
     await writeOutput(distDir, route.output, html, generatedFiles);
     generatedRoutes.push(route.id);

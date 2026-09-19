@@ -27,42 +27,112 @@ Antes de confirmar cambios, revisar el HTML generado, los enlaces, el modo oscur
 
 ## Añadir un webinar
 
-Editar `portal/content/webinars.mjs` y añadir un objeto a `webinars`:
+Las invitaciones, grabaciones y fichas archivadas comparten un único catálogo en
+`portal/content/webinars.mjs`. Las rutas individuales, la aparición en Inicio y
+Eventos, la biblioteca, el sitemap y los metadatos se derivan de ese catálogo: no
+se debe crear HTML, CSS ni una ruta manual por encuentro.
+
+1. Copiar `portal/content/templates/webinar-invitacion.mjs` como referencia
+   editorial. La plantilla es código fuente no público y nunca se importa como
+   un evento real.
+2. Guardar el afiche autorizado en
+   `portal/assets/images/webinars/<slug>.<ext>` sin modificar el original.
+3. Añadir la ficha confirmada al array `webinars` de
+   `portal/content/webinars.mjs`.
+4. Mantener `published: false`, `featured: false` y `status: 'draft'` mientras
+   falte cualquier dato obligatorio o no se haya confirmado su publicación.
+
+Ejemplo resumido de una invitación:
 
 ```js
 {
   id: 'identificador-estable',
-  slug: 'titulo-del-webinar',
+  slug: 'titulo-del-webinar-2027',
   title: 'Título confirmado',
   speaker: 'Nombre confirmado',
-  speakerRole: 'Cargo o afiliación confirmada',
-  date: '2026-09-01',
-  dateLabel: '1 de septiembre de 2026',
-  duration: '58 min',
+  speakerRole: 'Credenciales confirmadas',
+  date: '2027-09-01',
+  startDate: '2027-09-01T18:00:00-05:00',
+  endDate: null,
+  timeZone: 'America/Guayaquil',
+  secondaryTimeZones: [],
+  duration: null,
+  platform: 'Zoom',
+  registrationUrl: 'https://...',
+  joinUrl: 'https://...',
+  meetingId: '',
+  isAccessibleForFree: true,
+  organizer: 'SIPA — Semillero de Investigación en Producción Animal',
+  sponsor: '',
   summary: 'Resumen breve y verificable.',
   description: 'Descripción ampliada y verificable.',
-  youtubeUrl: 'https://www.youtube.com/watch?v=XXXXXXXXXXX',
-  youtubeId: 'XXXXXXXXXXX',
-  thumbnail: '',
+  invitation: 'Invitación confirmada.',
+  thumbnail: 'assets/images/webinars/titulo-del-webinar-2027.jpg',
+  thumbnailAlt: 'Descripción funcional del afiche.',
+  thumbnailWidth: 1200,
+  thumbnailHeight: 1200,
   topics: ['Nutrición animal'],
   species: ['Aves'],
+  youtubeUrl: null,
+  youtubeId: null,
+  recordingPublishedAt: null,
   featured: true,
   published: true,
-  status: 'available',
+  status: 'upcoming',
   resources: []
 }
 ```
 
-Formatos admitidos para YouTube:
+### Campos y estados
+
+- Son obligatorios en todo registro: `id`, `slug`, `title`, `summary`,
+  `description`, `speaker`, `date`, `startDate`, `timeZone`, `status`,
+  `published` y `featured`.
+- Una invitación publicada (`upcoming`) requiere afiche con texto alternativo y
+  dimensiones, además de al menos un destino HTTPS confirmado en
+  `registrationUrl` o `joinUrl`. No requiere YouTube.
+- Una grabación disponible (`available`) requiere un video válido y
+  `recordingPublishedAt`, que es la fecha real de publicación del video, no la
+  fecha del encuentro.
+- Una ficha archivada (`archived`) conserva su URL estable y puede no tener
+  grabación. En ese caso no muestra reproductor ni botón de video.
+- Un borrador (`draft`) exige `published: false` y no genera tarjeta, ficha,
+  sitemap ni datos estructurados.
+- `endDate`, `duration`, `meetingId`, `sponsor`, `resources`, zonas secundarias
+  y grabación son opcionales. Deben permanecer en `null`, cadena vacía o array
+  vacío cuando no estén confirmados; nunca se completan por inferencia.
+- `date` debe coincidir con el día local de `startDate` en `timeZone`. Si existe
+  `endDate`, debe ser posterior al inicio.
+- Los destinos externos deben usar HTTPS, no incluir credenciales y corresponder
+  exactamente a la fuente confirmada.
+
+Formatos admitidos para una grabación de YouTube:
 
 - `youtube.com/watch?v=...`
 - `youtu.be/...`
 - `youtube.com/embed/...`
 - `youtube.com/shorts/...`
 
-El ID debe tener 11 caracteres válidos. El build detiene la publicación si un webinar marcado como publicado no tiene un video válido o si `youtubeId` y `youtubeUrl` no coinciden. Si no se especifica miniatura, se utiliza la miniatura pública del video.
+El ID debe tener 11 caracteres válidos. El build detiene la publicación de una
+grabación si el video es inválido o si `youtubeId` y `youtubeUrl` no coinciden.
+No se debe inventar una grabación para publicar una invitación.
 
-Estados disponibles: `upcoming`, `available`, `archived` y `draft`. Un borrador debe mantener `published: false`.
+### Destacar, archivar y añadir una grabación
+
+- `featured: true` permite destacar una ficha publicada. La etiqueta temporal
+  visible se deriva de la fecha; no escribir «hoy», «mañana», «en vivo» o
+  «realizado» en el catálogo.
+- Después del encuentro, conservar el mismo `id`, `slug` y URL. Cambiar a
+  `archived` cuando corresponda editorialmente; no crear otro evento.
+- Cuando exista una grabación confirmada, actualizar esa misma ficha a
+  `available` y completar `youtubeUrl`, `youtubeId` y
+  `recordingPublishedAt`.
+- No mantener indefinidamente una invitación vencida como próximo evento. La
+  interfaz aplica una etiqueta temporal neutral, pero el estado editorial sigue
+  requiriendo revisión humana.
+
+Tras cualquier cambio, ejecutar `npm.cmd run check:js`, `npm.cmd run build`,
+`npm.cmd run check:site`, `npm.cmd run test:unit` y `npm.cmd run test:e2e`.
 
 ## Registrar una persona compartida
 

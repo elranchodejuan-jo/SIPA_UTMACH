@@ -1,9 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { SITE_CONFIG } from '../../portal/config/site.mjs';
-import { expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
+import { WEBINAR_DETAIL_ROUTE, expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
 
-const auditedRoutes = ['/', '/investigacion/', '/divulgacion/webinars/', '/equipo/', '/contacto/'];
+const auditedRoutes = ['/', '/investigacion/', '/divulgacion/webinars/', WEBINAR_DETAIL_ROUTE.path, '/equipo/', '/contacto/'];
 
 for (const route of auditedRoutes) {
   test(`WCAG AA sin violaciones automáticas en ${route}`, async ({ page }, testInfo) => {
@@ -29,6 +29,24 @@ test('Equipo en modo oscuro y con perfil académico abierto conserva WCAG AA', a
   const details = page.locator('[data-person-id="angel-sanchez"] details');
   await details.locator('summary').press('Enter');
   await expect(details).toHaveAttribute('open', '');
+
+  const results = await new AxeBuilder({ page })
+    .include('main')
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze();
+  expect(
+    results.violations,
+    results.violations.map(violation => `${violation.id}: ${violation.help} (${violation.nodes.length})`).join('\n'),
+  ).toEqual([]);
+  expectRuntimeClean(runtime);
+});
+
+test('la ficha del webinar en modo oscuro conserva WCAG AA', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-1366', 'La auditoría oscura del webinar se cubre una sola vez.');
+  await page.addInitScript(storageKey => localStorage.setItem(storageKey, 'dark'), SITE_CONFIG.storageKeys.theme);
+  const runtime = await gotoPortal(page, WEBINAR_DETAIL_ROUTE.path, watchRuntime(page));
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('[data-webinar-detail]')).toBeVisible();
 
   const results = await new AxeBuilder({ page })
     .include('main')

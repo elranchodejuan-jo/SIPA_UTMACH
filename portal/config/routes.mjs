@@ -1,3 +1,10 @@
+import { webinars } from '../content/webinars.mjs';
+import {
+  getPublishedWebinars,
+  getWebinarRouteId,
+  getWebinarRoutePath,
+} from '../lib/webinars.mjs';
+
 const deepFreeze = value => {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
   Object.values(value).forEach(deepFreeze);
@@ -6,6 +13,7 @@ const deepFreeze = value => {
 
 const page = ({
   id,
+  pageId = id,
   path,
   output,
   title,
@@ -18,18 +26,26 @@ const page = ({
   submenu = [],
   footer = [],
   sitemap = {},
+  webinarId = null,
+  webinarSlug = null,
+  socialImage = null,
+  socialImageAlt = null,
 }) => ({
   id,
   path,
   output,
   kind: 'page',
-  page: id,
+  page: pageId,
   title,
   description,
   navLabel,
   parentId,
   activeNavId,
   published: true,
+  webinarId,
+  webinarSlug,
+  socialImage,
+  socialImageAlt,
   navigation: {
     primary: Number.isFinite(navOrder),
     order: navOrder ?? null,
@@ -152,6 +168,24 @@ const routeDefinitions = [
     footer: [{ group: 'outreach', order: 10 }],
     sitemap: { priority: 0.8 },
   }),
+  ...[...getPublishedWebinars(webinars)]
+    .sort((a, b) => Date.parse(a.startDate) - Date.parse(b.startDate) || a.slug.localeCompare(b.slug, 'es'))
+    .map(webinar => page({
+      id: getWebinarRouteId(webinar),
+      pageId: 'webinar-detail',
+      path: getWebinarRoutePath(webinar),
+      output: `divulgacion/webinars/${webinar.slug}/index.html`,
+      title: `${webinar.title} | SIPA UTMACH`,
+      description: webinar.description || webinar.summary,
+      navLabel: webinar.title,
+      parentId: 'webinars',
+      activeNavId: 'outreach',
+      webinarId: webinar.id,
+      webinarSlug: webinar.slug,
+      socialImage: webinar.thumbnail || null,
+      socialImageAlt: webinar.thumbnailAlt || null,
+      sitemap: { changefreq: 'weekly', priority: 0.8 },
+    })),
   page({
     id: 'events',
     path: '/eventos/',
@@ -161,7 +195,7 @@ const routeDefinitions = [
     navLabel: 'Eventos',
     navOrder: 50,
     sections: [
-      { id: 'proximos', label: 'Próximos eventos' },
+      { id: 'proximos', label: 'Agenda publicada' },
       { id: 'realizados', label: 'Eventos realizados' },
       { id: 'archivo', label: 'Archivo histórico' },
     ],
@@ -234,6 +268,13 @@ const validateRouteDefinitions = routes => {
       throw new Error(`Archivo de salida inválido para ${route.id}: ${route.output}`);
     }
     if (outputs.has(route.output)) throw new Error(`Archivo de salida duplicado: ${route.output}`);
+    if (route.page === 'webinar-detail') {
+      const webinar = webinars.find(item => item.id === route.webinarId && item.slug === route.webinarSlug);
+      if (!webinar) throw new Error(`Ruta de webinar sin ficha publicada: ${route.id}`);
+      if (route.id !== getWebinarRouteId(webinar) || route.path !== getWebinarRoutePath(webinar)) {
+        throw new Error(`Ruta de webinar incoherente: ${route.id}`);
+      }
+    }
 
     ids.add(route.id);
     paths.add(route.path);
