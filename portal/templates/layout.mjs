@@ -55,7 +55,11 @@ function baseStructuredData(route, helpers, breadcrumbs) {
 export function renderLayout({ route, page, metadata }) {
   const helpers = createRouteHelpers(route.id);
   const breadcrumbs = getBreadcrumbs(route.id);
-  const socialImage = new URL(SITE_CONFIG.socialImage, `${SITE_CONFIG.canonicalOrigin}/`).href;
+  const socialImagePath = page.socialImage || route.socialImage || SITE_CONFIG.socialImage;
+  const socialImageAlt = page.socialImageAlt || route.socialImageAlt || SITE_CONFIG.socialImageAlt;
+  const socialImage = new URL(socialImagePath, `${SITE_CONFIG.canonicalOrigin}/`).href;
+  const socialImageWidth = page.socialImageWidth || route.socialImageWidth;
+  const socialImageHeight = page.socialImageHeight || route.socialImageHeight;
   const graph = [...baseStructuredData(route, helpers, breadcrumbs), ...(page.structuredData || []).map(item => {
     const { '@context': _context, ...entry } = item;
     return entry;
@@ -74,18 +78,21 @@ export function renderLayout({ route, page, metadata }) {
   <meta name="sipa-build-sha" content="${escapeAttribute(metadata.buildSha)}">
   <meta name="sipa-version" content="${escapeAttribute(metadata.version)}">
   <meta name="robots" content="index,follow">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="${escapeAttribute(page.openGraphType || 'website')}">
   <meta property="og:site_name" content="${escapeAttribute(SITE_CONFIG.name)} | ${escapeAttribute(SITE_CONFIG.organization.name)}">
   <meta property="og:title" content="${escapeAttribute(route.title)}">
   <meta property="og:description" content="${escapeAttribute(route.description)}">
   <meta property="og:url" content="${escapeAttribute(helpers.canonicalHref())}">
   <meta property="og:image" content="${escapeAttribute(socialImage)}">
-  <meta property="og:image:alt" content="${escapeAttribute(SITE_CONFIG.socialImageAlt)}">
+  <meta property="og:image:alt" content="${escapeAttribute(socialImageAlt)}">
+  ${socialImageWidth ? `<meta property="og:image:width" content="${escapeAttribute(socialImageWidth)}">` : ''}
+  ${socialImageHeight ? `<meta property="og:image:height" content="${escapeAttribute(socialImageHeight)}">` : ''}
   <meta property="og:locale" content="${escapeAttribute(SITE_CONFIG.openGraphLocale)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeAttribute(route.title)}">
   <meta name="twitter:description" content="${escapeAttribute(route.description)}">
   <meta name="twitter:image" content="${escapeAttribute(socialImage)}">
+  <meta name="twitter:image:alt" content="${escapeAttribute(socialImageAlt)}">
   <title>${escapeHtml(route.title)}</title>
   <link rel="canonical" href="${escapeAttribute(helpers.canonicalHref())}">
   <link rel="icon" href="${escapeAttribute(helpers.assetHref('favicon.ico'))}" sizes="any">

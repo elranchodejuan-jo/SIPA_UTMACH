@@ -49,11 +49,23 @@ export const validateWebinarVideo = webinar => {
   const errors = [];
   const idFromField = parseYouTubeId(webinar?.youtubeId ?? '');
   const idFromUrl = parseYouTubeId(webinar?.youtubeUrl ?? '');
+  const hasVideoField = Boolean(webinar?.youtubeId || webinar?.youtubeUrl);
+  const videoIsRequired = webinar?.status === 'available'
+    || (webinar?.published === true && !webinar?.status);
 
   if (webinar?.youtubeId && !idFromField) errors.push('youtubeId inválido');
   if (webinar?.youtubeUrl && !idFromUrl) errors.push('youtubeUrl inválida');
+  if (webinar?.youtubeUrl) {
+    try {
+      const url = new URL(webinar.youtubeUrl);
+      if (url.protocol !== 'https:' || url.username || url.password) errors.push('youtubeUrl debe usar HTTPS sin credenciales');
+    } catch {
+      // El mensaje de URL inválida anterior conserva la causa principal.
+    }
+  }
   if (idFromField && idFromUrl && idFromField !== idFromUrl) errors.push('youtubeId y youtubeUrl no coinciden');
-  if (webinar?.published === true && !(idFromField || idFromUrl)) errors.push('un webinar publicado requiere un video de YouTube válido');
+  if (videoIsRequired && !(idFromField || idFromUrl)) errors.push('un webinar disponible requiere un video de YouTube válido');
+  if (hasVideoField && !(idFromField || idFromUrl)) errors.push('la grabación declarada no contiene un video de YouTube válido');
 
   return Object.freeze({
     valid: errors.length === 0,

@@ -56,23 +56,71 @@ export function renderEventCard(event, helpers) {
   </article>`;
 }
 
-export function renderWebinarCard(webinar, helpers) {
-  const directUrl = webinar.youtubeUrl;
-  const thumbnail = webinar.thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(webinar.youtubeId)}/hqdefault.jpg`;
-  return `<article class="card webinar-card" data-webinar-card>
-    <div class="webinar-player" data-webinar-player data-youtube-id="${escapeAttribute(webinar.youtubeId)}" data-youtube-title="${escapeAttribute(webinar.title)}">
-      <img src="${escapeAttribute(thumbnail)}" alt="Miniatura del webinar ${escapeAttribute(webinar.title)}" width="480" height="360" loading="lazy" decoding="async">
-      <button class="webinar-player__button" type="button" data-webinar-play aria-label="Reproducir ${escapeAttribute(webinar.title)}">
-        ${renderIcon('play', helpers, { className: 'icon' })}<span>Ver webinar</span>
-      </button>
-    </div>
+const formatWebinarCardDate = webinar => {
+  if (webinar.dateLabel) return webinar.dateLabel;
+  if (!webinar.startDate) return webinar.date || '';
+  try {
+    return new Intl.DateTimeFormat('es-EC', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: webinar.timeZone || 'America/Guayaquil',
+    }).format(new Date(webinar.startDate));
+  } catch {
+    return webinar.date || '';
+  }
+};
+
+const resolveWebinarImage = (webinar, helpers) => {
+  const thumbnail = webinar.thumbnail || (webinar.youtubeId ? `https://i.ytimg.com/vi/${encodeURIComponent(webinar.youtubeId)}/hqdefault.jpg` : '');
+  if (!thumbnail) return '';
+  return /^https:\/\//i.test(thumbnail) ? thumbnail : helpers.assetHref(thumbnail);
+};
+
+const renderWebinarTemporalLabel = webinar => webinar.startDate
+  ? `<span class="webinar-card__status" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone || 'America/Guayaquil')}">Fecha programada</span>`
+  : '';
+
+export function renderWebinarPlayer(webinar, helpers, { eager = false } = {}) {
+  const hasRecording = webinar.hasRecording === true && Boolean(webinar.youtubeId && webinar.youtubeUrl);
+  if (!hasRecording) return '';
+  const thumbnail = resolveWebinarImage(webinar, helpers);
+  const width = Number.isInteger(webinar.thumbnailWidth) && webinar.thumbnailWidth > 0 ? webinar.thumbnailWidth : 480;
+  const height = Number.isInteger(webinar.thumbnailHeight) && webinar.thumbnailHeight > 0 ? webinar.thumbnailHeight : 360;
+  return `<div class="webinar-player" data-webinar-player data-youtube-id="${escapeAttribute(webinar.youtubeId)}" data-youtube-title="${escapeAttribute(webinar.title)}">
+    <img src="${escapeAttribute(thumbnail)}" alt="Miniatura del webinar ${escapeAttribute(webinar.title)}" width="${width}" height="${height}" loading="${eager ? 'eager' : 'lazy'}" decoding="async">
+    <button class="webinar-player__button" type="button" data-webinar-play aria-label="Reproducir ${escapeAttribute(webinar.title)}">
+      ${renderIcon('play', helpers, { className: 'icon' })}<span>Ver webinar</span>
+    </button>
+  </div>`;
+}
+
+export function renderWebinarCard(webinar, helpers, { projection = '' } = {}) {
+  const detailHref = webinar.routeId ? helpers.routeHref(webinar.routeId) : '';
+  const thumbnail = resolveWebinarImage(webinar, helpers);
+  const hasRecording = webinar.hasRecording === true && Boolean(webinar.youtubeId && webinar.youtubeUrl);
+  const width = Number.isInteger(webinar.thumbnailWidth) && webinar.thumbnailWidth > 0 ? webinar.thumbnailWidth : (hasRecording ? 480 : 1200);
+  const height = Number.isInteger(webinar.thumbnailHeight) && webinar.thumbnailHeight > 0 ? webinar.thumbnailHeight : (hasRecording ? 360 : 1200);
+  const posterAlt = webinar.thumbnailAlt || `Afiche del webinar ${webinar.title}`;
+  const media = hasRecording
+    ? renderWebinarPlayer(webinar, helpers)
+    : (thumbnail ? `${detailHref ? `<a class="webinar-card__poster" href="${escapeAttribute(detailHref)}" aria-label="Abrir la invitación de ${escapeAttribute(webinar.title)}">` : '<div class="webinar-card__poster">'}<img src="${escapeAttribute(thumbnail)}" alt="${escapeAttribute(posterAlt)}" width="${width}" height="${height}" loading="lazy" decoding="async">${detailHref ? '</a>' : '</div>'}` : '');
+  const dateLabel = formatWebinarCardDate(webinar);
+  const detailLabel = webinar.status === 'upcoming' ? 'Ver invitación' : 'Consultar ficha';
+
+  return `<article class="card webinar-card webinar-card--${escapeAttribute(webinar.status || 'archived')}" data-webinar-card data-webinar-slug="${escapeAttribute(webinar.slug || webinar.id)}"${projection ? ` data-webinar-projection="${escapeAttribute(projection)}"` : ''}>
+    ${media}
     <div class="webinar-card__body">
-      <p class="card__meta">${escapeHtml(webinar.dateLabel || webinar.date)}${webinar.duration ? ` · ${escapeHtml(webinar.duration)}` : ''}</p>
+      <div class="webinar-card__meta"><span>${escapeHtml(webinar.isAccessibleForFree ? 'Webinar gratuito' : 'Webinar')}</span>${renderWebinarTemporalLabel(webinar)}</div>
+      ${dateLabel ? `<p class="card__meta"><time datetime="${escapeAttribute(webinar.startDate || webinar.date)}">${escapeHtml(dateLabel)}</time>${webinar.duration ? ` · ${escapeHtml(webinar.duration)}` : ''}</p>` : ''}
       <h3>${escapeHtml(webinar.title)}</h3>
       ${webinar.speaker ? `<p class="webinar-card__speaker"><strong>${escapeHtml(webinar.speaker)}</strong>${webinar.speakerRole ? `<span>${escapeHtml(webinar.speakerRole)}</span>` : ''}</p>` : ''}
       <p>${escapeHtml(webinar.summary)}</p>
       ${renderTags([...(webinar.topics || []), ...(webinar.species || [])])}
-      ${renderButtonLink({ href: directUrl, label: 'Ver en YouTube', variant: 'text', external: true })}
+      <div class="webinar-card__actions" data-webinar-actions>
+        ${detailHref ? renderButtonLink({ href: detailHref, label: detailLabel, variant: hasRecording ? 'secondary' : 'primary' }) : ''}
+        ${hasRecording ? renderButtonLink({ href: webinar.youtubeUrl, label: 'Ver en YouTube', variant: 'text', external: true }) : ''}
+      </div>
     </div>
   </article>`;
 }

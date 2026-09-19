@@ -5,13 +5,13 @@ import { webinars } from '../content/webinars.mjs';
 import { renderEventCard, renderResearchArea, renderButtonLink, renderWebinarCard } from '../templates/components.mjs';
 import { renderEmptyState } from '../templates/partials/empty-state.mjs';
 import { escapeAttribute, escapeHtml } from '../lib/html.mjs';
-import { normalizeWebinar } from '../lib/youtube.mjs';
+import { getPublishedWebinars, normalizeWebinarRecord } from '../lib/webinars.mjs';
 
 export function renderHomePage({ helpers }) {
   const featuredEvent = events.find(event => event.published && event.featured);
-  const featuredWebinar = webinars
-    .filter(webinar => webinar.published && webinar.featured)
-    .map(webinar => normalizeWebinar(webinar))
+  const featuredWebinar = getPublishedWebinars(webinars)
+    .filter(webinar => webinar.featured)
+    .map(webinar => normalizeWebinarRecord(webinar))
     .find(Boolean);
 
   const html = `<section class="home-hero" aria-labelledby="home-title">
@@ -59,10 +59,11 @@ export function renderHomePage({ helpers }) {
 
   <section class="section" aria-labelledby="home-webinar">
     <div class="container">
-      <div class="section-heading"><p class="eyebrow">Divulgación prioritaria</p><h2 id="home-webinar">Webinar más reciente</h2></div>
+      <div class="section-heading"><p class="eyebrow">Divulgación prioritaria</p><h2 id="home-webinar" data-home-webinar-heading>Webinar destacado</h2></div>
       ${featuredWebinar
-        ? `<div class="webinar-grid">${renderWebinarCard(featuredWebinar, helpers)}</div>`
-        : renderEmptyState({ title: 'Biblioteca preparada', message: 'El primer webinar aparecerá aquí cuando su enlace y datos hayan sido confirmados.', icon: 'play', compact: true }, helpers)}
+        ? `<div data-home-webinar-featured><div class="webinar-grid">${renderWebinarCard(featuredWebinar, helpers)}</div></div>
+          <div data-home-webinar-past hidden>${renderEmptyState({ title: 'Biblioteca de webinars', message: 'La fecha de la invitación destacada ya transcurrió. Consulta su ficha y futuras actividades en la biblioteca.', icon: 'play', compact: true }, helpers)}</div>`
+        : renderEmptyState({ title: 'Biblioteca preparada', message: 'Los webinars aparecerán aquí cuando sus datos hayan sido confirmados.', icon: 'play', compact: true }, helpers)}
       <div class="section-action"><a class="text-link" href="${escapeAttribute(helpers.routeHref('webinars'))}">Abrir biblioteca de webinars <span aria-hidden="true">→</span></a></div>
     </div>
   </section>
