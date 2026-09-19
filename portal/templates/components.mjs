@@ -77,9 +77,18 @@ const resolveWebinarImage = (webinar, helpers) => {
   return /^https:\/\//i.test(thumbnail) ? thumbnail : helpers.assetHref(thumbnail);
 };
 
-const renderWebinarTemporalLabel = webinar => webinar.startDate
-  ? `<span class="webinar-card__status" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone || 'America/Guayaquil')}">Fecha programada</span>`
-  : '';
+const renderWebinarTemporalLabel = webinar => {
+  if (!webinar.startDate) return '';
+  const explicitLabel = webinar.status === 'archived'
+    ? 'Archivo'
+    : webinar.status === 'available'
+      ? 'Grabación disponible'
+      : null;
+  if (explicitLabel) {
+    return `<span class="webinar-card__status">${escapeHtml(explicitLabel)}</span>`;
+  }
+  return `<span class="webinar-card__status" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone || 'America/Guayaquil')}">Fecha programada</span>`;
+};
 
 export function renderWebinarPlayer(webinar, helpers, { eager = false } = {}) {
   const hasRecording = webinar.hasRecording === true && Boolean(webinar.youtubeId && webinar.youtubeUrl);

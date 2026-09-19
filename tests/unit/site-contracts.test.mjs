@@ -386,7 +386,7 @@ test('helpers de URL rechazan protocolos, credenciales y rutas peligrosas', () =
   assert.throws(() => assetHref('home', '../secreto.txt'), /asset inválida/i);
 });
 
-test('Ganadería 4.0 conserva la ficha confirmada, sus destinos y el afiche íntegro', async () => {
+test('Ganadería 4.0 conserva la ficha histórica y el afiche íntegro', async () => {
   assert.ok(webinarGanaderia4);
   assert.equal(webinarGanaderia4.id, WEBINAR_SLUG);
   assert.equal(webinarGanaderia4.title, 'GANADERÍA 4.0: ¿Estamos tomando decisiones o solo reaccionando?');
@@ -396,16 +396,16 @@ test('Ganadería 4.0 conserva la ficha confirmada, sus destinos y el afiche ínt
   assert.equal(webinarGanaderia4.timeZone, 'America/Guayaquil');
   assert.equal(webinarGanaderia4.endDate, null);
   assert.equal(webinarGanaderia4.duration, null);
-  assert.equal(webinarGanaderia4.joinUrl, 'https://cedia.zoom.us/j/89751728629');
-  assert.equal(webinarGanaderia4.meetingId, '897 5172 8629');
-  assert.equal(webinarGanaderia4.registrationUrl, 'https://forms.gle/4iFLS8PSa4wsgHFa6');
+  assert.equal(webinarGanaderia4.joinUrl, null);
+  assert.equal(webinarGanaderia4.meetingId, null);
+  assert.equal(webinarGanaderia4.registrationUrl, null);
   assert.equal(webinarGanaderia4.sponsor, 'Maestría en Producción Animal');
   assert.equal(webinarGanaderia4.youtubeId, null);
   assert.equal(webinarGanaderia4.youtubeUrl, null);
   assert.equal(webinarGanaderia4.recordingPublishedAt, null);
-  assert.equal(webinarGanaderia4.status, 'upcoming');
+  assert.equal(webinarGanaderia4.status, 'archived');
   assert.equal(webinarGanaderia4.published, true);
-  assert.equal(webinarGanaderia4.featured, true);
+  assert.equal(webinarGanaderia4.featured, false);
   assert.doesNotThrow(() => validateWebinarRecord(webinarGanaderia4));
   assert.equal(validateWebinarRecord(webinarGanaderia4).valid, true);
 
@@ -452,29 +452,39 @@ test('los helpers de webinar publican sólo registros visibles y generan rutas e
 });
 
 test('upcoming admite invitación sin YouTube y exige acceso confirmado, fecha y zona coherentes', () => {
-  assert.equal(validateWebinarRecord(webinarGanaderia4).valid, true);
+  const upcomingFixture = overrides => webinarFixture({
+    status: 'upcoming',
+    featured: true,
+    joinUrl: 'https://cedia.zoom.us/j/89751728629',
+    registrationUrl: 'https://forms.gle/4iFLS8PSa4wsgHFa6',
+    meetingId: '897 5172 8629',
+    ...overrides,
+  });
+  const upcoming = upcomingFixture({});
+
+  assert.equal(validateWebinarRecord(upcoming).valid, true);
 
   expectInvalidWebinar(
-    webinarFixture({ joinUrl: null, registrationUrl: null }),
+    upcomingFixture({ joinUrl: null, registrationUrl: null }),
     /acceso|destino|inscripci|joinUrl|registrationUrl/i,
   );
   expectInvalidWebinar(
-    webinarFixture({ joinUrl: 'http://cedia.zoom.us/j/89751728629', registrationUrl: null }),
+    upcomingFixture({ joinUrl: 'http://cedia.zoom.us/j/89751728629', registrationUrl: null }),
     /HTTPS|joinUrl|segura/i,
   );
   expectInvalidWebinar(
-    webinarFixture({ joinUrl: null, registrationUrl: 'https://usuario:secreto@example.com/registro' }),
+    upcomingFixture({ joinUrl: null, registrationUrl: 'https://usuario:secreto@example.com/registro' }),
     /credenciales|HTTPS|registrationUrl|segura/i,
   );
-  expectInvalidWebinar(webinarFixture({ date: '2026-02-30' }), /date|fecha/i);
-  expectInvalidWebinar(webinarFixture({ timeZone: 'America/Zona_Inexistente' }), /timeZone|zona/i);
-  expectInvalidWebinar(webinarFixture({ date: '2026-09-17' }), /date|startDate|coincid/i);
+  expectInvalidWebinar(upcomingFixture({ date: '2026-02-30' }), /date|fecha/i);
+  expectInvalidWebinar(upcomingFixture({ timeZone: 'America/Zona_Inexistente' }), /timeZone|zona/i);
+  expectInvalidWebinar(upcomingFixture({ date: '2026-09-17' }), /date|startDate|coincid/i);
   expectInvalidWebinar(
-    webinarFixture({ startDate: '2026-09-16T18:00:00-04:00' }),
+    upcomingFixture({ startDate: '2026-09-16T18:00:00-04:00' }),
     /desplazamiento|startDate|timeZone/i,
   );
   expectInvalidWebinar(
-    webinarFixture({ secondaryTimeZones: [{ label: 'Otra zona', timeZone: 'Zona/Inexistente' }] }),
+    upcomingFixture({ secondaryTimeZones: [{ label: 'Otra zona', timeZone: 'Zona/Inexistente' }] }),
     /secondaryTimeZones|timeZone|zona/i,
   );
 });
@@ -501,12 +511,18 @@ test('la fecha local exige un desplazamiento coherente y endDate sólo cuando es
   );
 });
 
-test('el estado temporal no inventa directo o cierre y cambia al día siguiente local', () => {
-  assert.equal(getWebinarTemporalState(webinarGanaderia4, new Date('2026-09-16T22:30:00.000Z')), 'scheduled');
-  assert.equal(getWebinarTemporalState(webinarGanaderia4, new Date('2026-09-16T23:30:00.000Z')), 'scheduled');
-  assert.equal(getWebinarTemporalState(webinarGanaderia4, new Date('2026-09-17T05:01:00.000Z')), 'past-date');
+test('el estado temporal respeta el archivo editorial y mantiene la lógica para futuras invitaciones', () => {
+  const upcoming = webinarFixture({
+    status: 'upcoming',
+    featured: true,
+    joinUrl: 'https://cedia.zoom.us/j/89751728629',
+    registrationUrl: 'https://forms.gle/4iFLS8PSa4wsgHFa6',
+  });
+
+  assert.equal(getWebinarTemporalState(webinarGanaderia4, new Date('2026-09-16T22:30:00.000Z')), 'archived');
+  assert.equal(getWebinarTemporalState(upcoming, new Date('2026-09-16T22:30:00.000Z')), 'scheduled');
+  assert.equal(getWebinarTemporalState(upcoming, new Date('2026-09-17T05:01:00.000Z')), 'past-date');
   assert.equal(getWebinarTemporalState(webinarFixture({ status: 'available' }), new Date()), 'available');
-  assert.equal(getWebinarTemporalState(webinarFixture({ status: 'archived' }), new Date()), 'archived');
   assert.equal(
     getWebinarTemporalState(webinarFixture({ status: 'draft', published: false, featured: false }), new Date()),
     'hidden',
@@ -592,7 +608,7 @@ test('el catálogo rechaza slugs inválidos y colisiones de id o slug', () => {
   }
 });
 
-test('la invitación genera Event JSON-LD sin VideoObject ni datos temporales inventados', () => {
+test('la ficha archivada genera Event JSON-LD histórico sin accesos ni VideoObject', () => {
   const url = `https://sipautmach.com${WEBINAR_PATH}`;
   const imageUrl = `https://sipautmach.com/${webinarGanaderia4.thumbnail}`;
   const structuredData = createWebinarStructuredData(webinarGanaderia4, { url, imageUrl });
@@ -607,8 +623,8 @@ test('la invitación genera Event JSON-LD sin VideoObject ni datos temporales in
   assert.equal(event.startDate, webinarGanaderia4.startDate);
   assert.equal(event.endDate, undefined);
   assert.equal(event.eventAttendanceMode, 'https://schema.org/OnlineEventAttendanceMode');
-  assert.equal(event.location['@type'], 'VirtualLocation');
-  assert.equal(event.location.url, webinarGanaderia4.joinUrl);
+  assert.equal(event.eventStatus, undefined);
+  assert.equal(event.location, undefined);
   assert.equal(event.isAccessibleForFree, true);
   assert.equal(event.organizer.name, webinarGanaderia4.organizer);
   assert.equal(event.sponsor.name, webinarGanaderia4.sponsor);

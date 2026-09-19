@@ -55,11 +55,25 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
   const canonicalUrl = helpers.canonicalHref();
   const posterUrl = absoluteAssetUrl(webinar.thumbnail);
   const schedule = formatSchedule(webinar);
-  const temporalLabel = `<span class="webinar-detail__temporal" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone)}">Fecha programada</span>`;
+  const isUpcoming = webinar.status === 'upcoming';
+  const explicitTemporalLabel = webinar.status === 'archived'
+    ? 'Archivo'
+    : webinar.status === 'available'
+      ? 'Grabación disponible'
+      : null;
+  const temporalLabel = explicitTemporalLabel
+    ? `<span class="webinar-detail__temporal">${escapeHtml(explicitTemporalLabel)}</span>`
+    : `<span class="webinar-detail__temporal" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone)}">Fecha programada</span>`;
   const actions = [
     webinar.registrationUrl ? renderButtonLink({ href: webinar.registrationUrl, label: 'Inscripción gratuita', external: true }) : '',
     webinar.joinUrl ? renderButtonLink({ href: webinar.joinUrl, label: 'Unirse por Zoom', variant: 'secondary', external: true }) : '',
   ].filter(Boolean).join('');
+  const actionBlock = actions
+    ? `<div class="webinar-detail__actions" data-webinar-actions>${actions}</div>`
+    : '';
+  const accessNote = actions
+    ? '<p class="webinar-detail__access-note">Puedes completar la inscripción o utilizar el acceso directo a Zoom.</p>'
+    : '';
   const recording = webinar.hasRecording
     ? `<section class="section section--soft" aria-labelledby="webinar-recording-title"><div class="container webinar-detail__recording"><div class="section-heading"><p class="eyebrow">Grabación</p><h2 id="webinar-recording-title">Ver webinar</h2></div>${renderWebinarPlayer(webinar, helpers)}<div class="section-action">${renderButtonLink({ href: webinar.youtubeUrl, label: 'Ver en YouTube', variant: 'text', external: true })}</div></div></section>`
     : '';
@@ -80,8 +94,8 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
       <div class="webinar-detail__content">
         <div class="webinar-detail__status"><span>${escapeHtml(webinar.isAccessibleForFree ? 'Webinar gratuito' : 'Webinar')}</span>${temporalLabel}</div>
         <p class="eyebrow">${escapeHtml(webinar.headline || 'Invitación SIPA')}</p>
-        <h2 id="webinar-invitation-title">Participa en este encuentro</h2>
-        ${webinar.invitation ? `<p class="webinar-detail__lead">${escapeHtml(webinar.invitation)}</p>` : ''}
+        <h2 id="webinar-invitation-title">${isUpcoming ? 'Participa en este encuentro' : 'Información del encuentro'}</h2>
+        ${isUpcoming && webinar.invitation ? `<p class="webinar-detail__lead">${escapeHtml(webinar.invitation)}</p>` : ''}
         <dl class="webinar-detail__facts">
           <div><dt>Expositor</dt><dd><strong>${escapeHtml(webinar.speaker)}</strong>${webinar.speakerRole ? `<span class="webinar-detail__speaker-role">${escapeHtml(webinar.speakerRole)}</span>` : ''}</dd></div>
           <div><dt>Fecha</dt><dd><time datetime="${escapeAttribute(webinar.startDate)}">${escapeHtml(schedule.date)}</time></dd></div>
@@ -91,9 +105,9 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
         </dl>
         <p>${escapeHtml(webinar.summary)}</p>
         ${renderTags([...(webinar.topics || []), ...(webinar.species || [])])}
-        <div class="webinar-detail__actions" data-webinar-actions>${actions}</div>
+        ${actionBlock}
         ${webinar.meetingId ? `<p class="webinar-detail__meeting"><span>ID de reunión de Zoom</span><code data-webinar-meeting-id>${escapeHtml(webinar.meetingId)}</code></p>` : ''}
-        <p class="webinar-detail__access-note">Puedes completar la inscripción o utilizar el acceso directo a Zoom.</p>
+        ${accessNote}
         ${webinar.tagline ? `<p class="webinar-detail__tagline">${escapeHtml(webinar.tagline)}</p>` : ''}
       </div>
     </div>
