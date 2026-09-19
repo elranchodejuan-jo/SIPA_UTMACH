@@ -124,6 +124,9 @@ No se debe inventar una grabación para publicar una invitación.
   «realizado» en el catálogo.
 - Después del encuentro, conservar el mismo `id`, `slug` y URL. Cambiar a
   `archived` cuando corresponda editorialmente; no crear otro evento.
+- La biblioteca y el archivo muestran los webinars del más reciente al más
+  antiguo. La agenda conserva orden cronológico ascendente para facilitar la
+  planificación de próximos encuentros.
 - Cuando exista una grabación confirmada, actualizar esa misma ficha a
   `available` y completar `youtubeUrl`, `youtubeId` y
   `recordingPublishedAt`.

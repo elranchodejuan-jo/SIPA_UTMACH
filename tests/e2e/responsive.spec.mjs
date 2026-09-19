@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 import {
   RESPONSIVE_ROUTES,
   VIEWPORTS,
-  WEBINAR_DETAIL_ROUTE,
   expectImagesLoaded,
   expectNoHorizontalOverflow,
   expectRuntimeClean,
@@ -33,7 +32,7 @@ for (const viewport of VIEWPORTS) {
         .map(heading => heading.textContent?.trim()));
       expect(overflowingHeadings, `Títulos desbordados en ${route.path}`).toEqual([]);
 
-      if (route.path === WEBINAR_DETAIL_ROUTE.path) {
+      if (route.slug) {
         const poster = page.locator('[data-webinar-poster]');
         await expect(poster).toBeVisible();
         const presentation = await poster.evaluate(image => {

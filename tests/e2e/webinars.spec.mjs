@@ -6,6 +6,7 @@ import { normalizeWebinarRecord } from '../../portal/lib/webinars.mjs';
 import { renderWebinarCard } from '../../portal/templates/components.mjs';
 import {
   WEBINAR_DETAIL_ROUTE,
+  WEBINAR_INNOVATION_ROUTE,
   expectImageNaturalSize,
   expectRuntimeClean,
   gotoPortal,
@@ -16,6 +17,9 @@ import {
 const TITLE = 'GANADERÍA 4.0: ¿Estamos tomando decisiones o solo reaccionando?';
 const POSTER_PATH = '/assets/images/webinars/ganaderia-4-0-2026.jpg';
 const webinar = webinars.find(item => item.slug === WEBINAR_DETAIL_ROUTE.slug);
+const INNOVATION_TITLE = 'Innovación Tecnológica actual en la Producción Animal Europea';
+const INNOVATION_POSTER_PATH = '/assets/images/webinars/innovacion-tecnologica-produccion-animal-europea-2026.jpeg';
+const innovationWebinar = webinars.find(item => item.slug === WEBINAR_INNOVATION_ROUTE.slug);
 
 const expectRelativeHrefAtRootAndPrefix = (href, fromPath, targetPath) => {
   expect(href).toBeTruthy();
@@ -45,6 +49,12 @@ test('Inicio no destaca el webinar archivado y Biblioteca/Eventos conservan su f
   await expect(page.getByRole('link', { name: /abrir biblioteca de webinars/i })).toBeVisible();
 
   await gotoPortal(page, '/divulgacion/webinars/', runtime);
+  const libraryCards = page.locator('[data-webinar-library] [data-webinar-card]');
+  await expect(libraryCards).toHaveCount(2);
+  expect(await libraryCards.evaluateAll(cards => cards.map(card => card.dataset.webinarSlug))).toEqual([
+    WEBINAR_DETAIL_ROUTE.slug,
+    WEBINAR_INNOVATION_ROUTE.slug,
+  ]);
   const libraryCard = page.locator(`[data-webinar-library] [data-webinar-card][data-webinar-slug="${WEBINAR_DETAIL_ROUTE.slug}"]`);
   await expect(libraryCard).toHaveCount(1);
   await expect(libraryCard).toContainText(TITLE);
@@ -66,12 +76,73 @@ test('Inicio no destaca el webinar archivado y Biblioteca/Eventos conservan su f
   await expect(page.locator(`[data-webinar-agenda-list] [data-webinar-card][data-webinar-slug="${WEBINAR_DETAIL_ROUTE.slug}"]`)).toHaveCount(0);
   const archive = page.locator('[data-webinar-past-section]');
   await expect(archive).toBeVisible();
+  expect(await archive.locator('[data-webinar-card]').evaluateAll(cards => cards.map(card => card.dataset.webinarSlug))).toEqual([
+    WEBINAR_DETAIL_ROUTE.slug,
+    WEBINAR_INNOVATION_ROUTE.slug,
+  ]);
   const archiveCard = archive.locator(`[data-webinar-card][data-webinar-slug="${WEBINAR_DETAIL_ROUTE.slug}"]`);
   await expect(archiveCard).toHaveCount(1);
   await expect(archiveCard).toContainText(TITLE);
   await expect(archiveCard).toContainText('Archivo');
   await expect(archiveCard.locator('[data-webinar-player], iframe')).toHaveCount(0);
 
+  expectRuntimeClean(runtime);
+});
+
+test('el primer webinar conserva su ficha histórica y queda listo para añadir YouTube', async ({ page }) => {
+  const runtime = await gotoPortal(page, WEBINAR_INNOVATION_ROUTE.path, watchRuntime(page));
+  const detail = page.locator(`[data-webinar-detail][data-webinar-slug="${WEBINAR_INNOVATION_ROUTE.slug}"]`);
+
+  await expect(detail).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: INNOVATION_TITLE })).toBeVisible();
+  await expect(detail).toContainText('Webinar gratuito');
+  await expect(detail).toContainText('Archivo');
+  await expect(detail).toContainText('Información del encuentro');
+  await expect(detail).toContainText('Ion Pérez Baena');
+  await expect(detail).toContainText('Ingeniero Agrónomo | Máster en Producción Animal');
+  await expect(detail).toContainText(/sábado.*29 de agosto de 2026/i);
+  await expect(detail).toContainText(/19:00.*Ecuador/i);
+  await expect(detail).toContainText('Zoom');
+  await expect(detail).toContainText('Maestría en Producción Animal de la UTMACH');
+
+  await expect(detail.locator('[data-webinar-actions], [data-webinar-meeting-id]')).toHaveCount(0);
+  await expect(detail.locator('a[href*="zoom.us"], a[href*="forms.cloud.microsoft"]')).toHaveCount(0);
+  await expect(detail.locator('[data-webinar-player], iframe')).toHaveCount(0);
+  await expect(detail.locator('a[href*="youtube.com"], a[href*="youtu.be"]')).toHaveCount(0);
+
+  const poster = detail.locator('[data-webinar-poster]');
+  await expect(poster).toHaveAttribute('alt', innovationWebinar.thumbnailAlt);
+  await expect(poster).toHaveAttribute('width', '1080');
+  await expect(poster).toHaveAttribute('height', '1080');
+  await expectImageNaturalSize(poster, { width: 1080, height: 1080 });
+  const posterSrc = await poster.getAttribute('src');
+  expectRelativeHrefAtRootAndPrefix(posterSrc, WEBINAR_INNOVATION_ROUTE.path, INNOVATION_POSTER_PATH);
+
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    `https://sipautmach.com${WEBINAR_INNOVATION_ROUTE.path}`,
+  );
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    `https://sipautmach.com${INNOVATION_POSTER_PATH}`,
+  );
+  await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
+    'content',
+    `https://sipautmach.com${INNOVATION_POSTER_PATH}`,
+  );
+
+  const event = await getStructuredEvent(page);
+  expect(event).toMatchObject({
+    '@type': 'Event',
+    name: INNOVATION_TITLE,
+    url: `https://sipautmach.com${WEBINAR_INNOVATION_ROUTE.path}`,
+    startDate: '2026-08-29T19:00:00-05:00',
+    eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+    isAccessibleForFree: true,
+  });
+  expect(event.location).toBeUndefined();
+  expect(event.eventStatus).toBeUndefined();
+  expect(JSON.stringify(event)).not.toContain('VideoObject');
   expectRuntimeClean(runtime);
 });
 

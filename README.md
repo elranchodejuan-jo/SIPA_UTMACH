@@ -24,6 +24,7 @@ Consulta [docs/SIPA_GREEN_COLOR_MAP.md](docs/SIPA_GREEN_COLOR_MAP.md) para la es
 - `/divulgacion/`: centro de divulgación.
 - `/divulgacion/webinars/`: biblioteca de webinars.
 - `/divulgacion/webinars/ganaderia-4-0-2026/`: ficha del webinar Ganadería 4.0.
+- `/divulgacion/webinars/innovacion-tecnologica-produccion-animal-europea-2026/`: ficha del webinar Innovación Tecnológica en la Producción Animal Europea.
 - `/eventos/`: próximos eventos y archivo histórico.
 - `/eventos/expoferia-nutricion-animal-2026/`: experiencia histórica de la Expoferia.
 - `/equipo/`: integrantes publicados del semillero.

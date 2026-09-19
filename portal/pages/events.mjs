@@ -12,10 +12,13 @@ export function renderEventsPage({ helpers, route }) {
   const completed = published.filter(event => event.status === 'completed');
   const webinarEntries = getPublishedWebinars(webinars)
     .filter(webinar => webinar.startDate)
-    .map(webinar => normalizeWebinarRecord(webinar))
-    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-  const webinarAgenda = webinarEntries.filter(webinar => webinar.status === 'upcoming');
-  const webinarArchive = webinarEntries.filter(webinar => webinar.status !== 'upcoming');
+    .map(webinar => normalizeWebinarRecord(webinar));
+  const webinarAgenda = webinarEntries
+    .filter(webinar => webinar.status === 'upcoming')
+    .sort((a, b) => Date.parse(a.startDate) - Date.parse(b.startDate));
+  const webinarArchive = webinarEntries
+    .filter(webinar => webinar.status !== 'upcoming')
+    .sort((a, b) => Date.parse(b.startDate) - Date.parse(a.startDate));
   const years = [...new Set(completed.map(event => event.archiveYear))].sort((a, b) => b - a);
   const agendaCards = [
     ...upcoming.map(event => renderEventCard(event, helpers)),

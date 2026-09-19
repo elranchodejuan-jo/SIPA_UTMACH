@@ -159,8 +159,15 @@ export const isPublishedWebinar = webinar => Boolean(
   webinar?.published === true && webinar?.status !== 'draft',
 );
 
+const compareWebinarsNewestFirst = (a, b) => (
+  Date.parse(b?.startDate ?? '') - Date.parse(a?.startDate ?? '')
+  || String(a?.slug ?? '').localeCompare(String(b?.slug ?? ''), 'es')
+);
+
 export const getPublishedWebinars = webinars => Object.freeze(
-  (Array.isArray(webinars) ? webinars : []).filter(isPublishedWebinar),
+  (Array.isArray(webinars) ? webinars : [])
+    .filter(isPublishedWebinar)
+    .sort(compareWebinarsNewestFirst),
 );
 
 export const getWebinarBySlug = (webinars, slug) => (
@@ -227,6 +234,11 @@ export const validateWebinarRecord = webinar => {
     if (!isHttpsUrl(webinar.joinUrl) && !isHttpsUrl(webinar.registrationUrl)) {
       errors.push('una invitación publicada requiere al menos un destino HTTPS de inscripción o acceso');
     }
+  }
+
+  if (['archived', 'available'].includes(status)
+    && (text(webinar?.joinUrl) || text(webinar?.registrationUrl) || text(webinar?.meetingId))) {
+    errors.push('un webinar histórico no puede conservar accesos de Zoom o inscripción vencidos');
   }
 
   const video = validateWebinarVideo(webinar);
@@ -316,7 +328,7 @@ export const createWebinarStructuredData = (webinar, { url, imageUrl } = {}) => 
     isAccessibleForFree: typeof normalized.isAccessibleForFree === 'boolean'
       ? normalized.isAccessibleForFree
       : undefined,
-    location: normalized.joinUrl || normalized.registrationUrl
+    location: normalized.status === 'upcoming' && (normalized.joinUrl || normalized.registrationUrl)
       ? compactObject({
         '@type': 'VirtualLocation',
         url: normalized.joinUrl || normalized.registrationUrl,
