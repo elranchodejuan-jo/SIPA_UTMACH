@@ -30,7 +30,17 @@ export const WEBINAR_DETAIL_ROUTE = Object.freeze({
   slug: 'ganaderia-4-0-2026',
 });
 
-export const RESPONSIVE_ROUTES = Object.freeze([...MAIN_ROUTES, WEBINAR_DETAIL_ROUTE]);
+export const WEBINAR_INNOVATION_ROUTE = Object.freeze({
+  path: '/divulgacion/webinars/innovacion-tecnologica-produccion-animal-europea-2026/',
+  label: 'Innovación tecnológica',
+  slug: 'innovacion-tecnologica-produccion-animal-europea-2026',
+});
+
+export const RESPONSIVE_ROUTES = Object.freeze([
+  ...MAIN_ROUTES,
+  WEBINAR_DETAIL_ROUTE,
+  WEBINAR_INNOVATION_ROUTE,
+]);
 
 export const EXPO_ROUTE = resolveTestRoute('/eventos/expoferia-nutricion-animal-2026/');
 

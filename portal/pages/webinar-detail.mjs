@@ -64,10 +64,12 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
   const temporalLabel = explicitTemporalLabel
     ? `<span class="webinar-detail__temporal">${escapeHtml(explicitTemporalLabel)}</span>`
     : `<span class="webinar-detail__temporal" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone)}">Fecha programada</span>`;
-  const actions = [
-    webinar.registrationUrl ? renderButtonLink({ href: webinar.registrationUrl, label: 'Inscripción gratuita', external: true }) : '',
-    webinar.joinUrl ? renderButtonLink({ href: webinar.joinUrl, label: 'Unirse por Zoom', variant: 'secondary', external: true }) : '',
-  ].filter(Boolean).join('');
+  const actions = isUpcoming
+    ? [
+      webinar.registrationUrl ? renderButtonLink({ href: webinar.registrationUrl, label: 'Inscripción gratuita', external: true }) : '',
+      webinar.joinUrl ? renderButtonLink({ href: webinar.joinUrl, label: 'Unirse por Zoom', variant: 'secondary', external: true }) : '',
+    ].filter(Boolean).join('')
+    : '';
   const actionBlock = actions
     ? `<div class="webinar-detail__actions" data-webinar-actions>${actions}</div>`
     : '';
@@ -106,7 +108,7 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
         <p>${escapeHtml(webinar.summary)}</p>
         ${renderTags([...(webinar.topics || []), ...(webinar.species || [])])}
         ${actionBlock}
-        ${webinar.meetingId ? `<p class="webinar-detail__meeting"><span>ID de reunión de Zoom</span><code data-webinar-meeting-id>${escapeHtml(webinar.meetingId)}</code></p>` : ''}
+        ${isUpcoming && webinar.meetingId ? `<p class="webinar-detail__meeting"><span>ID de reunión de Zoom</span><code data-webinar-meeting-id>${escapeHtml(webinar.meetingId)}</code></p>` : ''}
         ${accessNote}
         ${webinar.tagline ? `<p class="webinar-detail__tagline">${escapeHtml(webinar.tagline)}</p>` : ''}
       </div>

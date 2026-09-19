@@ -1,9 +1,23 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { SITE_CONFIG } from '../../portal/config/site.mjs';
-import { WEBINAR_DETAIL_ROUTE, expectRuntimeClean, gotoPortal, watchRuntime } from './helpers/qa.mjs';
+import {
+  WEBINAR_DETAIL_ROUTE,
+  WEBINAR_INNOVATION_ROUTE,
+  expectRuntimeClean,
+  gotoPortal,
+  watchRuntime,
+} from './helpers/qa.mjs';
 
-const auditedRoutes = ['/', '/investigacion/', '/divulgacion/webinars/', WEBINAR_DETAIL_ROUTE.path, '/equipo/', '/contacto/'];
+const auditedRoutes = [
+  '/',
+  '/investigacion/',
+  '/divulgacion/webinars/',
+  WEBINAR_DETAIL_ROUTE.path,
+  WEBINAR_INNOVATION_ROUTE.path,
+  '/equipo/',
+  '/contacto/',
+];
 
 for (const route of auditedRoutes) {
   test(`WCAG AA sin violaciones automáticas en ${route}`, async ({ page }, testInfo) => {

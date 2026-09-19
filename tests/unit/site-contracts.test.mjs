@@ -57,6 +57,7 @@ const EXPECTED_PATHS = [
   '/investigacion/',
   '/divulgacion/',
   '/divulgacion/webinars/',
+  '/divulgacion/webinars/innovacion-tecnologica-produccion-animal-europea-2026/',
   '/divulgacion/webinars/ganaderia-4-0-2026/',
   '/eventos/',
   '/eventos/expoferia-nutricion-animal-2026/',
@@ -66,7 +67,10 @@ const EXPECTED_PATHS = [
 
 const WEBINAR_SLUG = 'ganaderia-4-0-2026';
 const WEBINAR_PATH = `/divulgacion/webinars/${WEBINAR_SLUG}/`;
+const INNOVATION_WEBINAR_SLUG = 'innovacion-tecnologica-produccion-animal-europea-2026';
+const INNOVATION_WEBINAR_PATH = `/divulgacion/webinars/${INNOVATION_WEBINAR_SLUG}/`;
 const webinarGanaderia4 = webinars.find(webinar => webinar.slug === WEBINAR_SLUG);
+const webinarInnovation = webinars.find(webinar => webinar.slug === INNOVATION_WEBINAR_SLUG);
 const webinarFixture = overrides => ({ ...webinarGanaderia4, ...overrides });
 
 const expectInvalidWebinar = (record, pattern) => {
@@ -116,6 +120,26 @@ test('la ficha de Ganadería 4.0 conserva ruta, canonical, sitemap y breadcrumb 
   assert.deepEqual(breadcrumbs.slice(0, 3).map(item => item.label), ['Inicio', 'Divulgación', 'Webinars']);
   assert.equal(breadcrumbs.at(-1).current, true);
   assert.match(breadcrumbs.at(-1).label, /Ganadería 4\.0/i);
+});
+
+test('la ficha de innovación europea conserva ruta, canonical, sitemap y breadcrumb jerárquico', () => {
+  const routeId = getWebinarRouteId(INNOVATION_WEBINAR_SLUG);
+  const route = getPublishedRoutes().find(item => item.id === routeId);
+
+  assert.ok(route);
+  assert.equal(route.path, INNOVATION_WEBINAR_PATH);
+  assert.equal(route.output, `divulgacion/webinars/${INNOVATION_WEBINAR_SLUG}/index.html`);
+  assert.equal(route.page, 'webinar-detail');
+  assert.equal(route.webinarSlug, INNOVATION_WEBINAR_SLUG);
+  assert.equal(route.parentId, 'webinars');
+  assert.equal(route.activeNavId, 'outreach');
+  assert.equal(canonicalHref(route), `https://sipautmach.com${INNOVATION_WEBINAR_PATH}`);
+  assert.ok(getSitemapRoutes().some(item => item.path === INNOVATION_WEBINAR_PATH));
+
+  const breadcrumbs = getBreadcrumbs(routeId);
+  assert.deepEqual(breadcrumbs.slice(0, 3).map(item => item.label), ['Inicio', 'Divulgación', 'Webinars']);
+  assert.equal(breadcrumbs.at(-1).current, true);
+  assert.match(breadcrumbs.at(-1).label, /Innovación tecnológica/i);
 });
 
 test('redes oficiales de SIPA publican Instagram, Facebook, TikTok y YouTube confirmados', () => {
@@ -417,6 +441,41 @@ test('Ganadería 4.0 conserva la ficha histórica y el afiche íntegro', async (
   assert.match(webinarGanaderia4.thumbnailAlt, /Pablo Roberto Marini/);
 });
 
+test('Innovación tecnológica conserva la ficha histórica, el orden descendente y el afiche íntegro', async () => {
+  assert.ok(webinarInnovation);
+  assert.equal(webinarInnovation.id, INNOVATION_WEBINAR_SLUG);
+  assert.equal(webinarInnovation.title, 'Innovación Tecnológica actual en la Producción Animal Europea');
+  assert.equal(webinarInnovation.headline, '¡LA INNOVACIÓN ESTÁ TRANSFORMANDO LA PRODUCCIÓN ANIMAL!');
+  assert.equal(webinarInnovation.speaker, 'Ion Pérez Baena');
+  assert.equal(webinarInnovation.speakerRole, 'Ingeniero Agrónomo | Máster en Producción Animal');
+  assert.equal(webinarInnovation.startDate, '2026-08-29T19:00:00-05:00');
+  assert.equal(webinarInnovation.timeZone, 'America/Guayaquil');
+  assert.equal(webinarInnovation.endDate, null);
+  assert.equal(webinarInnovation.duration, null);
+  assert.equal(webinarInnovation.joinUrl, null);
+  assert.equal(webinarInnovation.meetingId, null);
+  assert.equal(webinarInnovation.registrationUrl, null);
+  assert.equal(webinarInnovation.sponsor, 'Maestría en Producción Animal de la UTMACH');
+  assert.equal(webinarInnovation.youtubeId, null);
+  assert.equal(webinarInnovation.youtubeUrl, null);
+  assert.equal(webinarInnovation.recordingPublishedAt, null);
+  assert.equal(webinarInnovation.status, 'archived');
+  assert.equal(webinarInnovation.published, true);
+  assert.equal(webinarInnovation.featured, false);
+  assert.deepEqual(getPublishedWebinars(webinars).map(webinar => webinar.slug), [
+    WEBINAR_SLUG,
+    INNOVATION_WEBINAR_SLUG,
+  ]);
+  assert.equal(validateWebinarRecord(webinarInnovation).valid, true);
+
+  const poster = await readFile(new URL('../../portal/assets/images/webinars/innovacion-tecnologica-produccion-animal-europea-2026.jpeg', import.meta.url));
+  assert.equal(poster.length, 170411);
+  assert.equal(createHash('sha256').update(poster).digest('hex'), 'ca2529d9db6d635f27212929d8991a1fcc6ea050181b6f438b214a493249a163');
+  assert.equal(webinarInnovation.thumbnailWidth, 1080);
+  assert.equal(webinarInnovation.thumbnailHeight, 1080);
+  assert.match(webinarInnovation.thumbnailAlt, /Ion Pérez Baena/);
+});
+
 test('los helpers de webinar publican sólo registros visibles y generan rutas estables', () => {
   const draft = webinarFixture({
     id: 'borrador-futuro',
@@ -455,9 +514,9 @@ test('upcoming admite invitación sin YouTube y exige acceso confirmado, fecha y
   const upcomingFixture = overrides => webinarFixture({
     status: 'upcoming',
     featured: true,
-    joinUrl: 'https://cedia.zoom.us/j/89751728629',
-    registrationUrl: 'https://forms.gle/4iFLS8PSa4wsgHFa6',
-    meetingId: '897 5172 8629',
+    joinUrl: 'https://example.com/acceso',
+    registrationUrl: 'https://example.com/registro',
+    meetingId: '000 0000 0000',
     ...overrides,
   });
   const upcoming = upcomingFixture({});
@@ -469,7 +528,7 @@ test('upcoming admite invitación sin YouTube y exige acceso confirmado, fecha y
     /acceso|destino|inscripci|joinUrl|registrationUrl/i,
   );
   expectInvalidWebinar(
-    upcomingFixture({ joinUrl: 'http://cedia.zoom.us/j/89751728629', registrationUrl: null }),
+    upcomingFixture({ joinUrl: 'http://example.com/acceso', registrationUrl: null }),
     /HTTPS|joinUrl|segura/i,
   );
   expectInvalidWebinar(
@@ -515,8 +574,8 @@ test('el estado temporal respeta el archivo editorial y mantiene la lógica para
   const upcoming = webinarFixture({
     status: 'upcoming',
     featured: true,
-    joinUrl: 'https://cedia.zoom.us/j/89751728629',
-    registrationUrl: 'https://forms.gle/4iFLS8PSa4wsgHFa6',
+    joinUrl: 'https://example.com/acceso',
+    registrationUrl: 'https://example.com/registro',
   });
 
   assert.equal(getWebinarTemporalState(webinarGanaderia4, new Date('2026-09-16T22:30:00.000Z')), 'archived');
@@ -589,6 +648,14 @@ test('archived conserva una ficha sin grabación y draft permanece oculto', () =
   assert.equal(normalizeWebinarRecord(archived).hasRecording, false);
   assert.equal(validateWebinarRecord(draft).valid, true);
   assert.deepEqual(getPublishedWebinars([archived, draft]), [archived]);
+  expectInvalidWebinar(
+    webinarFixture({ status: 'archived', joinUrl: 'https://example.com/acceso-vencido' }),
+    /histórico|acceso|Zoom|vencido/i,
+  );
+  expectInvalidWebinar(
+    webinarFixture({ status: 'available', youtubeId: 'AbCdEf123_4', youtubeUrl: 'https://youtu.be/AbCdEf123_4', recordingPublishedAt: '2026-09-17', registrationUrl: 'https://example.com/registro-vencido' }),
+    /histórico|inscripción|vencido/i,
+  );
   expectInvalidWebinar(webinarFixture({ status: 'draft', published: true, featured: false }), /draft|publicad|published/i);
   expectInvalidWebinar(webinarFixture({ status: 'draft', published: false, featured: true }), /destacad|featured|publicad/i);
 });
