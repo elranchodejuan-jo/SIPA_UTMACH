@@ -27,17 +27,17 @@ const APPROVED_LIGHT_BRAND = Object.freeze({
 });
 
 const APPROVED_DARK_BRAND = Object.freeze({
-  950: '#061B0D',
-  900: '#0A2F18',
-  800: '#104421',
+  950: '#253D2E',
+  900: '#2C4936',
+  800: '#385A43',
   700: '#65C889',
   600: '#82DBA2',
   500: '#A1E7B8',
   400: '#B9EFCA',
   300: '#CDEED7',
-  200: '#244B31',
-  100: '#193B25',
-  50: '#102B1A',
+  200: '#3B5845',
+  100: '#334E3C',
+  50: '#2D4234',
 });
 
 const LEGACY_BLUE_LITERALS = Object.freeze([
@@ -200,7 +200,27 @@ test('los roles esenciales cumplen WCAG AA y los rechazos conocidos no se reutil
     ['link oscuro', dark['--color-link'], dark['--color-surface'], 4.5],
     ['botón oscuro', dark['--color-on-brand'], dark['--color-action-primary'], 4.5],
     ['foco oscuro', dark['--color-focus'], dark['--color-surface'], 3],
+    ['seleccion de texto claro', light['--color-selection-ink'], light['--color-selection-bg'], 4.5],
+    ['seleccion de texto oscuro', dark['--color-selection-ink'], dark['--color-selection-bg'], 4.5],
+    ['boton hover oscuro', dark['--color-on-brand'], dark['--color-action-primary-hover'], 4.5],
+    ['boton claro sobre fondo oscuro', dark['--color-brand-950'], dark['--color-button-light'], 4.5],
+    ['boton claro hover sobre fondo oscuro', dark['--color-brand-950'], dark['--color-button-light-hover'], 4.5],
   ];
+  // Menús, tarjetas, chips y formularios usan fondos distintos del lienzo.
+  // Proteger también el contraste real sobre la capa más elevada.
+  for (const surface of ['surface', 'surface-soft', 'surface-raised', 'surface-strong', 'brand-50']) {
+    for (const role of ['ink', 'text', 'muted', 'link']) {
+      pairs.push([`${role} sobre ${surface} oscuro`, dark[`--color-${role}`], dark[`--color-${surface}`], 4.5]);
+    }
+    pairs.push([`foco sobre ${surface} oscuro`, dark['--color-focus'], dark[`--color-${surface}`], 3]);
+    pairs.push([`borde de control sobre ${surface} oscuro`, dark['--color-line-strong'], dark[`--color-${surface}`], 3]);
+  }
+  for (const role of ['success', 'warning', 'danger', 'info']) {
+    pairs.push([`estado ${role} en formulario oscuro`, dark[`--color-${role}`], dark['--color-surface-raised'], 4.5]);
+  }
+  for (const species of ['bovine', 'swine', 'poultry']) {
+    pairs.push([`icono ${species} oscuro`, dark[`--color-${species}`], dark[`--color-${species}-soft`], 3]);
+  }
   for (const [name, foreground, background, minimum] of pairs) {
     const declarations = name.includes('oscuro') ? dark : light;
     const resolvedForeground = resolveColor(declarations, foreground);
@@ -211,6 +231,17 @@ test('los roles esenciales cumplen WCAG AA y los rechazos conocidos no se reutil
   }
   assert.ok(contrast('#FFFFFF', '#209653') < 4.5, 'blanco sobre brand-500 debe permanecer rechazado');
   assert.ok(contrast('#116A38', '#09110C') < 4.5, 'brand-700 claro no puede convertirse en link oscuro');
+});
+
+test('el tema oscuro mantiene capas salvia legibles y evita regresar al fondo casi negro', async () => {
+  const { dark } = await colorDeclarations();
+  const surfaces = ['surface', 'surface-soft', 'surface-raised', 'surface-strong'];
+  const luminances = surfaces.map(role => luminance(dark[`--color-${role}`]));
+  assert.ok(luminances[0] >= 0.02, 'el lienzo oscuro debe conservar la luminosidad acordada');
+  for (let index = 1; index < luminances.length; index += 1) {
+    assert.ok(luminances[index] - luminances[index - 1] >= 0.012, `${surfaces[index]} debe distinguirse de la capa anterior`);
+  }
+  assert.equal(SITE_CONFIG.themeColors.dark, dark['--color-surface'], 'la barra del navegador debe coincidir con el lienzo');
 });
 
 test('no quedan tokens warm ni literales azules heredados en las fuentes controladas del portal', async () => {
@@ -247,11 +278,11 @@ test('el logo original y los metadatos verdes conservan sus contratos', async ()
   assert.equal(createHash('sha256').update(logo).digest('hex').toUpperCase(), '72FB48B8CCA7DEDBD643469D43B5B4140C15E2DEAD65E0E2A56F983F6C7DBAE3');
   assert.deepEqual(SITE_CONFIG.themeColors, {
     light: '#F3FAF5',
-    dark: '#09110C',
+    dark: '#202D26',
     primary: '#158144',
   });
   const runtimeScript = await readFile(path.join(rootDir, 'portal/assets/js/site.js'), 'utf8');
-  assert.match(runtimeScript, /isDark \? '#09110C' : '#158144'/);
+  assert.match(runtimeScript, /isDark \? '#202D26' : '#158144'/);
 });
 
 test('la imagen Open Graph publicada conserva el formato y tamano requeridos', async () => {

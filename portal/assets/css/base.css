@@ -94,13 +94,15 @@ button:not(:disabled),
 }
 
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 0;
+  /* El contorno sigue visible si un estado hover o activo cambia la sombra. */
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
   box-shadow: var(--focus-ring);
 }
 
 ::selection {
-  color: var(--color-brand-950);
-  background: var(--color-brand-200);
+  color: var(--color-selection-ink);
+  background: var(--color-selection-bg);
 }
 
 h1,

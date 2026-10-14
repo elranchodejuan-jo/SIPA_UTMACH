@@ -50,6 +50,7 @@ import { assertValidPersonRelations, draftPeople, people } from '../../shared/pe
 
 import './color-contracts.test.mjs';
 import './favicon-contracts.test.mjs';
+import './icon-contracts.test.mjs';
 
 const EXPECTED_PATHS = [
   '/',

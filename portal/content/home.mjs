@@ -20,11 +20,11 @@ export const homeContent = {
   teamSummary: {
     eyebrow: 'Comunidad SIPA',
     title: 'Docentes y estudiantes que aprenden a investigar juntos',
-    description: 'La página de equipo está preparada para publicar perfiles institucionales completos, accesibles y verificados.'
+    description: 'Conoce a los integrantes del semillero, su formación académica y sus áreas de interés.'
   },
   contactCta: {
     eyebrow: 'Participación',
     title: 'Conecta con el ecosistema SIPA',
-    description: 'Consulta los canales institucionales disponibles y conoce cómo se incorporará nueva información de contacto.'
+    description: 'Encuentra el correo y las redes de SIPA para seguir sus actividades y comunicarte con el semillero.'
   }
 };

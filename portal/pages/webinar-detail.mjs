@@ -66,8 +66,8 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
     : `<span class="webinar-detail__temporal" data-webinar-temporal data-webinar-date="${escapeAttribute(webinar.date)}" data-webinar-start="${escapeAttribute(webinar.startDate)}" data-webinar-time-zone="${escapeAttribute(webinar.timeZone)}">Fecha programada</span>`;
   const actions = isUpcoming
     ? [
-      webinar.registrationUrl ? renderButtonLink({ href: webinar.registrationUrl, label: 'Inscripción gratuita', external: true }) : '',
-      webinar.joinUrl ? renderButtonLink({ href: webinar.joinUrl, label: 'Unirse por Zoom', variant: 'secondary', external: true }) : '',
+      webinar.registrationUrl ? renderButtonLink({ helpers, href: webinar.registrationUrl, label: 'Inscripción gratuita', external: true }) : '',
+      webinar.joinUrl ? renderButtonLink({ helpers, href: webinar.joinUrl, label: 'Unirse por Zoom', variant: 'secondary', external: true }) : '',
     ].filter(Boolean).join('')
     : '';
   const actionBlock = actions
@@ -77,7 +77,7 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
     ? '<p class="webinar-detail__access-note">Puedes completar la inscripción o utilizar el acceso directo a Zoom.</p>'
     : '';
   const recording = webinar.hasRecording
-    ? `<section class="section section--soft" aria-labelledby="webinar-recording-title"><div class="container webinar-detail__recording"><div class="section-heading"><p class="eyebrow">Grabación</p><h2 id="webinar-recording-title">Ver webinar</h2></div>${renderWebinarPlayer(webinar, helpers)}<div class="section-action">${renderButtonLink({ href: webinar.youtubeUrl, label: 'Ver en YouTube', variant: 'text', external: true })}</div></div></section>`
+    ? `<section class="section section--soft" aria-labelledby="webinar-recording-title"><div class="container webinar-detail__recording"><div class="section-heading"><p class="eyebrow">Grabación</p><h2 id="webinar-recording-title">Ver webinar</h2></div>${renderWebinarPlayer(webinar, helpers)}<div class="section-action">${renderButtonLink({ helpers, href: webinar.youtubeUrl, label: 'Ver en YouTube', variant: 'text', external: true })}</div></div></section>`
     : '';
 
   const html = `${renderPageHero({

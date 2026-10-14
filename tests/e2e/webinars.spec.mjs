@@ -40,12 +40,16 @@ test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-1366', 'La biblioteca se cubre una sola vez en escritorio.');
 });
 
-test('Inicio no destaca el webinar archivado y Biblioteca/Eventos conservan su ficha', async ({ page }) => {
+test('Inicio muestra el archivo reciente y Biblioteca/Eventos conservan sus fichas', async ({ page }) => {
   const runtime = watchRuntime(page);
 
   await gotoPortal(page, '/', runtime);
-  await expect(page.locator(`[data-webinar-card][data-webinar-slug="${WEBINAR_DETAIL_ROUTE.slug}"]`)).toHaveCount(0);
+  await expect(page.locator('[data-home-webinar-featured]')).toHaveCount(0);
+  await expect(page.locator('[data-webinar-card] .webinar-card__status')).toHaveText(['Archivo', 'Archivo']);
+  await expect(page.locator('[data-webinar-card] [data-webinar-player], [data-webinar-card] iframe')).toHaveCount(0);
   await expect(page.locator('[data-home-webinar-heading]')).toHaveText('Biblioteca de webinars');
+  await expect(page.locator('[data-webinar-card]')).toHaveCount(2);
+  await expect(page.locator('[data-webinar-card]').first()).toHaveAttribute('data-webinar-slug', 'ganaderia-4-0-2026');
   await expect(page.getByRole('link', { name: /abrir biblioteca de webinars/i })).toBeVisible();
 
   await gotoPortal(page, '/divulgacion/webinars/', runtime);

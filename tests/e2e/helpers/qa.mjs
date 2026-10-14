@@ -130,6 +130,17 @@ export const expectTouchTargets = async page => {
 };
 
 export const expectImagesLoaded = async page => {
+  // Lazy images below the fold load only when the visitor reaches them.
+  const position = await page.evaluate(() => ({ x: window.scrollX, y: window.scrollY }));
+  const images = page.locator('img:visible');
+  for (const image of await images.all()) {
+    if (await image.evaluate(element => element.complete && element.naturalWidth > 0)) continue;
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate(element => element.complete && element.naturalWidth > 0), {
+      message: `La imagen debe cargar al entrar en pantalla: ${await image.getAttribute('src')}`,
+    }).toBe(true);
+  }
+  await page.evaluate(({ x, y }) => window.scrollTo({ left: x, top: y, behavior: 'instant' }), position);
   const failures = await page.locator('img:visible').evaluateAll(images => images
     .filter(image => !image.complete || image.naturalWidth === 0 || image.naturalHeight === 0)
     .map(image => image.currentSrc || image.getAttribute('src') || '<sin src>'));

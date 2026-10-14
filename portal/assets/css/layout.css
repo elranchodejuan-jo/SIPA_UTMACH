@@ -209,17 +209,17 @@ body.menu-open .site-header__actions {
   height: 0.875rem;
 }
 
-.theme-toggle__moon,
+.theme-toggle__sun,
 .nav-toggle__close {
   display: none;
 }
 
-:root[data-theme='dark'] .theme-toggle__sun,
+:root[data-theme='dark'] .theme-toggle__moon,
 .nav-toggle[aria-expanded='true'] .nav-toggle__menu {
   display: none;
 }
 
-:root[data-theme='dark'] .theme-toggle__moon,
+:root[data-theme='dark'] .theme-toggle__sun,
 .nav-toggle[aria-expanded='true'] .nav-toggle__close {
   display: block;
 }

@@ -7,10 +7,10 @@ export function renderTags(items = []) {
   return `<ul class="tag-list" aria-label="Temas">${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
 }
 
-export function renderButtonLink({ href, label, variant = 'primary', external = false, className = '' }) {
+export function renderButtonLink({ helpers, href, label, variant = 'primary', external = false, className = '' }) {
   const externalAttributes = external ? ' target="_blank" rel="noopener noreferrer"' : '';
   const externalText = external ? '<span class="visually-hidden"> (se abre en una pestaña nueva)</span>' : '';
-  return `<a class="button button--${escapeAttribute(variant)}${className ? ` ${escapeAttribute(className)}` : ''}" href="${escapeAttribute(href)}"${externalAttributes}>${escapeHtml(label)}${externalText}</a>`;
+  return `<a class="button button--${escapeAttribute(variant)}${className ? ` ${escapeAttribute(className)}` : ''}" href="${escapeAttribute(href)}"${externalAttributes}><span>${escapeHtml(label)}</span>${helpers ? renderIcon(external ? 'external' : 'arrow-right', helpers) : ''}${externalText}</a>`;
 }
 
 export function renderResearchArea(area, helpers) {
@@ -29,7 +29,7 @@ export function renderProjectCard(project, helpers) {
     <h3>${escapeHtml(project.title)}</h3>
     <p>${escapeHtml(project.summary)}</p>
     ${renderTags([...(project.species || []), ...(project.topics || [])])}
-    ${href ? renderButtonLink({ href, label: 'Conocer proyecto', variant: 'secondary', external: Boolean(project.externalUrl) }) : ''}
+    ${href ? renderButtonLink({ helpers, href, label: 'Conocer proyecto', variant: 'secondary', external: Boolean(project.externalUrl) }) : ''}
   </article>`;
 }
 
@@ -41,7 +41,7 @@ export function renderResourceCard(resource, helpers) {
     <h3>${escapeHtml(resource.title)}</h3>
     ${resource.summary || resource.description ? `<p>${escapeHtml(resource.summary || resource.description)}</p>` : ''}
     ${renderTags(resource.topics || [])}
-    ${href ? renderButtonLink({ href, label: resource.linkLabel || 'Consultar recurso', variant: 'text', external: !resource.routeId }) : ''}
+    ${href ? renderButtonLink({ helpers, href, label: resource.linkLabel || 'Consultar recurso', variant: 'text', external: !resource.routeId }) : ''}
   </article>`;
 }
 
@@ -52,7 +52,7 @@ export function renderEventCard(event, helpers) {
     <h3>${escapeHtml(event.title)}</h3>
     <p>${escapeHtml(event.summary)}</p>
     ${renderTags(event.topics)}
-    ${href ? renderButtonLink({ href, label: event.routeId ? 'Abrir experiencia' : 'Más información', variant: 'secondary', external: !event.routeId }) : ''}
+    ${href ? renderButtonLink({ helpers, href, label: event.routeId ? 'Abrir experiencia' : 'Más información', variant: 'secondary', external: !event.routeId }) : ''}
   </article>`;
 }
 
@@ -127,8 +127,8 @@ export function renderWebinarCard(webinar, helpers, { projection = '' } = {}) {
       <p>${escapeHtml(webinar.summary)}</p>
       ${renderTags([...(webinar.topics || []), ...(webinar.species || [])])}
       <div class="webinar-card__actions" data-webinar-actions>
-        ${detailHref ? renderButtonLink({ href: detailHref, label: detailLabel, variant: hasRecording ? 'secondary' : 'primary' }) : ''}
-        ${hasRecording ? renderButtonLink({ href: webinar.youtubeUrl, label: 'Ver en YouTube', variant: 'text', external: true }) : ''}
+        ${detailHref ? renderButtonLink({ helpers, href: detailHref, label: detailLabel, variant: hasRecording ? 'secondary' : 'primary' }) : ''}
+        ${hasRecording ? renderButtonLink({ helpers, href: webinar.youtubeUrl, label: 'Ver en YouTube', variant: 'text', external: true }) : ''}
       </div>
     </div>
   </article>`;

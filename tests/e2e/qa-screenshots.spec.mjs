@@ -2,20 +2,12 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { expect, test } from '@playwright/test';
-import { WEBINAR_DETAIL_ROUTE, expectRuntimeClean, resolveTestRoute, watchRuntime } from './helpers/qa.mjs';
+import { WEBINAR_DETAIL_ROUTE, expectImagesLoaded, expectRuntimeClean, resolveTestRoute, watchRuntime } from './helpers/qa.mjs';
 
 const captureDir = path.join(process.cwd(), 'tmp', 'sipa-green-qa');
 
 const capture = async (page, name, { fullPage = true } = {}) => {
-  if (await page.locator("body[data-route-id='team']").count()) {
-    const portraits = page.locator('.team-card__portrait img');
-    for (let index = 0; index < (await portraits.count()); index += 1) {
-      const portrait = portraits.nth(index);
-      await portrait.scrollIntoViewIfNeeded();
-      await expect.poll(() => portrait.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
-    }
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-  }
+  await expectImagesLoaded(page);
 
   await page.evaluate(() => {
     document.documentElement.classList.remove('reveal-ready');
@@ -57,6 +49,8 @@ test.beforeAll(async () => {
 });
 
 test('genera el juego mínimo de capturas para inspección humana', async ({ page }, testInfo) => {
+  // This single case visits 30 page/theme/viewport combinations.
+  test.setTimeout(120_000);
   test.skip(testInfo.project.name !== 'desktop-1366', 'Las capturas se generan una sola vez.');
   const runtime = watchRuntime(page);
 
@@ -123,6 +117,10 @@ test('genera el juego mínimo de capturas para inspección humana', async ({ pag
   await visit(page, '/', { width: 1440, height: 900, theme: 'dark' });
   await page.locator('footer.site-footer').scrollIntoViewIfNeeded();
   await capture(page, 'dark-footer', { fullPage: false });
+
+  await page.goto(resolveTestRoute('/404.html'), { waitUntil: 'load' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await capture(page, 'dark-404');
 
   expectRuntimeClean(runtime);
 });

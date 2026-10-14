@@ -118,13 +118,25 @@
     themeToggle?.setAttribute('title', label);
     const labelNode = themeToggle?.querySelector('[data-theme-label]');
     if (labelNode) labelNode.textContent = label;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#09110C' : '#158144');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#202D26' : '#158144');
     if (persist) {
       try { window.localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light'); } catch { /* El almacenamiento puede estar deshabilitado. */ }
     }
   };
 
-  setTheme(root.dataset.theme === 'dark' ? 'dark' : 'light', false);
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+  const preferredTheme = () => {
+    try {
+      const stored = window.localStorage.getItem(themeStorageKey);
+      if (stored === 'dark' || stored === 'light') return stored;
+    } catch { /* La preferencia del sistema sigue disponible sin almacenamiento. */ }
+    return systemTheme.matches ? 'dark' : 'light';
+  };
+  setTheme(preferredTheme(), false);
+  systemTheme.addEventListener?.('change', () => setTheme(preferredTheme(), false));
+  window.addEventListener('storage', event => {
+    if (event.key === themeStorageKey || event.key === null) setTheme(preferredTheme(), false);
+  });
   themeToggle?.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
 
   document.querySelectorAll('[data-back-to-top]').forEach(link => {

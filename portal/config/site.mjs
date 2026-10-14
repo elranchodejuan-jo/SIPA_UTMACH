@@ -30,7 +30,7 @@ export const SITE_CONFIG = deepFreeze({
   },
   themeColors: {
     light: '#F3FAF5',
-    dark: '#09110C',
+    dark: '#202D26',
     primary: '#158144',
   },
   storageKeys: {
