@@ -121,9 +121,9 @@ El estado comprobado del dominio y los límites operativos se documentan en [doc
 
 ## Estado editorial
 
-**SIPA v2.3.1 — portal institucional multipágina.**
+**SIPA v2.3.2 — portal institucional multipágina.**
 
-El fondo científico del portal muestra una red de partículas y conexiones con profundidad, giro suave y respuesta al mouse. Se retiraron las ilustraciones anteriores de ADN, fórmulas, molécula y gráfica, junto con la cuadrícula decorativa. El control «Pausar fondo» conserva la preferencia entre páginas. Es estático en pantallas táctiles, sin JavaScript y con movimiento reducido. La escena se limita a 30 dibujos por segundo y se detiene al ocultar la pestaña o perder el foco; no utiliza dependencias ni recursos externos. Véase [docs/FONDO_CIENTIFICO_INTERACTIVO.md](docs/FONDO_CIENTIFICO_INTERACTIVO.md).
+El fondo científico del portal muestra una red de partículas y conexiones con profundidad, giro suave y respuesta al mouse. Se retiraron las ilustraciones anteriores de ADN, fórmulas, molécula y gráfica, junto con la cuadrícula decorativa. El control «Pausar fondo» conserva la preferencia entre páginas. En móviles gira automáticamente con 32 nodos, hasta 20 dibujos por segundo y densidad de píxeles máxima de 1; en escritorio admite hasta 30 dibujos por segundo. Es estático sin JavaScript y con movimiento reducido. Se detiene al ocultar la pestaña o perder el foco; no utiliza dependencias ni recursos externos. Véase [docs/FONDO_CIENTIFICO_INTERACTIVO.md](docs/FONDO_CIENTIFICO_INTERACTIVO.md).
 
 La actualización visual y sus comprobaciones se documentan en
 [docs/ACTUALIZACION_SIPA_2026-10-29.md](docs/ACTUALIZACION_SIPA_2026-10-29.md).

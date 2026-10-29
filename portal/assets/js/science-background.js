@@ -4,6 +4,7 @@
   const background = document.querySelector('[data-science-background]');
   const toggle = document.querySelector('[data-science-toggle]');
   if (!background || !toggle) return;
+  const lightMotion = window.matchMedia('(max-width: 47.999rem), (hover: none), (pointer: coarse)');
 
   // Implementación original con proyección 3D en Canvas 2D: no necesita WebGL ni CDN.
   const createNetwork = () => {
@@ -36,11 +37,11 @@
     const resize = () => {
       width = Math.max(1, canvas.clientWidth);
       height = Math.max(1, canvas.clientHeight);
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      const ratio = Math.min(window.devicePixelRatio || 1, lightMotion.matches ? 1 : 1.5);
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const count = width < 768 ? 32 : width < 1100 ? 56 : 78;
+      const count = lightMotion.matches ? 32 : width < 1100 ? 56 : 78;
       points = Array.from({ length: count }, (_, i) => {
         const y = 1 - 2 * (i + 0.5) / count;
         const ring = Math.sqrt(1 - y * y);
@@ -110,7 +111,7 @@
       });
 
       // Partículas libres dan continuidad al fondo fuera del núcleo.
-      const dustCount = width < 768 ? 8 : 20;
+      const dustCount = lightMotion.matches ? 8 : 20;
       const dust = Array.from({ length: dustCount }, (_, i) => ({
         x: ((i * 0.618034 + 0.08) % 1) * width + Math.sin(time * 0.14 + i) * 16,
         y: ((i * 0.381966 + 0.16) % 1) * height + Math.cos(time * 0.11 + i * 2) * 18,
@@ -185,8 +186,8 @@
   const renderFrame = time => {
     if (!running) return;
     frame = window.requestAnimationFrame(renderFrame);
-    // Máximo 30 dibujos por segundo; sin recursos de terceros ni trabajo en pestañas ocultas.
-    if (lastPaint && time - lastPaint < 1000 / 30) return;
+    // Móvil: hasta 20 dibujos por segundo; escritorio: hasta 30. Sin trabajo en pestañas ocultas.
+    if (lastPaint && time - lastPaint < 1000 / (lightMotion.matches ? 20 : 30)) return;
     lastPaint = time;
     const delta = previousTime ? Math.min(time - previousTime, 80) : 33;
     previousTime = time;
@@ -226,19 +227,21 @@
   };
 
   const synchronize = () => {
-    const eligible = finePointer.matches && !reducedMotion.matches;
+    const eligible = !reducedMotion.matches;
     const enabled = eligible && !paused && !document.hidden && !suspended;
+    const trackPointer = enabled && finePointer.matches;
     toggle.hidden = !eligible;
     toggle.setAttribute('aria-pressed', String(!paused));
     toggle.setAttribute('aria-label', paused ? 'Activar fondo interactivo' : 'Pausar fondo interactivo');
     if (label) label.textContent = paused ? 'Activar fondo' : 'Pausar fondo';
     background.dataset.interactive = String(enabled);
     running = enabled;
-    if (enabled !== listening) {
-      if (enabled) window.addEventListener('pointermove', onPointerMove, { passive: true });
+    if (trackPointer !== listening) {
+      if (trackPointer) window.addEventListener('pointermove', onPointerMove, { passive: true });
       else window.removeEventListener('pointermove', onPointerMove);
-      listening = enabled;
+      listening = trackPointer;
     }
+    if (!trackPointer) resetPointer();
     if (enabled && !frame) frame = window.requestAnimationFrame(renderFrame);
     if (!enabled) {
       window.cancelAnimationFrame(frame);
@@ -257,6 +260,7 @@
   });
   reducedMotion.addEventListener('change', synchronize);
   finePointer.addEventListener('change', synchronize);
+  lightMotion.addEventListener('change', () => { network?.resize(); synchronize(); drawNetwork(); });
   document.addEventListener('visibilitychange', synchronize);
   document.documentElement.addEventListener('pointerleave', resetPointer);
   window.addEventListener('blur', () => { suspended = true; synchronize(); });
