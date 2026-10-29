@@ -1,7 +1,7 @@
 {
   "name": "sipa-utmach",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Portal institucional del Semillero de Investigación en Producción Animal de la Universidad Técnica de Machala.",
   "type": "module",
   "engines": {
