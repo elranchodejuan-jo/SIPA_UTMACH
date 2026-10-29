@@ -121,7 +121,9 @@ El estado comprobado del dominio y los límites operativos se documentan en [doc
 
 ## Estado editorial
 
-**SIPA v2.1.0 — portal institucional multipágina.**
+**SIPA v2.2.0 — portal institucional multipágina.**
+
+El fondo científico del portal combina ilustraciones SVG originales de ADN, fórmulas de genética y una gráfica de crecimiento. Sigue el mouse con un halo y desplazamiento suave entre capas; el control «Pausar fondo» conserva la preferencia entre páginas. Es estático en pantallas táctiles, sin JavaScript y con movimiento reducido. No utiliza dependencias, recursos externos ni un bucle de animación permanente. Véase [docs/FONDO_CIENTIFICO_INTERACTIVO.md](docs/FONDO_CIENTIFICO_INTERACTIVO.md).
 
 La actualización visual y sus comprobaciones se documentan en
 [docs/ACTUALIZACION_SIPA_2026-10-29.md](docs/ACTUALIZACION_SIPA_2026-10-29.md).
