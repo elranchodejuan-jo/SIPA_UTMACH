@@ -5,8 +5,9 @@ import { escapeAttribute, escapeHtml, renderJsonLd } from '../lib/html.mjs';
 import { renderBreadcrumb } from './partials/breadcrumb.mjs';
 import { renderFooter } from './partials/footer.mjs';
 import { renderHeader } from './partials/header.mjs';
+import { renderScienceBackground, renderScienceToggle } from './partials/science-background.mjs';
 
-const cssFiles = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'footer-socials.css', 'pages.css', 'responsive.css'];
+const cssFiles = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'footer-socials.css', 'pages.css', 'responsive.css', 'science-background.css'];
 
 function baseStructuredData(route, helpers, breadcrumbs) {
   const graph = [
@@ -107,15 +108,17 @@ export function renderLayout({ route, page, metadata }) {
   ${renderJsonLd({ '@context': 'https://schema.org', '@graph': graph })}
 </head>
 <body data-route-id="${escapeAttribute(route.id)}">
-  <div class="bg-ambient" aria-hidden="true"><span class="bg-ambient__orb bg-ambient__orb--1"></span><span class="bg-ambient__orb bg-ambient__orb--2"></span><span class="bg-ambient__orb bg-ambient__orb--3"></span><span class="bg-ambient__grid"></span></div>
+  ${renderScienceBackground()}
   <span class="page-top" id="page-top" tabindex="-1"></span>
   <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   ${renderHeader({ route, helpers })}
   ${renderBreadcrumb(breadcrumbs)}
   <main id="main-content" tabindex="-1">${page.html}</main>
   ${renderFooter({ route, helpers, metadata })}
+  ${renderScienceToggle(helpers)}
   <noscript><p class="noscript">Los enlaces y el contenido principal permanecen disponibles sin JavaScript.</p></noscript>
   <script src="${escapeAttribute(helpers.assetHref('assets/js/site.js'))}?v=${escapeAttribute(metadata.cacheKey)}" defer></script>
+  <script src="${escapeAttribute(helpers.assetHref('assets/js/science-background.js'))}?v=${escapeAttribute(metadata.cacheKey)}" defer></script>
 </body>
 </html>`;
 }
