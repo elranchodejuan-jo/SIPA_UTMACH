@@ -111,6 +111,76 @@
     "video": {
       "name": "video",
       "sha256": "d4fb6587f282c1152b953fe9494cd8ccafdf1e9f44957fbb7fe8dc7af0457597"
+    },
+    "sparkles": {
+      "name": "sparkles",
+      "sha256": "7651fa408e0c49d1f34b43edf6a65a7f5b9e1cbf5a014e59cfd633b8273d7dd8",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "sprout": {
+      "name": "sprout",
+      "sha256": "1128613e45af979a0cbf882741437c27e99c6f2a4cd7a593df426f5d4cebf04c",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "flask": {
+      "name": "flask-conical",
+      "sha256": "0eb7a44120b40614ea9898840a9e0dd2d77bce051b3d1174f6e6278821e3c75d",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "dna": {
+      "name": "dna",
+      "sha256": "701756f213f0f2a07a6d587283a0aa5084c1fe656ac5303c80ba676fec10107a",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "award": {
+      "name": "award",
+      "sha256": "184cca48ddb5ac21b666fb15b3dc4f5bc8991d6a6807e8f27e0212f39689bc51",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "compass": {
+      "name": "compass",
+      "sha256": "68fa0a30c0b4c0c877f922cbbc3eb964fdc41c9de5b30a202659a3bfada0e533",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "target": {
+      "name": "target",
+      "sha256": "3b51bf5881147ccb5c46ed8436315195774c58de5171e52c6ee71e088ea8e7b1",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "layers": {
+      "name": "layers",
+      "sha256": "8f85ce6ea6b494c9768656eda1985da5113eb41d9ca4acade160cd56bd27bb4a",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "chart": {
+      "name": "bar-chart-3",
+      "sha256": "019312493b22bec669c2cf3fe06a5f15fc650e1a1440bad63c696ffcb620e715",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "lightbulb": {
+      "name": "lightbulb",
+      "sha256": "b5af7aed73e5a0d6b36dc445bd6b68ee0df4f40ef10a3b2f777f82de0d7bfe13",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "share": {
+      "name": "share-2",
+      "sha256": "a60fbdeecc128885b248681da61293082d569671b6397d4cd882be967ef94159",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "building": {
+      "name": "building-2",
+      "sha256": "17d55c67f03d920f46127c3085f97fa7bf06c7bd2e40f780bfb03dfb56a06cd0",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "globe": {
+      "name": "globe",
+      "sha256": "e08a82c0e9862b2a3e4003d14c2c517398ca5776e7e04db2756401d50e734d59",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
+    },
+    "home": {
+      "name": "house",
+      "sha256": "a53617de8d700523d0b2c0a4bfbc1dda69119af686b6ceef397945bf9dd70faa",
+      "provenance": "sipa_utmach_mejorado.zip (2026-10-29)"
     }
   },
   "local": [

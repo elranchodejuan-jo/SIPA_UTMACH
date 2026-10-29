@@ -1,7 +1,9 @@
 .page-hero {
+  position: relative;
+  overflow: clip;
   padding: var(--space-6) 0 var(--space-8);
   border-bottom: 1px solid var(--color-line);
-  background: var(--color-surface-soft);
+  background: var(--gradient-hero);
 }
 
 .page-hero__grid {
@@ -50,9 +52,7 @@
   padding: var(--space-6) 0 var(--space-7);
   overflow: clip;
   border-bottom: 1px solid var(--color-line);
-  background:
-    radial-gradient(circle at 92% 10%, color-mix(in srgb, var(--color-science-100) 68%, transparent), transparent 32%),
-    linear-gradient(180deg, var(--color-surface), var(--color-brand-50));
+  background: var(--gradient-hero);
 }
 
 .home-hero__grid,
@@ -1038,4 +1038,47 @@ body[data-route-id='team'] .team-contact-panel__actions .team-contact-links {
   border-left: 3px solid var(--color-line-strong);
   color: var(--color-muted);
   font-size: var(--font-size-sm);
+}
+
+.page-hero__aside svg {
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--color-link);
+}
+
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-left: 0;
+}
+
+.check-list li::before {
+  display: none;
+}
+
+.check-list__icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: 0 0 1.35rem;
+  margin-top: 0.18rem;
+  color: var(--color-on-strong-accent);
+}
+
+.process-steps > li > span svg,
+.process-step > span svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.webinar-detail__facts dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.webinar-detail__facts dt svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--color-link);
 }

@@ -139,6 +139,91 @@
     <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
     <rect x="2" y="6" width="14" height="12" rx="2" />
   </symbol>
+  <symbol id="sparkles" viewBox="0 0 24 24" data-lucide="sparkles">
+    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+    <path d="M20 3v4"/>
+    <path d="M22 5h-4"/>
+    <path d="M4 17v2"/>
+    <path d="M5 18H3"/>
+  </symbol>
+  <symbol id="sprout" viewBox="0 0 24 24" data-lucide="sprout">
+    <path d="M7 20h10"/>
+    <path d="M10 20c5.5-2.5.8-6.4 3-10"/>
+    <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/>
+    <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>
+  </symbol>
+  <symbol id="flask" viewBox="0 0 24 24" data-lucide="flask-conical">
+    <path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/>
+    <path d="M6.453 15h11.094"/>
+    <path d="M8.5 2h7"/>
+  </symbol>
+  <symbol id="dna" viewBox="0 0 24 24" data-lucide="dna">
+    <path d="m10 16 1.5 1.5"/>
+    <path d="m14 8-1.5-1.5"/>
+    <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"/>
+    <path d="m16.5 10.5 1 1"/>
+    <path d="m17 6-2.891-2.891"/>
+    <path d="M2 15c6.667-6 13.333 0 20-6"/>
+    <path d="m20 9 .891.891"/>
+    <path d="M3.109 14.109 4 15"/>
+    <path d="m6.5 12.5 1 1"/>
+    <path d="m7 18 2.891 2.891"/>
+    <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"/>
+  </symbol>
+  <symbol id="award" viewBox="0 0 24 24" data-lucide="award">
+    <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/>
+    <circle cx="12" cy="8" r="6"/>
+  </symbol>
+  <symbol id="compass" viewBox="0 0 24 24" data-lucide="compass">
+    <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/>
+    <circle cx="12" cy="12" r="10"/>
+  </symbol>
+  <symbol id="target" viewBox="0 0 24 24" data-lucide="target">
+    <circle cx="12" cy="12" r="10"/>
+    <circle cx="12" cy="12" r="6"/>
+    <circle cx="12" cy="12" r="2"/>
+  </symbol>
+  <symbol id="layers" viewBox="0 0 24 24" data-lucide="layers">
+    <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/>
+    <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/>
+    <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>
+  </symbol>
+  <symbol id="chart" viewBox="0 0 24 24" data-lucide="bar-chart-3">
+    <path d="M3 3v16a2 2 0 0 0 2 2h16"/>
+    <path d="M18 17V9"/>
+    <path d="M13 17V5"/>
+    <path d="M8 17v-3"/>
+  </symbol>
+  <symbol id="lightbulb" viewBox="0 0 24 24" data-lucide="lightbulb">
+    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+    <path d="M9 18h6"/>
+    <path d="M10 22h4"/>
+  </symbol>
+  <symbol id="share" viewBox="0 0 24 24" data-lucide="share-2">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/>
+    <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>
+  </symbol>
+  <symbol id="building" viewBox="0 0 24 24" data-lucide="building-2">
+    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+    <path d="M10 6h4"/>
+    <path d="M10 10h4"/>
+    <path d="M10 14h4"/>
+    <path d="M10 18h4"/>
+  </symbol>
+  <symbol id="globe" viewBox="0 0 24 24" data-lucide="globe">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+    <path d="M2 12h20"/>
+  </symbol>
+  <symbol id="home" viewBox="0 0 24 24" data-lucide="house">
+    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
+    <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+  </symbol>
   <symbol id="bovine" viewBox="0 0 24 24">
     <path d="m7.5 7-4-2 .8 4.7c.1 1.3 1.2 2.3 2.5 2.3M16.5 7l4-2-.8 4.7a2.3 2.3 0 0 1-2.5 2.3"/>
     <path d="M7.5 7.2A6.2 6.2 0 0 1 12 5.5a6.2 6.2 0 0 1 4.5 1.7l.5 5.3c.2 3.8-1.9 6-5 6s-5.2-2.2-5-6z"/>

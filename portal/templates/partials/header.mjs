@@ -3,6 +3,16 @@ import { getActiveNavigationId, getPrimaryNavigation } from '../../config/naviga
 import { escapeAttribute, escapeHtml } from '../../lib/html.mjs';
 import { renderIcon } from './icons.mjs';
 
+const navIcons = Object.freeze({
+  home: 'home',
+  sipa: 'sprout',
+  research: 'research',
+  outreach: 'outreach',
+  events: 'calendar',
+  team: 'people',
+  contact: 'mail',
+});
+
 export function renderHeader({ route, helpers, activeRouteId = route.id }) {
   const navigation = getPrimaryNavigation(route.id);
   const activeNavigationId = activeRouteId === route.id ? getActiveNavigationId(route) : null;
@@ -11,16 +21,18 @@ export function renderHeader({ route, helpers, activeRouteId = route.id }) {
     const isActiveBranch = activeNavigationId === item.routeId;
     const submenuId = `submenu-${item.id}`;
     const hasSubmenu = item.items.length > 0;
+    const iconName = navIcons[item.routeId] || '';
+    const iconMarkup = iconName ? renderIcon(iconName, helpers) : '';
     const submenuToggle = hasSubmenu
       ? `<button class="submenu-toggle" type="button" aria-expanded="false" aria-controls="${escapeAttribute(submenuId)}" aria-label="Mostrar opciones de ${escapeAttribute(item.label)}" data-submenu-toggle>${renderIcon('chevron-down', helpers)}</button>`
       : '';
     const submenu = hasSubmenu
       ? `<ul class="submenu" id="${escapeAttribute(submenuId)}" data-submenu hidden>${item.items.map(child => `<li><a href="${escapeAttribute(child.href)}">${escapeHtml(child.label)}</a></li>`).join('')}</ul>`
       : '';
-    return `<li class="nav-item${hasSubmenu ? ' nav-item--group' : ' nav-item--direct'}${isActiveBranch ? ' is-active' : ''}"><div class="nav-item__row"><a class="nav-link" href="${escapeAttribute(item.href)}"${isActiveBranch ? ' aria-current="page"' : ''}>${escapeHtml(item.label)}</a>${submenuToggle}</div>${submenu}</li>`;
+    return `<li class="nav-item${hasSubmenu ? ' nav-item--group' : ' nav-item--direct'}${isActiveBranch ? ' is-active' : ''}"><div class="nav-item__row"><a class="nav-link" href="${escapeAttribute(item.href)}"${isActiveBranch ? ' aria-current="page"' : ''}>${iconMarkup}<span>${escapeHtml(item.label)}</span></a>${submenuToggle}</div>${submenu}</li>`;
   }).join('');
 
-  return `<div class="institution-bar"><div class="container institution-bar__inner"><span>${escapeHtml(SITE_CONFIG.organization.name)} · ${escapeHtml(SITE_CONFIG.organization.career)}</span><a href="${escapeAttribute(SITE_CONFIG.organization.url)}" target="_blank" rel="noopener noreferrer">Portal UTMACH<span class="visually-hidden"> (se abre en una pestaña nueva)</span></a></div></div>
+  return `<div class="institution-bar"><div class="container institution-bar__inner"><span class="institution-bar__label">${renderIcon('building', helpers)}<span>${escapeHtml(SITE_CONFIG.organization.name)} · ${escapeHtml(SITE_CONFIG.organization.career)}</span></span><a href="${escapeAttribute(SITE_CONFIG.organization.url)}" target="_blank" rel="noopener noreferrer"><span>Portal UTMACH</span>${renderIcon('external', helpers)}<span class="visually-hidden"> (se abre en una pestaña nueva)</span></a></div></div>
   <header class="site-header">
     <div class="container site-header__inner">
       <a class="brand" href="${escapeAttribute(helpers.routeHref('home'))}" aria-label="Ir al inicio de SIPA">

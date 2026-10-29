@@ -5,7 +5,7 @@
   justify-content: center;
   gap: var(--space-2);
   width: fit-content;
-  padding: 0.7rem 1rem;
+  padding: 0.72rem 1.15rem;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--color-on-brand);
@@ -15,6 +15,7 @@
   line-height: 1.25;
   text-align: center;
   text-decoration: none;
+  box-shadow: var(--shadow-xs);
   transition:
     color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard),
@@ -26,8 +27,8 @@
 .button:hover {
   color: var(--color-on-brand);
   background: var(--color-action-primary-hover);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
 }
 
 .button--primary {
@@ -38,19 +39,22 @@
 .button--secondary {
   color: var(--color-link);
   border-color: var(--color-line-strong);
-  background: var(--color-surface-raised);
+  background: var(--glass-surface);
+  backdrop-filter: blur(8px);
 }
 
 .button--secondary:hover {
   color: var(--color-link);
   border-color: var(--color-link);
   background: var(--color-brand-50);
+  box-shadow: var(--shadow-sm);
 }
 
 .button--ghost {
   color: var(--color-ink);
   border-color: transparent;
   background: transparent;
+  box-shadow: none;
 }
 
 .button--text {
@@ -59,14 +63,15 @@
   padding-inline: 0;
   color: var(--color-link);
   background: transparent;
+  box-shadow: none;
 }
 
 .button--text:hover {
-  color: var(--color-link);
+  color: var(--color-link-hover);
   background: transparent;
   box-shadow: none;
   text-decoration: underline;
-  transform: none;
+  transform: translateX(2px);
 }
 
 .button--ghost:hover {
@@ -84,6 +89,7 @@
 .button--light:hover {
   color: var(--color-brand-950);
   background: var(--color-button-light-hover);
+  box-shadow: 0 12px 28px rgba(7, 23, 13, 0.22);
 }
 
 .button[disabled],
@@ -101,9 +107,15 @@
   flex: 0 0 1.1rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.button:hover svg,
+.text-link:hover svg {
+  transform: translateX(2px);
 }
 
 .icon {
@@ -112,7 +124,7 @@
   flex: 0 0 1.25rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -134,18 +146,22 @@
 }
 
 .breadcrumbs {
-  padding-block: var(--space-4);
+  padding-block: var(--space-3);
   color: var(--color-muted);
   font-size: var(--font-size-xs);
 }
 
 .breadcrumbs ol {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2);
   margin: 0;
-  padding: 0;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--glass-surface);
+  backdrop-filter: blur(8px);
   list-style: none;
 }
 
@@ -162,11 +178,17 @@
 
 .breadcrumbs a {
   color: var(--color-muted);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  color: var(--color-link);
+  text-decoration: underline;
 }
 
 .breadcrumbs [aria-current='page'] {
   color: var(--color-ink);
-  font-weight: 700;
+  font-weight: 750;
 }
 
 .card,
@@ -176,11 +198,12 @@
 .webinar-card,
 .team-card,
 .contact-card {
+  position: relative;
   min-width: 0;
   padding: var(--space-5);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  background: var(--color-surface-raised);
+  background: var(--gradient-card);
   box-shadow: var(--shadow-xs);
   transition:
     border-color var(--duration-normal) var(--ease-standard),
@@ -190,9 +213,9 @@
 
 :where(.card, .project-card, .resource-card, .event-card, .webinar-card, .team-card, .contact-card):hover,
 :where(.card, .project-card, .resource-card, .event-card, .webinar-card, .team-card, .contact-card):focus-within {
-  border-color: var(--color-line-strong);
+  border-color: var(--color-brand-400);
   box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 :where(.card, .project-card, .resource-card, .event-card, .webinar-card, .team-card, .contact-card) > * + * {
@@ -202,25 +225,44 @@
 .card__icon,
 .resource-card__icon,
 .contact-card__icon {
-  width: 3rem;
-  height: 3rem;
-  flex: 0 0 3rem;
-  padding: 0.6rem;
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 3.25rem;
+  padding: 0.68rem;
   display: grid;
   place-items: center;
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   color: var(--color-link);
-  background: var(--color-brand-50);
+  background: linear-gradient(135deg, var(--color-brand-50), var(--color-surface-strong));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform var(--duration-normal) var(--ease-standard);
+}
+
+:where(.card, .resource-card, .contact-card):hover :where(.card__icon, .resource-card__icon, .contact-card__icon) {
+  transform: scale(1.06) rotate(-3deg);
 }
 
 .card__meta,
 .card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   color: var(--color-muted);
   font-size: var(--font-size-xs);
   font-weight: 680;
 }
 
+.card__meta svg,
+.card__status svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: 0 0 0.95rem;
+  color: var(--color-link);
+}
+
 .card__status {
+  width: 100%;
   padding-top: var(--space-3);
   border-top: 1px solid var(--color-line);
 }
@@ -234,7 +276,7 @@ svg.contact-card__icon,
 .species-icon svg {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -262,8 +304,8 @@ svg.contact-card__icon,
   width: fit-content;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: 0.3rem 0.6rem;
+  gap: 0.35rem;
+  padding: 0.32rem 0.7rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
   color: var(--color-muted);
@@ -271,6 +313,13 @@ svg.contact-card__icon,
   font-size: var(--font-size-xs);
   font-weight: 700;
   line-height: 1.25;
+  transition: border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+
+.tag-list li:hover {
+  border-color: var(--color-brand-300);
+  background: var(--color-brand-50);
+  color: var(--color-link);
 }
 
 .status-badge--available,
@@ -290,7 +339,7 @@ svg.contact-card__icon,
   border: 1px dashed var(--color-line-strong);
   border-radius: var(--radius-lg);
   color: var(--color-muted);
-  background: var(--color-surface-soft);
+  background: color-mix(in srgb, var(--color-surface-soft) 88%, var(--color-brand-50));
 }
 
 .empty-state--compact {
@@ -299,15 +348,16 @@ svg.contact-card__icon,
 
 .empty-state__icon,
 .section-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 3.25rem;
+  height: 3.25rem;
   padding: 0.7rem;
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   color: var(--color-link);
   background: var(--color-brand-50);
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 1.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -322,13 +372,17 @@ svg.contact-card__icon,
 }
 
 .cta-panel {
+  position: relative;
+  overflow: hidden;
   display: grid;
   align-items: center;
   gap: var(--space-5);
-  padding: clamp(1.5rem, 5vw, 3rem);
-  border-radius: var(--radius-lg);
+  padding: clamp(1.75rem, 5vw, 3.25rem);
+  border: 1px solid rgba(131, 196, 154, 0.26);
+  border-radius: var(--radius-xl);
   color: var(--color-on-strong-muted);
-  background: var(--color-brand-950);
+  background: var(--gradient-ink);
+  box-shadow: var(--shadow-md);
 }
 
 .cta-panel h2,
@@ -338,7 +392,9 @@ svg.contact-card__icon,
 }
 
 .cta-panel .eyebrow {
+  border-color: rgba(185, 222, 197, 0.28);
   color: var(--color-on-strong-accent);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .cta-panel > div > * + * {
@@ -393,11 +449,16 @@ svg.contact-card__icon,
 .form-field :where(input, textarea, select) {
   min-height: var(--target-size);
   width: 100%;
-  padding: 0.7rem 0.8rem;
+  padding: 0.75rem 0.9rem;
   border: 1px solid var(--color-line-strong);
   border-radius: var(--radius-sm);
   color: var(--color-ink);
   background: var(--color-surface-raised);
+  transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.form-field :where(input, textarea, select):hover {
+  border-color: var(--color-link);
 }
 
 .form-field textarea {
@@ -407,11 +468,11 @@ svg.contact-card__icon,
 
 .contact-form-wrap {
   max-width: 52rem;
-  padding: var(--space-5);
+  padding: var(--space-6);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  background: var(--color-surface-raised);
-  box-shadow: var(--shadow-xs);
+  background: var(--gradient-card);
+  box-shadow: var(--shadow-sm);
 }
 
 .contact-form {
@@ -467,4 +528,36 @@ svg.contact-card__icon,
 .external-link svg {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+/* Destacados rápidos con iconos Lucide en el hero */
+.hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-highlights li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  background: var(--glass-surface);
+  backdrop-filter: blur(8px);
+  font-size: var(--font-size-xs);
+  font-weight: 720;
+  box-shadow: var(--shadow-xs);
+}
+
+.hero-highlights svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  color: var(--color-link);
 }

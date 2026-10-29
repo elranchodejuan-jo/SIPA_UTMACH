@@ -23,7 +23,7 @@ export function renderWebinarsPage({ helpers, route }) {
       imageUrl,
     });
   });
-  const html = `${renderPageHero({ eyebrow: 'Divulgación audiovisual', title: webinarLibraryContent.title, description: route.description || webinarLibraryContent.description })}
+  const html = `${renderPageHero({ eyebrow: 'Divulgación audiovisual', title: webinarLibraryContent.title, description: route.description || webinarLibraryContent.description, icon: 'video', helpers })}
   <section class="section" aria-labelledby="library-title" data-webinar-library><div class="container"><div class="section-heading"><p class="eyebrow">Colección</p><h2 id="library-title">Webinars e invitaciones</h2><p>Encuentra la información confirmada de cada encuentro y, cuando esté disponible, su grabación.</p></div>${published.length
     ? `${featured ? `<div class="webinar-grid webinar-grid--featured">${renderWebinarCard(featured, helpers)}</div>` : ''}${remaining.length ? `<div class="webinar-grid">${remaining.map(webinar => renderWebinarCard(webinar, helpers)).join('')}</div>` : ''}`
     : renderEmptyState({ title: webinarLibraryContent.emptyTitle, message: webinarLibraryContent.emptyMessage, icon: 'play' }, helpers)}</div></section>`;

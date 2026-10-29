@@ -1,4 +1,5 @@
-const CACHE_VERSION = 'sipa-expoferia-2026-v3';
+const CACHE_PREFIX = 'sipa-expoferia-';
+const CACHE_VERSION = `${CACHE_PREFIX}2026-v4`;
 const APP_URL = new URL('./', self.location.href).href;
 const OFFLINE_URL = new URL('./offline.html', self.location.href).href;
 const STATIC_ASSETS = [
@@ -28,7 +29,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key !== CACHE_VERSION)
+          .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_VERSION)
           .map((key) => caches.delete(key))
       )
     )

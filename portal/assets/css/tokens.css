@@ -57,6 +57,24 @@
   --color-overlay: rgba(7, 23, 13, 0.58);
   --color-overlay-strong: rgba(7, 23, 13, 0.9);
 
+  /* Gradientes, cristales y atmósfera moderna */
+  --gradient-primary: linear-gradient(135deg, var(--color-brand-600) 0%, var(--color-brand-800) 100%);
+  --gradient-primary-hover: linear-gradient(135deg, var(--color-brand-700) 0%, var(--color-brand-900) 100%);
+  --gradient-hero:
+    radial-gradient(circle at 88% 16%, rgba(131, 196, 154, 0.34), transparent 40%),
+    radial-gradient(circle at 12% 82%, rgba(185, 222, 197, 0.42), transparent 44%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(243, 250, 245, 0.96) 100%);
+  --gradient-ink:
+    radial-gradient(circle at 86% 18%, rgba(78, 173, 116, 0.22), transparent 42%),
+    radial-gradient(circle at 14% 84%, rgba(32, 150, 83, 0.16), transparent 45%),
+    linear-gradient(145deg, var(--color-brand-950) 0%, var(--color-brand-900) 100%);
+  --gradient-card: linear-gradient(180deg, #ffffff 0%, #f9fcf9 100%);
+  --glass-surface: rgba(255, 255, 255, 0.84);
+  --glass-border: rgba(131, 196, 154, 0.45);
+  --orb-color-1: rgba(78, 173, 116, 0.16);
+  --orb-color-2: rgba(131, 196, 154, 0.2);
+  --orb-color-3: rgba(175, 201, 181, 0.18);
+
   /* Estados semánticos: requieren siempre texto e iconografía. */
   --color-success: #2b6b45;
   --color-warning: #8a4b00;
@@ -90,23 +108,25 @@
 
   --container: 74rem;
   --measure: 70ch;
-  --header-height: 4rem;
-  --institution-bar-height: 2.75rem;
+  --header-height: 4.25rem;
+  --institution-bar-height: 2.5rem;
   --target-size: 2.75rem;
 
   --radius-xs: 0.375rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1.125rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
   --radius-pill: 999px;
 
-  --shadow-xs: 0 1px 2px rgba(7, 23, 13, 0.08);
-  --shadow-sm: 0 8px 22px rgba(7, 23, 13, 0.08);
-  --shadow-md: 0 16px 42px rgba(7, 23, 13, 0.12);
+  --shadow-xs: 0 2px 6px rgba(7, 23, 13, 0.05);
+  --shadow-sm: 0 10px 26px rgba(7, 23, 13, 0.08);
+  --shadow-md: 0 18px 46px rgba(7, 23, 13, 0.12);
+  --shadow-glow: 0 14px 32px rgba(21, 129, 68, 0.16);
   --focus-ring: 0 0 0 3px var(--color-surface), 0 0 0 6px var(--color-focus);
 
-  --duration-fast: 140ms;
-  --duration-normal: 220ms;
+  --duration-fast: 160ms;
+  --duration-normal: 260ms;
   --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   --z-header: 100;
@@ -164,11 +184,28 @@
   --color-button-light-hover: #dcefe2;
   --color-overlay: rgba(20, 36, 26, 0.55);
   --color-overlay-strong: rgba(20, 36, 26, 0.9);
+  --gradient-primary: linear-gradient(135deg, #83c99b 0%, #65c889 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #a1dcb4 0%, #83c99b 100%);
+  --gradient-hero:
+    radial-gradient(circle at 88% 16%, rgba(101, 200, 137, 0.16), transparent 42%),
+    radial-gradient(circle at 12% 82%, rgba(59, 88, 69, 0.45), transparent 46%),
+    linear-gradient(180deg, rgba(32, 45, 38, 0.95) 0%, rgba(41, 58, 48, 0.98) 100%);
+  --gradient-ink:
+    radial-gradient(circle at 86% 18%, rgba(101, 200, 137, 0.18), transparent 42%),
+    radial-gradient(circle at 14% 84%, rgba(56, 90, 67, 0.32), transparent 45%),
+    linear-gradient(145deg, var(--color-brand-950) 0%, var(--color-brand-900) 100%);
+  --gradient-card: linear-gradient(180deg, #34483c 0%, #2f4237 100%);
+  --glass-surface: rgba(41, 58, 48, 0.85);
+  --glass-border: rgba(131, 201, 155, 0.28);
+  --orb-color-1: rgba(101, 200, 137, 0.12);
+  --orb-color-2: rgba(130, 219, 162, 0.1);
+  --orb-color-3: rgba(59, 88, 69, 0.24);
   --color-success: #98d3ac;
   --color-warning: #edc184;
   --color-danger: #f2b1a8;
   --color-info: #b6d5bd;
-  --shadow-xs: 0 1px 2px rgba(17, 31, 22, 0.18);
-  --shadow-sm: 0 8px 22px rgba(17, 31, 22, 0.2);
-  --shadow-md: 0 16px 42px rgba(17, 31, 22, 0.26);
+  --shadow-xs: 0 2px 6px rgba(17, 31, 22, 0.22);
+  --shadow-sm: 0 10px 26px rgba(17, 31, 22, 0.24);
+  --shadow-md: 0 18px 46px rgba(17, 31, 22, 0.32);
+  --shadow-glow: 0 14px 32px rgba(101, 200, 137, 0.15);
 }

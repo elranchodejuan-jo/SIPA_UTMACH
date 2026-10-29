@@ -1,6 +1,23 @@
 /* ═══════════════════════════════════════════════════════════
-   Animations — Reveal, hover, transitions
+   Animations — Ambient background, reveal, hover, transitions
    ═══════════════════════════════════════════════════════════ */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 86% 14%, rgba(92, 141, 72, 0.12), transparent 38%),
+    radial-gradient(circle at 14% 78%, rgba(52, 120, 168, 0.1), transparent 42%);
+  animation: expoferia-ambient 4.5s ease-in-out both;
+}
+
+@keyframes expoferia-ambient {
+  0% { transform: scale(1) translate3d(0, 0, 0); opacity: 0.85; }
+  100% { transform: scale(1.06) translate3d(-1.5%, 1.5%, 0); opacity: 1; }
+}
 
 /* Reveal on scroll */
 .reveal {
@@ -24,7 +41,8 @@
   .card:hover,
   .process-card:hover,
   .responsible-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
   }
 }
 
@@ -40,6 +58,10 @@
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+
   .reveal {
     opacity: 1;
     transform: none;

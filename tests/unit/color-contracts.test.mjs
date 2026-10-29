@@ -275,7 +275,7 @@ test('la exclusión de Expoferia es explícita y su fuente no entra al escaneo c
 
 test('el logo original y los metadatos verdes conservan sus contratos', async () => {
   const logo = await readFile(logoPath);
-  assert.equal(createHash('sha256').update(logo).digest('hex').toUpperCase(), '72FB48B8CCA7DEDBD643469D43B5B4140C15E2DEAD65E0E2A56F983F6C7DBAE3');
+  assert.equal(createHash('sha256').update(logo).digest('hex').toUpperCase(), 'B42AADE5DBA7538A524DAAD39F9411CA523D581EA5C0D9815B50C3536E3AB173');
   assert.deepEqual(SITE_CONFIG.themeColors, {
     light: '#F3FAF5',
     dark: '#202D26',

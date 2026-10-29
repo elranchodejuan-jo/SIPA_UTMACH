@@ -20,9 +20,14 @@ export function renderHomePage({ helpers }) {
   const html = `<section class="home-hero" aria-labelledby="home-title">
     <div class="container home-hero__grid">
       <div class="home-hero__copy reveal">
-        <p class="eyebrow">${escapeHtml(homeContent.hero.eyebrow)}</p>
+        <p class="eyebrow">${renderIcon('sparkles', helpers)}<span>${escapeHtml(homeContent.hero.eyebrow)}</span></p>
         <h1 id="home-title">${escapeHtml(homeContent.hero.title)}</h1>
         <p class="home-hero__lead">${escapeHtml(homeContent.hero.description)}</p>
+        <ul class="hero-highlights" aria-label="Ejes principales de SIPA">
+          <li>${renderIcon('layers', helpers)}<span>Bovinos, Porcinos y Aves</span></li>
+          <li>${renderIcon('flask', helpers)}<span>Investigación formativa</span></li>
+          <li>${renderIcon('award', helpers)}<span>Medicina Veterinaria · UTMACH</span></li>
+        </ul>
         <div class="home-hero__actions">
           ${renderButtonLink({ helpers, href: helpers.routeHref(homeContent.hero.primaryAction.routeId), label: homeContent.hero.primaryAction.label })}
           ${renderButtonLink({ helpers, href: helpers.routeHref(homeContent.hero.secondaryAction.routeId), label: homeContent.hero.secondaryAction.label, variant: 'secondary' })}
@@ -38,7 +43,7 @@ export function renderHomePage({ helpers }) {
   <section class="section" aria-labelledby="home-introduction">
     <div class="container content-grid content-grid--intro">
       <div>
-        <p class="eyebrow">${escapeHtml(homeContent.introduction.eyebrow)}</p>
+        <p class="eyebrow">${renderIcon('sprout', helpers)}<span>${escapeHtml(homeContent.introduction.eyebrow)}</span></p>
         <h2 id="home-introduction">${escapeHtml(homeContent.introduction.title)}</h2>
       </div>
       <div><p>${escapeHtml(homeContent.introduction.description)}</p><a class="text-link" href="${escapeAttribute(helpers.routeHref('sipa'))}">Descubrir quiénes somos ${renderIcon('arrow-right', helpers)}</a></div>
@@ -47,7 +52,7 @@ export function renderHomePage({ helpers }) {
 
   <section class="section section--soft" aria-labelledby="home-areas">
     <div class="container">
-      <div class="section-heading"><p class="eyebrow">Áreas de trabajo</p><h2 id="home-areas">Producción animal multiespecie</h2><p>Estos campos organizan el contenido actual del portal sin presentarse como líneas oficiales no confirmadas.</p></div>
+      <div class="section-heading"><p class="eyebrow">${renderIcon('layers', helpers)}<span>Áreas de trabajo</span></p><h2 id="home-areas">Producción animal multiespecie</h2><p>Estos campos organizan el contenido actual del portal sin presentarse como líneas oficiales no confirmadas.</p></div>
       <div class="card-grid card-grid--three">${researchAreas.filter(area => area.published).map(area => renderResearchArea(area, helpers)).join('')}</div>
       <div class="section-action"><a class="text-link" href="${escapeAttribute(helpers.routeHref('research', 'lineas'))}">Explorar investigación ${renderIcon('arrow-right', helpers)}</a></div>
     </div>
@@ -55,14 +60,14 @@ export function renderHomePage({ helpers }) {
 
   <section class="section section--ink" aria-labelledby="home-research">
     <div class="container content-grid">
-      <div><p class="eyebrow">${escapeHtml(homeContent.researchHighlight.eyebrow)}</p><h2 id="home-research">${escapeHtml(homeContent.researchHighlight.title)}</h2></div>
+      <div><p class="eyebrow">${renderIcon('dna', helpers)}<span>${escapeHtml(homeContent.researchHighlight.eyebrow)}</span></p><h2 id="home-research">${escapeHtml(homeContent.researchHighlight.title)}</h2></div>
       <div><p>${escapeHtml(homeContent.researchHighlight.description)}</p>${renderButtonLink({ helpers, href: helpers.routeHref('research'), label: 'Ir a Investigación', variant: 'light' })}</div>
     </div>
   </section>
 
   <section class="section" aria-labelledby="home-webinar">
     <div class="container">
-      <div class="section-heading"><p class="eyebrow">Divulgación prioritaria</p><h2 id="home-webinar" data-home-webinar-heading>${featuredWebinar ? 'Webinar destacado' : publishedWebinars.length ? 'Biblioteca de webinars' : 'Webinar destacado'}</h2></div>
+      <div class="section-heading"><p class="eyebrow">${renderIcon('video', helpers)}<span>Divulgación prioritaria</span></p><h2 id="home-webinar" data-home-webinar-heading>${featuredWebinar ? 'Webinar destacado' : publishedWebinars.length ? 'Biblioteca de webinars' : 'Webinar destacado'}</h2></div>
       ${featuredWebinar
         ? `<div data-home-webinar-featured><div class="webinar-grid">${renderWebinarCard(featuredWebinar, helpers)}</div></div>
           <div data-home-webinar-past hidden>${renderEmptyState({ title: 'Biblioteca de webinars', message: 'La fecha de la invitación destacada ya transcurrió. Consulta su ficha y futuras actividades en la biblioteca.', icon: 'play', compact: true }, helpers)}</div>`
@@ -75,21 +80,21 @@ export function renderHomePage({ helpers }) {
 
   <section class="section section--soft" aria-labelledby="home-event">
     <div class="container">
-      <div class="section-heading"><p class="eyebrow">Eventos</p><h2 id="home-event">Experiencia destacada</h2></div>
+      <div class="section-heading"><p class="eyebrow">${renderIcon('calendar', helpers)}<span>Eventos</span></p><h2 id="home-event">Experiencia destacada</h2></div>
       ${featuredEvent ? `<div class="card-grid">${renderEventCard(featuredEvent, helpers)}</div>` : ''}
     </div>
   </section>
 
   <section class="section" aria-labelledby="home-team">
     <div class="container content-grid">
-      <div><p class="eyebrow">${escapeHtml(homeContent.teamSummary.eyebrow)}</p><h2 id="home-team">${escapeHtml(homeContent.teamSummary.title)}</h2><p>${escapeHtml(homeContent.teamSummary.description)}</p></div>
+      <div><p class="eyebrow">${renderIcon('people', helpers)}<span>${escapeHtml(homeContent.teamSummary.eyebrow)}</span></p><h2 id="home-team">${escapeHtml(homeContent.teamSummary.title)}</h2><p>${escapeHtml(homeContent.teamSummary.description)}</p></div>
       <div class="cta-panel">${renderButtonLink({ helpers, href: helpers.routeHref('team'), label: 'Conocer el equipo', variant: 'secondary' })}</div>
     </div>
   </section>
 
   <section class="section section--cta" aria-labelledby="home-contact">
     <div class="container cta-panel cta-panel--wide">
-      <div><p class="eyebrow">${escapeHtml(homeContent.contactCta.eyebrow)}</p><h2 id="home-contact">${escapeHtml(homeContent.contactCta.title)}</h2><p>${escapeHtml(homeContent.contactCta.description)}</p></div>
+      <div><p class="eyebrow">${renderIcon('globe', helpers)}<span>${escapeHtml(homeContent.contactCta.eyebrow)}</span></p><h2 id="home-contact">${escapeHtml(homeContent.contactCta.title)}</h2><p>${escapeHtml(homeContent.contactCta.description)}</p></div>
       ${renderButtonLink({ helpers, href: helpers.routeHref('contact'), label: 'Ver contacto', variant: 'light' })}
     </div>
   </section>`;

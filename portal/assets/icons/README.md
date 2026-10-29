@@ -8,7 +8,10 @@ scripts desde un CDN. Los iconos se incluyen en el HTML estático con `renderIco
 - Fuente oficial: [lucide-icons/lucide](https://github.com/lucide-icons/lucide).
 - Revisión fijada: `dab294f313897bacaa968b725b3259fa37c17bd1` (13 de octubre de 2026).
 - Descarga: 14 de octubre de 2026.
-- `lucide/` conserva los SVG oficiales sin modificar.
+- Los 27 SVG de la entrega del 14 de octubre conservan la revisión oficial indicada.
+- La actualización del 29 de octubre incorpora 14 SVG del paquete aportado
+  `sipa_utmach_mejorado.zip`. Su origen y hash se registran por entrada; no se
+  atribuye a estos archivos una verificación contra la revisión anterior.
 - `manifest.json` registra el nombre original y el SHA-256 de cada archivo.
 - `LUCIDE-LICENSE.txt` conserva la licencia completa ISC y la atribución MIT
   correspondiente a los iconos derivados de Feather.
@@ -21,7 +24,9 @@ Los alias del portal conservan compatibilidad con el contenido existente:
 `news` → `newspaper`, `gallery` → `images`, `calendar` → `calendar-days`,
 `people` → `users-round`, `location` → `map-pin`, `external` → `external-link`,
 `close` → `x`, `check-circle` → `circle-check` y `alert-triangle` → `triangle-alert`.
-Los otros nombres coinciden con los originales de Lucide.
+La actualización añade los alias `flask` → `flask-conical`, `chart` → `bar-chart-3`,
+`share` → `share-2`, `building` → `building-2` y `home` → `house`.
+Los otros nombres coinciden con los archivos de origen.
 
 ## Mantenimiento
 

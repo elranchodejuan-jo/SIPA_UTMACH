@@ -7,6 +7,7 @@ import {
 } from '../lib/webinars.mjs';
 import { escapeAttribute, escapeHtml } from '../lib/html.mjs';
 import { renderButtonLink, renderTags, renderWebinarPlayer } from '../templates/components.mjs';
+import { renderIcon } from '../templates/partials/icons.mjs';
 import { renderPageHero } from '../templates/partials/page-hero.mjs';
 
 const dateFormatter = timeZone => new Intl.DateTimeFormat('es-EC', {
@@ -84,6 +85,8 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
     eyebrow: webinar.isAccessibleForFree ? 'Webinar gratuito' : 'Webinar',
     title: webinar.title,
     description: webinar.description,
+    icon: 'video',
+    helpers,
   })}
   <section class="section" aria-labelledby="webinar-invitation-title" data-webinar-detail data-webinar-slug="${escapeAttribute(webinar.slug)}">
     <div class="container webinar-detail">
@@ -99,11 +102,11 @@ export function renderWebinarDetailPage({ route, helpers, webinar: suppliedWebin
         <h2 id="webinar-invitation-title">${isUpcoming ? 'Participa en este encuentro' : 'Información del encuentro'}</h2>
         ${isUpcoming && webinar.invitation ? `<p class="webinar-detail__lead">${escapeHtml(webinar.invitation)}</p>` : ''}
         <dl class="webinar-detail__facts">
-          <div><dt>Expositor</dt><dd><strong>${escapeHtml(webinar.speaker)}</strong>${webinar.speakerRole ? `<span class="webinar-detail__speaker-role">${escapeHtml(webinar.speakerRole)}</span>` : ''}</dd></div>
-          <div><dt>Fecha</dt><dd><time datetime="${escapeAttribute(webinar.startDate)}">${escapeHtml(schedule.date)}</time></dd></div>
-          <div><dt>Hora</dt><dd>${schedule.times.map(escapeHtml).join(' <span aria-hidden="true">·</span> ')}</dd></div>
-          <div><dt>Plataforma</dt><dd>${escapeHtml(webinar.platform)}</dd></div>
-          ${webinar.sponsor ? `<div><dt>Auspicio</dt><dd>${escapeHtml(webinar.sponsor)}</dd></div>` : ''}
+          <div><dt>${renderIcon('people', helpers)}<span>Expositor</span></dt><dd><strong>${escapeHtml(webinar.speaker)}</strong>${webinar.speakerRole ? `<span class="webinar-detail__speaker-role">${escapeHtml(webinar.speakerRole)}</span>` : ''}</dd></div>
+          <div><dt>${renderIcon('calendar', helpers)}<span>Fecha</span></dt><dd><time datetime="${escapeAttribute(webinar.startDate)}">${escapeHtml(schedule.date)}</time></dd></div>
+          <div><dt>${renderIcon('clock', helpers)}<span>Hora</span></dt><dd>${schedule.times.map(escapeHtml).join(' <span aria-hidden="true">·</span> ')}</dd></div>
+          <div><dt>${renderIcon('video', helpers)}<span>Plataforma</span></dt><dd>${escapeHtml(webinar.platform)}</dd></div>
+          ${webinar.sponsor ? `<div><dt>${renderIcon('award', helpers)}<span>Auspicio</span></dt><dd>${escapeHtml(webinar.sponsor)}</dd></div>` : ''}
         </dl>
         <p>${escapeHtml(webinar.summary)}</p>
         ${renderTags([...(webinar.topics || []), ...(webinar.species || [])])}

@@ -1,79 +1,169 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" role="img" aria-labelledby="title desc">
-  <title id="title">Investigación en producción animal</title>
-  <desc id="desc">Composición científica con iconos lineales de bovino, porcino y ave conectados a un espacio central de investigación.</desc>
+  <title id="title">Ecosistema de Investigación en Producción Animal SIPA UTMACH</title>
+  <desc id="desc">Ilustración vectorial moderna con nodos científicos conectados para bovinos, porcinos y aves alrededor del emblema SIPA UTMACH.</desc>
   <defs>
-    <linearGradient id="panel" x1="96" y1="70" x2="688" y2="574" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F6F8F5"/>
-      <stop offset="1" stop-color="#F3FAF5"/>
+    <linearGradient id="panel" x1="72" y1="44" x2="728" y2="596" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F6F8F5"/>
+      <stop offset="1" stop-color="#DCEFE2"/>
     </linearGradient>
-    <linearGradient id="core" x1="306" y1="209" x2="505" y2="427" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#158144"/>
-      <stop offset="1" stop-color="#0D4827"/>
+    <linearGradient id="core" x1="278" y1="186" x2="522" y2="434" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#209653"/>
+      <stop offset="0.5" stop-color="#158144"/>
+      <stop offset="1" stop-color="#0A2817"/>
     </linearGradient>
-    <filter id="shadow" x="50" y="40" width="700" height="570" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#07170D" flood-opacity=".12"/>
+    <linearGradient id="g-pill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3FAF5"/>
+      <stop offset="1" stop-color="#E7F0E8"/>
+    </linearGradient>
+    <filter id="shadow" x="30" y="20" width="740" height="600" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#07170D" flood-opacity=".12"/>
     </filter>
+    <filter id="card-shadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#07170D" flood-opacity=".08"/>
+    </filter>
+    <style>
+      .pulse-ring {
+        transform-origin: 400px 310px;
+        animation: sipa-pulse 6s ease-in-out infinite;
+      }
+      .float-a { animation: sipa-float 5.5s ease-in-out infinite; }
+      .float-b { animation: sipa-float 6.5s ease-in-out 1.2s infinite; }
+      .float-c { animation: sipa-float 6s ease-in-out 2.4s infinite; }
+      .dash-flow {
+        stroke-dasharray: 7 9;
+        animation: sipa-dash 18s linear infinite;
+      }
+      @keyframes sipa-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.35; }
+        50% { transform: scale(1.06); opacity: 0.65; }
+      }
+      @keyframes sipa-float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-7px); }
+      }
+      @keyframes sipa-dash {
+        to { stroke-dashoffset: -160; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pulse-ring, .float-a, .float-b, .float-c, .dash-flow { animation: none; }
+      }
+    </style>
   </defs>
 
-  <rect x="72" y="54" width="656" height="532" rx="28" fill="url(#panel)" stroke="#CAD2CB" stroke-width="2" filter="url(#shadow)"/>
-  <path d="M101 145h142M101 171h94M584 489h114M612 515h86" stroke="#B9DEC5" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="662" cy="125" r="36" fill="#E7F0E8"/>
-  <path d="M648 128c11-19 25-23 35-24-2 17-11 30-28 36-13 4-21-3-24-8 5 1 11 0 17-4z" fill="none" stroke="#3B634A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M650 139c8-10 17-18 28-27" stroke="#3B634A" stroke-width="3" stroke-linecap="round"/>
+  <!-- Lienzo principal con borde esmeralda suave -->
+  <rect x="56" y="40" width="688" height="560" rx="34" fill="url(#panel)" stroke="#B9DEC5" stroke-width="2" filter="url(#shadow)"/>
 
-  <g fill="none" stroke="#6F987B" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 8">
-    <path d="M243 218c50 18 77 38 99 70"/>
-    <path d="M558 225c-52 13-80 34-103 65"/>
-    <path d="M550 455c-52-14-77-32-101-64"/>
-  </g>
-  <g fill="#FFFFFF" stroke="#AFC9B5" stroke-width="2">
-    <circle cx="337" cy="282" r="7"/>
-    <circle cx="463" cy="282" r="7"/>
-    <circle cx="456" cy="396" r="7"/>
+  <!-- Cuadrícula científica decorativa -->
+  <g stroke="#CAD2CB" stroke-opacity="0.45" stroke-width="1">
+    <line x1="120" y1="40" x2="120" y2="600"/>
+    <line x1="260" y1="40" x2="260" y2="600"/>
+    <line x1="400" y1="40" x2="400" y2="600"/>
+    <line x1="540" y1="40" x2="540" y2="600"/>
+    <line x1="680" y1="40" x2="680" y2="600"/>
+    <line x1="56" y1="130" x2="744" y2="130"/>
+    <line x1="56" y1="250" x2="744" y2="250"/>
+    <line x1="56" y1="370" x2="744" y2="370"/>
+    <line x1="56" y1="490" x2="744" y2="490"/>
   </g>
 
-  <g transform="translate(112 166)">
-    <rect width="156" height="138" rx="20" fill="#FFFFFF" stroke="#D3C0A7" stroke-width="2"/>
-    <g transform="translate(34 23)" fill="none" stroke="#7A5622" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="m21 19-17-9 3 20c1 6 5 9 11 9M67 19l17-9-3 20c-1 6-5 9-11 9"/>
-      <path d="M21 20c12-12 34-12 46 0l2 30c1 18-9 29-25 29S18 68 19 50z"/>
-      <path d="M31 42h.1M57 42h.1M29 60c8-7 22-7 30 0M34 59v8M54 59v8"/>
+  <!-- Orbes orgánicos suaves -->
+  <circle cx="645" cy="120" r="78" fill="#DCEFE2" fill-opacity="0.7"/>
+  <circle cx="155" cy="500" r="86" fill="#E7F0E8" fill-opacity="0.8"/>
+  <circle class="pulse-ring" cx="400" cy="310" r="158" fill="none" stroke="#4EAD74" stroke-width="2" stroke-dasharray="6 10"/>
+  <circle class="pulse-ring" cx="400" cy="310" r="192" fill="none" stroke="#83C49A" stroke-width="1.5"/>
+
+  <!-- Barra superior de estado científico -->
+  <rect x="92" y="72" width="236" height="40" rx="20" fill="#FFFFFF" stroke="#B9DEC5" stroke-width="1.5"/>
+  <circle cx="114" cy="92" r="6" fill="#158144"/>
+  <path d="M130 88h118M130 97h76" stroke="#3B634A" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Insignia hoja científica arriba derecha -->
+  <g transform="translate(626 70)">
+    <rect width="78" height="78" rx="22" fill="#FFFFFF" stroke="#B9DEC5" stroke-width="2" filter="url(#card-shadow)"/>
+    <path d="M26 48c11-20 26-24 36-25-2 18-12 31-29 37-13 4-21-3-24-8 5 1 11 0 17-4z" fill="#DCEFE2" stroke="#158144" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M27 57c9-11 18-19 29-28" stroke="#116A38" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Conexiones de red científica -->
+  <g class="dash-flow" fill="none" stroke="#209653" stroke-width="3" stroke-linecap="round">
+    <path d="M248 212c48 18 76 38 98 68"/>
+    <path d="M552 214c-48 16-76 36-98 66"/>
+    <path d="M548 448c-48-14-74-32-96-62"/>
+    <path d="M268 446c44-16 68-34 88-60"/>
+  </g>
+
+  <!-- Tarjeta Especie 1: Bovinos -->
+  <g class="float-a">
+    <g transform="translate(96 144)" filter="url(#card-shadow)">
+      <rect width="164" height="144" rx="24" fill="#FFFFFF" stroke="#D3C0A7" stroke-width="2"/>
+      <rect x="14" y="14" width="136" height="90" rx="16" fill="#F2E9DC" fill-opacity="0.55"/>
+      <g transform="translate(38 22)" fill="none" stroke="#7A5622" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m21 19-17-9 3 20c1 6 5 9 11 9M67 19l17-9-3 20c-1 6-5 9-11 9"/>
+        <path d="M21 20c12-12 34-12 46 0l2 30c1 18-9 29-25 29S18 68 19 50z"/>
+        <path d="M31 42h.1M57 42h.1M29 60c8-7 22-7 30 0M34 59v8M54 59v8"/>
+      </g>
+      <path d="M46 120h72" stroke="#7A5622" stroke-width="4.5" stroke-linecap="round"/>
     </g>
-    <path d="M51 112h54" stroke="#7A5622" stroke-width="4" stroke-linecap="round"/>
   </g>
 
-  <g transform="translate(532 157)">
-    <rect width="156" height="138" rx="20" fill="#FFFFFF" stroke="#D6BBC7" stroke-width="2"/>
-    <g transform="translate(32 25)" fill="none" stroke="#7A455E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="m20 18-15-11 2 22M72 18 87 7l-2 22"/>
-      <path d="M6 46C6 20 24 5 46 5s40 15 40 41c0 23-18 36-40 36S6 69 6 46z"/>
-      <path d="M27 40h.1M65 40h.1M27 63c0-9 9-15 19-15s19 6 19 15-9 15-19 15-19-6-19-15zM39 63h.1M53 63h.1"/>
+  <!-- Tarjeta Especie 2: Porcinos -->
+  <g class="float-b">
+    <g transform="translate(540 144)" filter="url(#card-shadow)">
+      <rect width="164" height="144" rx="24" fill="#FFFFFF" stroke="#D6BBC7" stroke-width="2"/>
+      <rect x="14" y="14" width="136" height="90" rx="16" fill="#F3E5EB" fill-opacity="0.55"/>
+      <g transform="translate(36 22)" fill="none" stroke="#7A455E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m20 18-15-11 2 22M72 18 87 7l-2 22"/>
+        <path d="M6 46C6 20 24 5 46 5s40 15 40 41c0 23-18 36-40 36S6 69 6 46z"/>
+        <path d="M27 40h.1M65 40h.1M27 63c0-9 9-15 19-15s19 6 19 15-9 15-19 15-19-6-19-15zM39 63h.1M53 63h.1"/>
+      </g>
+      <path d="M46 120h72" stroke="#7A455E" stroke-width="4.5" stroke-linecap="round"/>
     </g>
-    <path d="M51 112h54" stroke="#7A455E" stroke-width="4" stroke-linecap="round"/>
   </g>
 
-  <g transform="translate(525 385)">
-    <rect width="163" height="142" rx="20" fill="#FFFFFF" stroke="#D8D0A5" stroke-width="2"/>
-    <g transform="translate(29 19)" fill="none" stroke="#716316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 66C13 42 31 18 57 18c23 0 40 16 40 38 0 24-18 40-44 40H27"/>
-      <path d="M93 31c1-14 10-23 24-24-1 11-6 19-15 24l15 8-15 9M62 39h.1M42 96v15M72 96v15M12 50 1 39l2 19"/>
+  <!-- Tarjeta Especie 3: Aves -->
+  <g class="float-c">
+    <g transform="translate(536 382)" filter="url(#card-shadow)">
+      <rect width="168" height="146" rx="24" fill="#FFFFFF" stroke="#D8D0A5" stroke-width="2"/>
+      <rect x="14" y="14" width="140" height="92" rx="16" fill="#F2EFD8" fill-opacity="0.6"/>
+      <g transform="translate(31 16)" fill="none" stroke="#716316" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 66C13 42 31 18 57 18c23 0 40 16 40 38 0 24-18 40-44 40H27"/>
+        <path d="M93 31c1-14 10-23 24-24-1 11-6 19-15 24l15 8-15 9M62 39h.1M42 96v12M72 96v12M12 50 1 39l2 19"/>
+      </g>
+      <path d="M48 122h72" stroke="#716316" stroke-width="4.5" stroke-linecap="round"/>
     </g>
-    <path d="M54 117h55" stroke="#716316" stroke-width="4" stroke-linecap="round"/>
   </g>
 
-  <g transform="translate(278 206)">
-    <rect width="244" height="226" rx="28" fill="url(#core)"/>
-    <circle cx="122" cy="100" r="69" fill="#FFFFFF" fill-opacity=".1" stroke="#FFFFFF" stroke-opacity=".25" stroke-width="2"/>
-    <g transform="translate(69 40)" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M42 4h30M52 4v22L27 68c-13 22 3 49 28 49h24c25 0 41-27 28-49L62 26V4"/>
-      <path d="M37 66h60M50 87h.1M78 96h.1"/>
+  <!-- Núcleo Central SIPA: Escudo Veterinario + Ciencia -->
+  <g transform="translate(274 188)" filter="url(#shadow)">
+    <rect width="252" height="244" rx="34" fill="url(#core)" stroke="#83C49A" stroke-width="2"/>
+    <circle cx="126" cy="106" r="76" fill="#FFFFFF" fill-opacity=".1" stroke="#B9DEC5" stroke-opacity=".35" stroke-width="2"/>
+    <!-- Emblema V + Báculo + Matraz -->
+    <path d="M82 54L126 150L170 54" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M126 38V134" fill="none" stroke="#B9DEC5" stroke-width="4.2" stroke-linecap="round"/>
+    <circle cx="126" cy="36" r="5" fill="#FFFFFF"/>
+    <path d="M112 58c-10 4-10 14 2 18l24 8c12 4 12 14 0 19l-18 7" fill="none" stroke="#DCEFE2" stroke-width="3.8" stroke-linecap="round"/>
+    <path d="M62 184h128M84 204h84" stroke="#B9DEC5" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Tarjeta Ciencia Abierta y Divulgación (abajo izquierda) -->
+  <g class="float-b">
+    <g transform="translate(102 394)" filter="url(#card-shadow)">
+      <rect width="214" height="126" rx="24" fill="#FFFFFF" stroke="#B9DEC5" stroke-width="2"/>
+      <rect x="16" y="16" width="54" height="54" rx="14" fill="url(#g-pill)"/>
+      <path d="M31 32c10-3 20 0 28 7v20c-8-7-18-10-28-7zM59 39c8-7 18-10 28-7v20c-10-3-20 0-28 7z" transform="translate(-16 -4)" fill="none" stroke="#158144" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M86 32h98M86 48h72M86 64h84" stroke="#116A38" stroke-width="3.5" stroke-linecap="round"/>
+      <rect x="16" y="86" width="182" height="22" rx="11" fill="#F3FAF5"/>
+      <circle cx="30" cy="97" r="4.5" fill="#209653"/>
+      <path d="M44 97h116" stroke="#3B634A" stroke-width="3" stroke-linecap="round"/>
     </g>
-    <path d="M58 172h128M78 191h88" stroke="#B9DEC5" stroke-width="4" stroke-linecap="round"/>
   </g>
 
-  <g transform="translate(127 407)">
-    <rect width="205" height="104" rx="18" fill="#FFFFFF" stroke="#CAD2CB" stroke-width="2"/>
-    <path d="M31 29c22-5 42 0 60 16v40c-18-16-38-21-60-16zM174 29c-22-5-42 0-60 16v40c18-16 38-21 60-16zM91 45h23" fill="none" stroke="#116A38" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M144 25c2-12 10-19 23-20-2 10-8 18-18 22" fill="none" stroke="#3B634A" stroke-width="3" stroke-linecap="round"/>
+  <!-- Nodos conectores -->
+  <g fill="#FFFFFF" stroke="#158144" stroke-width="3">
+    <circle cx="342" cy="276" r="7.5"/>
+    <circle cx="458" cy="276" r="7.5"/>
+    <circle cx="456" cy="390" r="7.5"/>
+    <circle cx="352" cy="390" r="7.5"/>
   </g>
 </svg>
