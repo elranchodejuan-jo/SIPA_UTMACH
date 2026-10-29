@@ -60,7 +60,7 @@ test('la pausa se conserva al navegar y puede reactivarse con el teclado', async
   await expect.poll(() => offset(page)).toBeLessThan(-10);
 });
 
-test('movimiento reducido detiene el efecto inmediatamente y conserva las ilustraciones', async ({ page }, testInfo) => {
+test('movimiento reducido detiene el efecto inmediatamente y conserva la red de partículas', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-1366', 'Preferencia de accesibilidad en vivo.');
   await gotoPortal(page, '/');
   await page.mouse.move(120, 220);
@@ -69,7 +69,7 @@ test('movimiento reducido detiene el efecto inmediatamente y conserva las ilustr
   await expect(page.locator('[data-science-background]')).toHaveAttribute('data-interactive', 'false');
   await expect(page.locator('[data-science-toggle]')).toBeHidden();
   expect(await offset(page)).toBe(0);
-  await expect(page.locator('.science-dna')).toBeVisible();
+  await expect(page.locator('[data-science-network]')).toBeVisible();
   await page.reload();
   await page.mouse.move(1100, 300);
   expect(await offset(page)).toBe(0);
@@ -85,7 +85,7 @@ test('la versión táctil es estática y no bloquea el menú ni desborda', async
   const runtime = await gotoPortal(page, '/', watchRuntime(page));
   await expect(page.locator('[data-science-background]')).toHaveAttribute('data-interactive', 'false');
   await expect(page.locator('[data-science-toggle]')).toBeHidden();
-  await expect(page.locator('.science-dna')).toBeVisible();
+  await expect(page.locator('[data-science-network]')).toBeVisible();
   const stillFrame = await networkPaint(page);
   expect(stillFrame.paintedPixels).toBeGreaterThan(100);
   await page.waitForTimeout(150);

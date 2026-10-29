@@ -1,10 +1,10 @@
-# Fondo científico interactivo · SIPA 2.3
+# Fondo científico interactivo · SIPA 2.3.1
 
 ## Propuesta implementada
 
-Una red de partículas conectadas con profundidad y giro suave, inspirada visualmente en el fondo de [AMC VetAtlas](https://andreerogel1997-bit.github.io/amc-vetatlas/). La implementación es original, mediante proyección 3D en Canvas 2D, sin incorporar código, recursos ni dependencias de la referencia. La doble hélice, las fórmulas y la gráfica de crecimiento permanecen como detalles secundarios. Las ilustraciones son decorativas; no representan datos ni resultados de SIPA. Se conservan los colores institucionales, las páginas, los afiches y la Expoferia histórica.
+Una red de partículas conectadas con profundidad y giro suave, inspirada visualmente en el fondo de [AMC VetAtlas](https://andreerogel1997-bit.github.io/amc-vetatlas/). La implementación es original, mediante proyección 3D en Canvas 2D, sin incorporar código, recursos ni dependencias de la referencia. El fondo contiene únicamente la red y su iluminación; se retiraron la doble hélice, las fórmulas, la molécula, la gráfica de crecimiento y la cuadrícula anteriores. La red es decorativa; no representa datos ni resultados de SIPA. Se conservan los colores institucionales, las páginas, los afiches y la Expoferia histórica.
 
-La nube gira lentamente mientras la página está activa. El mouse orienta la escena, guía un halo y conecta hasta siete partículas cercanas al puntero. Las capas científicas conservan su desplazamiento amortiguado (hasta 22 px en horizontal y 16 px en vertical).
+La nube gira lentamente mientras la página está activa. El mouse orienta la escena, guía un halo y conecta hasta siete partículas cercanas al puntero. El seguimiento del puntero conserva su respuesta amortiguada.
 
 ## Accesibilidad y rendimiento
 
@@ -18,7 +18,7 @@ La nube gira lentamente mientras la página está activa. El mouse orienta la es
 
 ## Archivos
 
-- `portal/templates/partials/science-background.mjs`: ilustraciones y control.
+- `portal/templates/partials/science-background.mjs`: red de respaldo, lienzo y control.
 - `portal/assets/css/science-background.css`: capas, temas y adaptación móvil.
 - `portal/assets/js/science-background.js`: red proyectada, seguimiento, pausa, ciclo de vida y preferencias.
 - `tests/e2e/science-background.spec.mjs`: cambios reales de píxeles durante la animación, detención con pausa y movimiento reducido, respuesta del mouse, paleta en ambos temas y navegación táctil.
