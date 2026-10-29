@@ -61,10 +61,13 @@ test('la pausa se conserva al navegar y puede reactivarse con el teclado', async
 });
 
 test('movimiento reducido detiene el efecto inmediatamente y conserva la red de partículas', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-1366', 'Preferencia de accesibilidad en vivo.');
   await gotoPortal(page, '/');
-  await page.mouse.move(120, 220);
-  await expect.poll(() => offset(page)).toBeLessThan(-10);
+  const initial = await networkPaint(page);
+  await expect.poll(async () => (await networkPaint(page)).fingerprint).not.toBe(initial.fingerprint);
+  if (testInfo.project.name === 'desktop-1366') {
+    await page.mouse.move(120, 220);
+    await expect.poll(() => offset(page)).toBeLessThan(-10);
+  }
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('[data-science-background]')).toHaveAttribute('data-interactive', 'false');
   await expect(page.locator('[data-science-toggle]')).toBeHidden();
@@ -78,20 +81,39 @@ test('movimiento reducido detiene el efecto inmediatamente y conserva la red de 
   expect((await networkPaint(page)).fingerprint).toBe(reducedFrame.fingerprint);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await expect(page.locator('[data-science-toggle]')).toBeVisible();
+  await expect.poll(async () => (await networkPaint(page)).fingerprint).not.toBe(reducedFrame.fingerprint);
 });
 
-test('la versión táctil es estática y no bloquea el menú ni desborda', async ({ page }, testInfo) => {
+test('la versión táctil se anima, permite pausar y no bloquea el menú ni desborda', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-360', 'Versión táctil.');
   const runtime = await gotoPortal(page, '/', watchRuntime(page));
-  await expect(page.locator('[data-science-background]')).toHaveAttribute('data-interactive', 'false');
-  await expect(page.locator('[data-science-toggle]')).toBeHidden();
+  const background = page.locator('[data-science-background]');
+  const toggle = page.locator('[data-science-toggle]');
+  await expect(background).toHaveAttribute('data-interactive', 'true');
+  await expect(toggle).toBeVisible();
   await expect(page.locator('[data-science-network]')).toBeVisible();
-  const stillFrame = await networkPaint(page);
-  expect(stillFrame.paintedPixels).toBeGreaterThan(100);
+  expect(await page.locator('[data-science-network]').evaluate(canvas => canvas.width <= canvas.clientWidth)).toBe(true);
+  const animatedFrame = await networkPaint(page);
+  expect(animatedFrame.paintedPixels).toBeGreaterThan(100);
+  await expect.poll(async () => (await networkPaint(page)).fingerprint).not.toBe(animatedFrame.fingerprint);
+  await toggle.tap();
+  await expect(background).toHaveAttribute('data-interactive', 'false');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  const pausedFrame = await networkPaint(page);
   await page.waitForTimeout(150);
-  expect((await networkPaint(page)).fingerprint).toBe(stillFrame.fingerprint);
+  expect((await networkPaint(page)).fingerprint).toBe(pausedFrame.fingerprint);
+  await gotoPortal(page, '/investigacion/');
+  await expect(background).toHaveAttribute('data-interactive', 'false');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await toggle.tap();
+  await expect(background).toHaveAttribute('data-interactive', 'true');
+  const resumedFrame = await networkPaint(page);
+  await expect.poll(async () => (await networkPaint(page)).fingerprint).not.toBe(resumedFrame.fingerprint);
+  expect(await offset(page)).toBe(0);
+  await expect(background).toHaveAttribute('data-pointer-active', 'false');
   await page.getByRole('button', { name: 'Abrir menú', exact: true }).click();
   await expect(page.locator('[data-menu-toggle]')).toHaveAttribute('aria-expanded', 'true');
+  await expect(toggle).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expectRuntimeClean(runtime);
 });

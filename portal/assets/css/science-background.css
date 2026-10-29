@@ -91,7 +91,11 @@ body.menu-open .science-toggle { visibility: hidden; }
   .science-network, .science-network-fallback { opacity: 0.65; }
 }
 
-@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+@media (hover: none), (pointer: coarse) {
+  .science-background__halo { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
   .science-background__halo,
   .science-toggle { display: none !important; }
 }
