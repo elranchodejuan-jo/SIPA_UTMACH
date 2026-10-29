@@ -121,6 +121,9 @@ El estado comprobado del dominio y los límites operativos se documentan en [doc
 
 ## Estado editorial
 
-**SIPA v2.0.0 — portal institucional multipágina.**
+**SIPA v2.1.0 — portal institucional multipágina.**
+
+La actualización visual y sus comprobaciones se documentan en
+[docs/ACTUALIZACION_SIPA_2026-10-29.md](docs/ACTUALIZACION_SIPA_2026-10-29.md).
 
 Los datos institucionales pendientes permanecen ocultos hasta ser confirmados por la dirección del semillero.

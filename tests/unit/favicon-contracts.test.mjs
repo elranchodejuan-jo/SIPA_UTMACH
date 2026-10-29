@@ -29,7 +29,7 @@ const assertPng = (contents, size, label) => {
 
 test('la familia favicon HD conserva la fuente maestra SIPA y sus tamaños públicos', async () => {
   const master = await readFile(masterPath);
-  assert.equal(createHash('sha256').update(master).digest('hex').toUpperCase(), 'E4EDF50DEFE58950442C79FD89609E092BA38FEBCC42A8D2B62DDA45193B2120');
+  assert.equal(createHash('sha256').update(master).digest('hex').toUpperCase(), '9CA84EFB40195014F2E489FF407B2416480C820348F653C6B1EA19634181EBDB');
   assertPng(master, 1024, 'fuente maestra');
 
   for (const [name, size] of expectedPngs) {

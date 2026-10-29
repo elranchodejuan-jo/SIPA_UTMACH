@@ -107,6 +107,7 @@ export function renderLayout({ route, page, metadata }) {
   ${renderJsonLd({ '@context': 'https://schema.org', '@graph': graph })}
 </head>
 <body data-route-id="${escapeAttribute(route.id)}">
+  <div class="bg-ambient" aria-hidden="true"><span class="bg-ambient__orb bg-ambient__orb--1"></span><span class="bg-ambient__orb bg-ambient__orb--2"></span><span class="bg-ambient__orb bg-ambient__orb--3"></span><span class="bg-ambient__grid"></span></div>
   <span class="page-top" id="page-top" tabindex="-1"></span>
   <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
   ${renderHeader({ route, helpers })}

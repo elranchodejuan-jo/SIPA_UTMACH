@@ -12,6 +12,8 @@ html {
 }
 
 body {
+  position: relative;
+  isolation: isolate;
   min-width: 20rem;
   margin: 0;
   color: var(--color-text);
@@ -21,6 +23,7 @@ body {
   line-height: var(--line-height-body);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 body.menu-open {
@@ -28,8 +31,87 @@ body.menu-open {
   overscroll-behavior: none;
 }
 
+/* Sistema de animación de fondo ambiental SIPA */
+.bg-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-ambient__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(68px);
+}
+
+.bg-ambient__orb--1 {
+  top: -8%;
+  right: -6%;
+  width: clamp(18rem, 36vw, 34rem);
+  height: clamp(18rem, 36vw, 34rem);
+  background: var(--orb-color-1);
+  animation: sipa-orb-1 4.5s ease-in-out both;
+}
+
+.bg-ambient__orb--2 {
+  top: 38%;
+  left: -10%;
+  width: clamp(16rem, 32vw, 30rem);
+  height: clamp(16rem, 32vw, 30rem);
+  background: var(--orb-color-2);
+  animation: sipa-orb-2 4.5s ease-in-out both;
+}
+
+.bg-ambient__orb--3 {
+  bottom: -10%;
+  right: 18%;
+  width: clamp(15rem, 28vw, 26rem);
+  height: clamp(15rem, 28vw, 26rem);
+  background: var(--orb-color-3);
+  animation: sipa-orb-3 4.5s ease-in-out both;
+}
+
+.bg-ambient__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(var(--color-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.36;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 35%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 35%, transparent 100%);
+  animation: sipa-grid-breathe 4.5s ease-in-out both;
+}
+
+@keyframes sipa-orb-1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-4%, 6%, 0) scale(1.08); }
+  100% { transform: translate3d(3%, -4%, 0) scale(0.95); }
+}
+
+@keyframes sipa-orb-2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, -5%, 0) scale(1.1); }
+  100% { transform: translate3d(-3%, 5%, 0) scale(0.94); }
+}
+
+@keyframes sipa-orb-3 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-5%, -6%, 0) scale(1.06); }
+  100% { transform: translate3d(4%, 3%, 0) scale(0.96); }
+}
+
+@keyframes sipa-grid-breathe {
+  0% { opacity: 0.24; }
+  100% { opacity: 0.44; }
+}
+
 main {
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .page-top {
@@ -69,6 +151,7 @@ a {
   color: var(--color-link);
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.16em;
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
 a:hover {
@@ -94,7 +177,6 @@ button:not(:disabled),
 }
 
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  /* El contorno sigue visible si un estado hover o activo cambia la sombra. */
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
   box-shadow: var(--focus-ring);
@@ -111,8 +193,8 @@ h3,
 h4 {
   margin-block: 0;
   color: var(--color-ink);
-  font-weight: 760;
-  letter-spacing: -0.025em;
+  font-weight: 780;
+  letter-spacing: -0.028em;
   line-height: var(--line-height-heading);
   text-wrap: balance;
 }
@@ -197,21 +279,33 @@ strong {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  width: fit-content;
   margin: 0 0 var(--space-3);
-  color: var(--color-science-700);
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-link);
+  background: color-mix(in srgb, var(--color-brand-50) 88%, transparent);
   font-size: var(--font-size-xs);
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   line-height: 1.35;
   text-transform: uppercase;
 }
 
 .eyebrow::before {
-  width: 1.75rem;
-  height: 2px;
-  border-radius: var(--radius-pill);
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
   background: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent);
   content: '';
+}
+
+.eyebrow svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: 0 0 0.95rem;
 }
 
 .lead {

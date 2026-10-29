@@ -13,7 +13,7 @@ export function renderTeamPage({ helpers, route }) {
     members: published.filter(member => member.category === category.id),
   }));
   const publishedChannels = publishedInOrder(contactChannels);
-  const html = `${renderPageHero({ eyebrow: 'Comunidad SIPA', title: 'Equipo', description: route.description || teamContent.introduction })}
+  const html = `${renderPageHero({ eyebrow: 'Comunidad SIPA', title: 'Equipo', description: route.description || teamContent.introduction, icon: 'people', helpers })}
   <section class="section team-section" aria-labelledby="team-directory"><div class="container"><div class="section-heading"><p class="eyebrow">Directorio</p><h2 id="team-directory">Personas que integran SIPA</h2><p>${escapeHtml(teamContent.introduction)}</p></div>${published.length
     ? groups.filter(group => group.members.length).map(group => {
       const gridModifiers = [

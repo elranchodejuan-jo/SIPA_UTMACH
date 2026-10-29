@@ -48,6 +48,7 @@ export function renderResourceCard(resource, helpers) {
 export function renderEventCard(event, helpers) {
   const href = event.routeId ? helpers.routeHref(event.routeId) : event.externalUrl;
   return `<article class="card event-card">
+    ${renderIcon('calendar', helpers, { className: 'card__icon' })}
     <div class="event-card__meta"><span>${escapeHtml(event.dateLabel)}</span><span>${escapeHtml(event.type)}</span></div>
     <h3>${escapeHtml(event.title)}</h3>
     <p>${escapeHtml(event.summary)}</p>

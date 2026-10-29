@@ -1,5 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="6" fill="#143B63"/>
-  <text x="16" y="20" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">NA</text>
-  <circle cx="26" cy="8" r="4" fill="#5C8D48"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SIPA UTMACH">
+  <defs>
+    <linearGradient id="sipa-bg" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#209653"/>
+      <stop offset="0.52" stop-color="#158144"/>
+      <stop offset="1" stop-color="#0A2817"/>
+    </linearGradient>
+    <linearGradient id="sipa-accent" x1="16" y1="14" x2="48" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DCEFE2"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#sipa-bg)"/>
+  <rect x="3" y="3" width="58" height="58" rx="13.5" fill="none" stroke="#83C49A" stroke-opacity="0.32" stroke-width="1.2"/>
+  <path d="M16 17L32 50L48 17" fill="none" stroke="url(#sipa-accent)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 11V44" fill="none" stroke="#B9DEC5" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="32" cy="10.5" r="2.6" fill="#FFFFFF"/>
+  <path d="M27.5 18.5C24 20 24 23.5 28.5 25L35.5 27.5C39.5 29 39.5 32.5 35 34.5L29 37" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round"/>
+  <path d="M36 28C41 23 47 22 49 22C48 28 44 33 38 35C34 36 33 33 36 28Z" fill="#B9DEC5" fill-opacity="0.88"/>
+  <circle cx="19" cy="14" r="2.2" fill="#B9DEC5"/>
+  <circle cx="45" cy="14" r="2.2" fill="#B9DEC5"/>
 </svg>
