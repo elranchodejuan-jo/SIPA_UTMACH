@@ -232,6 +232,7 @@ test('personas compartidas tienen IDs únicos y relaciones válidas por contexto
       { id: 'juan-bajana', name: 'Juan José Bajaña', portrait: 'assets/images/people/juan-bajana.jpg', status: 'confirmed' },
       { id: 'robinson-macas', name: 'Robinson Macas', portrait: 'assets/images/people/robinson-macas.jpeg', status: 'confirmed' },
       { id: 'allison-machuca', name: 'Alison Machuca', portrait: 'assets/images/people/alison-machuca.jpeg', status: 'confirmed' },
+      { id: 'nathaly-valle', name: 'Nathaly Paulette Valle Valarezo', portrait: 'assets/images/people/nathaly-valle.jpg', status: 'confirmed' },
     ],
   );
   assert.deepEqual(draftPeople.map(({ id, name, portrait, status }) => ({ id, name, portrait, status })), [
@@ -271,6 +272,7 @@ test('Equipo organiza perfiles confirmados y conserva borradores fuera de public
       { personId: 'robinson-macas', category: 'ayudantias', institutionalRole: 'Miembro de SIPA', badges: ['Ayudante de cátedra'], order: 10, published: true, status: 'confirmed' },
       { personId: 'allison-machuca', category: 'ayudantias', institutionalRole: 'Miembro de SIPA', badges: ['Ayudante de campo'], order: 20, published: true, status: 'confirmed' },
       { personId: 'juan-bajana', category: 'comunicacion-digital', institutionalRole: 'Miembro de SIPA', badges: ['Desarrollo web', 'Administración de redes'], order: 10, published: true, status: 'confirmed' },
+      { personId: 'nathaly-valle', category: 'otros', institutionalRole: 'Miembro de SIPA', badges: ['Redactor'], order: 10, published: true, status: 'confirmed' },
     ],
   );
   assert.deepEqual(sipaDraftMemberships.map(({ personId, category, badges, order, published, status }) => ({
@@ -292,11 +294,23 @@ test('Equipo organiza perfiles confirmados y conserva borradores fuera de public
     'Robinson Macas',
     'Alison Machuca',
     'Juan José Bajaña',
+    'Nathaly Paulette Valle Valarezo',
   ]);
   assert.ok(published.every(member => member.role === 'Miembro de SIPA'));
   assert.ok(published.every(member => !member.semester));
   assert.ok(published.every(member => !['Exponente', 'Desarrollador Web', 'Master Solver'].includes(member.role)));
   assert.equal(published.find(member => member.id === 'allison-machuca').career, 'Medicina Veterinaria');
+  assert.equal(published.find(member => member.id === 'nathaly-valle').career, 'Medicina Veterinaria');
+  assert.deepEqual(published.find(member => member.id === 'nathaly-valle').badges.map(badge => badge.label), ['Redactor']);
+  assert.deepEqual(
+    published.find(member => member.id === 'nathaly-valle').contacts.map(({ type, url }) => ({ type, url })),
+    [
+      { type: 'orcid', url: 'https://orcid.org/0009-0004-6223-9364' },
+      { type: 'email', url: 'mailto:nvalle3@utmachala.edu.ec' },
+      { type: 'tiktok', url: 'https://www.tiktok.com/@nathy43040?_r=1&_t=ZS-9BYtR0woeH6' },
+      { type: 'instagram', url: 'https://www.instagram.com/na.thy640?evlk=dnh4em1jb2ZhcHlo' },
+    ],
+  );
   assert.deepEqual(published.find(member => member.id === 'juan-bajana').badges.map(badge => badge.label), [
     'Desarrollo web',
     'Administración de redes',

@@ -82,6 +82,17 @@ export const sipaMemberships = Object.freeze([
     published: true,
     status: 'confirmed',
   }),
+  Object.freeze({
+    personId: 'nathaly-valle',
+    category: 'otros',
+    institutionalRole: 'Miembro de SIPA',
+    officialPosition: '',
+    badges: Object.freeze([confirmedBadge('Redactor')]),
+    career: 'Medicina Veterinaria',
+    order: 10,
+    published: true,
+    status: 'confirmed',
+  }),
 ]);
 
 // Relaciones editoriales incompletas. No forman parte de `teamMembers` ni de

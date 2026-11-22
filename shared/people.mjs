@@ -100,6 +100,42 @@ const personRecords = [
       },
     ],
   },
+  {
+    id: 'nathaly-valle',
+    name: 'Nathaly Paulette Valle Valarezo',
+    portrait: `${PEOPLE_ASSET_ROOT}nathaly-valle.jpg`,
+    status: 'confirmed',
+    contacts: [
+      {
+        type: 'orcid',
+        label: 'ORCID',
+        url: 'https://orcid.org/0009-0004-6223-9364',
+        published: true,
+        status: 'confirmed',
+      },
+      {
+        type: 'email',
+        label: 'Correo institucional',
+        url: 'mailto:nvalle3@utmachala.edu.ec',
+        published: true,
+        status: 'confirmed',
+      },
+      {
+        type: 'tiktok',
+        label: 'TikTok',
+        url: 'https://www.tiktok.com/@nathy43040?_r=1&_t=ZS-9BYtR0woeH6',
+        published: true,
+        status: 'confirmed',
+      },
+      {
+        type: 'instagram',
+        label: 'Instagram',
+        url: 'https://www.instagram.com/na.thy640?evlk=dnh4em1jb2ZhcHlo',
+        published: true,
+        status: 'confirmed',
+      },
+    ],
+  },
 ];
 
 // Identidades incompletas reservadas para edición del portal. Este export no es
