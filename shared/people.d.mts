@@ -20,7 +20,7 @@ export interface AcademicProfile {
 }
 
 export interface PersonContact {
-  readonly type: 'email' | 'googleScholar' | 'instagram' | 'linkedin' | 'orcid' | 'whatsapp';
+  readonly type: 'email' | 'googleScholar' | 'instagram' | 'linkedin' | 'orcid' | 'tiktok' | 'whatsapp';
   readonly label: string;
   readonly url: string;
   readonly published: boolean;

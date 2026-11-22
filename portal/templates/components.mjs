@@ -141,6 +141,7 @@ const contactIcons = Object.freeze({
   instagram: 'instagram',
   linkedin: 'external',
   orcid: 'external',
+  tiktok: 'tiktok',
   whatsapp: 'whatsapp',
 });
 

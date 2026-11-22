@@ -13,7 +13,7 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   const runtime = await gotoPortal(page, '/equipo/', watchRuntime(page));
   const published = teamMembers.filter(member => member.published === true && member.status === 'confirmed');
   const cards = page.locator('main .team-card');
-  expect(published).toHaveLength(4);
+  expect(published).toHaveLength(5);
   await expect(cards).toHaveCount(published.length);
 
   await expect(cards.locator('h3')).toHaveText([
@@ -21,8 +21,10 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
     'Robinson Macas',
     'Alison Machuca',
     'Juan José Bajaña',
+    'Nathaly Paulette Valle Valarezo',
   ]);
   await expect(cards.locator('.team-card__role')).toHaveText([
+    'Miembro de SIPA',
     'Miembro de SIPA',
     'Miembro de SIPA',
     'Miembro de SIPA',
@@ -32,27 +34,32 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
     'Docentes y dirección académica',
     'Ayudantías académicas y de campo',
     'Comunicación y desarrollo digital',
+    'Otros integrantes',
   ]);
   expect(await page.locator('main .team-group').evaluateAll(groups => groups.map(group => group.id))).toEqual([
     'docentes',
     'ayudantias',
     'comunicacion-digital',
+    'otros',
   ]);
   await expect(page.locator('#estudiantes')).toHaveCount(1);
   await expect(page.locator('main')).not.toContainText(/perfiles en actualización/i);
-  await expect(page.locator('main')).not.toContainText(/Cuarto semestre|Exponente|Desarrollador Web|Master Solver/);
-  await expect(page.locator('main')).not.toContainText(/Jimmy|Abigail/);
+  await expect(page.locator('main')).not.toContainText(/Cuarto semestre|9no Semestre|Exponente|Desarrollador Web|Master Solver/);
+  await expect(page.locator('main')).not.toContainText(/Jimmy|Abigail|nathalyvallevalarezo@gmail\.com/);
 
   const angelCard = page.locator('[data-person-id="angel-sanchez"]');
   const robinsonCard = page.locator('[data-person-id="robinson-macas"]');
   const alisonCard = page.locator('[data-person-id="allison-machuca"]');
   const juanCard = page.locator('[data-person-id="juan-bajana"]');
+  const nathalyCard = page.locator('[data-person-id="nathaly-valle"]');
   await expect(angelCard.locator('.team-card__badges li')).toHaveText(['Docente']);
   await expect(robinsonCard.locator('.team-card__badges li')).toHaveText(['Ayudante de cátedra']);
   await expect(alisonCard.locator('.team-card__badges li')).toHaveText(['Ayudante de campo']);
   await expect(alisonCard).toContainText('Medicina Veterinaria');
   await expect(juanCard.locator('.team-card__badges li')).toHaveText(['Desarrollo web', 'Administración de redes']);
   await expect(juanCard).toHaveCount(1);
+  await expect(nathalyCard.locator('.team-card__badges li')).toHaveText(['Redactor']);
+  await expect(nathalyCard).toContainText('Medicina Veterinaria');
 
   const academicDetails = angelCard.locator('details.team-card__academic');
   const academicSummary = academicDetails.locator('summary');
@@ -73,15 +80,24 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
     [juanCard, 'https://www.instagram.com/elranchodejuan_jo'],
     [robinsonCard, 'https://www.instagram.com/macasrobin?igsh=MXJpMGo4OXVvcWFrNQ=='],
     [alisonCard, 'https://www.instagram.com/aymo_8a?stkn=N2Q3dnM5aXN0OHpz&utm_source=qr'],
+    [nathalyCard, 'https://orcid.org/0009-0004-6223-9364'],
+    [nathalyCard, 'https://www.tiktok.com/@nathy43040?_r=1&_t=ZS-9BYtR0woeH6'],
+    [nathalyCard, 'https://www.instagram.com/na.thy640?evlk=dnh4em1jb2ZhcHlo'],
   ]) {
-    const instagram = card.locator(`a[href="${href}"]`);
-    await expect(instagram).toHaveCount(1);
-    await expect(instagram).toHaveAttribute('target', '_blank');
-    await expect(instagram).toHaveAttribute('rel', /(?=.*\bnoopener\b)(?=.*\bnoreferrer\b)/);
-    const box = await instagram.boundingBox();
+    const contactLink = card.locator(`a[href="${href}"]`);
+    await expect(contactLink).toHaveCount(1);
+    await expect(contactLink).toHaveAttribute('target', '_blank');
+    await expect(contactLink).toHaveAttribute('rel', /(?=.*\bnoopener\b)(?=.*\bnoreferrer\b)/);
+    const box = await contactLink.boundingBox();
     expect(box?.width).toBeGreaterThanOrEqual(44);
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
+  const nathalyEmail = nathalyCard.locator('a[href="mailto:nvalle3@utmachala.edu.ec"]');
+  await expect(nathalyEmail).toHaveCount(1);
+  await expect(nathalyEmail).not.toHaveAttribute('target', '_blank');
+  const nathalyEmailBox = await nathalyEmail.boundingBox();
+  expect(nathalyEmailBox?.width).toBeGreaterThanOrEqual(44);
+  expect(nathalyEmailBox?.height).toBeGreaterThanOrEqual(44);
 
   const institutionalContact = page.locator('.team-contact-section');
   await expect(institutionalContact.getByRole('heading', { name: 'Contactar con SIPA' })).toBeVisible();
@@ -89,8 +105,8 @@ test('Equipo publica solo perfiles confirmados o un único estado editorial', as
   await expect(page.locator('a[href*="wa.me/"]')).toHaveCount(0);
 
   const portraits = cards.locator('img');
-  await expect(portraits).toHaveCount(4);
-  for (let index = 0; index < 4; index += 1) {
+  await expect(portraits).toHaveCount(5);
+  for (let index = 0; index < 5; index += 1) {
     const portrait = portraits.nth(index);
     await portrait.scrollIntoViewIfNeeded();
     await expect(portrait).toHaveAttribute('src', /assets\/images\/people\//);
@@ -122,8 +138,8 @@ test('Equipo mantiene escala, proporción y composición a 360, 768 y 1440 px', 
     expect(teacherColumns).toBe(viewport.horizontalTeacher ? 2 : 1);
 
     const memberCards = page.locator('.team-card--member');
-    await expect(memberCards).toHaveCount(3);
-    for (let index = 0; index < 3; index += 1) {
+    await expect(memberCards).toHaveCount(4);
+    for (let index = 0; index < 4; index += 1) {
       const card = memberCards.nth(index);
       const portrait = card.locator('.team-card__portrait img');
       await portrait.scrollIntoViewIfNeeded();
